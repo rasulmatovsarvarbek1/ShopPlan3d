@@ -710,6 +710,12 @@ const DraggableEquipment = ({ item, position, id, onDragStart, onDragEnd, onPosi
 
   const handlePointerDown = useCallback((e) => {
     e.stopPropagation();
+    // Pointer'ni ushbu obyektga "bog'lab" qo'yamiz — shunda kursor
+    // tez harakatlanib mesh chegarasidan chiqib ketsa ham,
+    // onPointerMove hodisasi shu obyekt uchun kelishda davom etadi.
+    // Shu qatorsiz drag "qotib qolar" edi, chunki R3F faqat kursor
+    // aynan mesh ustida bo'lgandagina hodisa yuboradi.
+    e.target.setPointerCapture(e.pointerId);
     isDragging.current = true;
     onDragStart();
     onSelect(id);
@@ -736,6 +742,7 @@ const DraggableEquipment = ({ item, position, id, onDragStart, onDragEnd, onPosi
   const handlePointerUp = useCallback((e) => {
     if (!isDragging.current) return;
     e.stopPropagation();
+    e.target.releasePointerCapture(e.pointerId);
     isDragging.current = false;
     onDragEnd();
     gl.domElement.style.cursor = 'auto';
