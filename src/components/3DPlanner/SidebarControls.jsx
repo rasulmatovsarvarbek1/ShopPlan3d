@@ -1,6 +1,354 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAppStore, UZS_RATE } from '../../store/useAppStore';
-import { Maximize2, DollarSign, Package, Layers, Plus, Minus, Check } from 'lucide-react';
+import { Maximize2, Package, Layers, Plus, Minus, Check } from 'lucide-react';
+
+// ─── Har bir 3D tip uchun meta (bg, border rang) ───
+const SHAPE_META = {
+  fridge:        { bg: '#dbeafe', border: '#3b82f6' },
+  wall_shelf:    { bg: '#f0fdf4', border: '#10b981' },
+  counter:       { bg: '#fef3c7', border: '#d97706' },
+  island_shelf:  { bg: '#ede9fe', border: '#7c3aed' },
+  produce:       { bg: '#dcfce7', border: '#16a34a' },
+  chest_freezer: { bg: '#e0f2fe', border: '#0891b2' },
+  mannequin:     { bg: '#ffe4e6', border: '#e11d48' },
+  clothing_rack: { bg: '#fce7f3', border: '#ec4899' },
+  center_rack:   { bg: '#f3e8ff', border: '#a855f7' },
+  shoe_shelf:    { bg: '#fff7ed', border: '#f97316' },
+  fitting_room:  { bg: '#f1f5f9', border: '#475569' },
+  treadmill:     { bg: '#fef9c3', border: '#ca8a04' },
+  bike:          { bg: '#ecfdf5', border: '#059669' },
+  bench:         { bg: '#fdf2f8', border: '#db2777' },
+  crossover:     { bg: '#eff6ff', border: '#2563eb' },
+  dumbbell_rack: { bg: '#fafafa', border: '#64748b' },
+  lockers:       { bg: '#f0f9ff', border: '#0284c7' },
+  table:         { bg: '#fdf4ff', border: '#c026d3' },
+  tv_wall:       { bg: '#f1f5f9', border: '#334155' },
+  seating:       { bg: '#fff7ed', border: '#b45309' },
+  sofa:          { bg: '#fef3c7', border: '#92400e' },
+  drawer:        { bg: '#f0fdfa', border: '#0d9488' },
+  tire_stand:    { bg: '#f8fafc', border: '#475569' },
+  oil_display:   { bg: '#fefce8', border: '#a16207' },
+  flower_stand:  { bg: '#fdf2f8', border: '#ec4899' },
+  cold_room:     { bg: '#e0f2fe', border: '#0369a1' },
+  demo_table:    { bg: '#eff6ff', border: '#1d4ed8' },
+  coffee_bar:    { bg: '#fef3c7', border: '#78350f' },
+  book_shelf:    { bg: '#f5f3ff', border: '#6d28d9' },
+  default:       { bg: '#f1f5f9', border: '#94a3b8' },
+};
+
+// ─── Mini SVG chizma — har bir tip uchun alohida ───
+const ShapePreviewSVG = ({ type, color, size = 38 }) => {
+  const c = color || '#64748b';
+  const S = size;
+  const cx = S / 2, cy = S / 2;
+
+  const svgProps = { width: S, height: S, viewBox: `0 0 ${S} ${S}`, xmlns: 'http://www.w3.org/2000/svg' };
+
+  switch (type) {
+    // ── Muzlatgich ─────────────────────────────
+    case 'fridge':
+    case 'chest_freezer':
+      return (
+        <svg {...svgProps}>
+          <rect x={9} y={4} width={20} height={28} rx={3} fill={c} opacity={0.85}/>
+          <rect x={11} y={6} width={16} height={12} rx={2} fill="#e0f2fe" opacity={0.7}/>
+          <rect x={11} y={20} width={16} height={10} rx={2} fill="#bfdbfe" opacity={0.5}/>
+          <line x1={25} y1={11} x2={25} y2={16} stroke="#94a3b8" strokeWidth={1.5} strokeLinecap="round"/>
+          <line x1={25} y1={23} x2={25} y2={27} stroke="#94a3b8" strokeWidth={1.5} strokeLinecap="round"/>
+        </svg>
+      );
+
+    // ── Javon / Stellaj ────────────────────────
+    case 'wall_shelf':
+    case 'island_shelf':
+    case 'shoe_shelf':
+    case 'oil_display':
+    case 'book_shelf':
+      return (
+        <svg {...svgProps}>
+          <rect x={7} y={4} width={24} height={30} rx={2} fill={c} opacity={0.8}/>
+          {[8,14,20,26].map((y,i) => (
+            <rect key={i} x={9} y={y} width={20} height={2} rx={1} fill="#f1f5f9" opacity={0.9}/>
+          ))}
+          {[10,16,22].map((y,i) => (
+            <rect key={i} x={11} y={y} width={6} height={4} rx={1} fill={['#f43f5e','#3b82f6','#10b981'][i]} opacity={0.9}/>
+          ))}
+        </svg>
+      );
+
+    // ── Kassa stoli / Counter ──────────────────
+    case 'counter':
+    case 'demo_table':
+      return (
+        <svg {...svgProps}>
+          <rect x={5} y={14} width={28} height={14} rx={3} fill={c} opacity={0.85}/>
+          <rect x={4} y={11} width={30} height={4} rx={2} fill="#f1f5f9" opacity={0.9}/>
+          <rect x={22} y={6} width={8} height={6} rx={2} fill="#1e293b"/>
+          <rect x={23} y={7} width={6} height={4} rx={1} fill="#3b82f6" opacity={0.7}/>
+          <line x1={10} y1={28} x2={10} y2={34} stroke={c} strokeWidth={2}/>
+          <line x1={28} y1={28} x2={28} y2={34} stroke={c} strokeWidth={2}/>
+        </svg>
+      );
+
+    // ── Maneken ────────────────────────────────
+    case 'mannequin':
+      return (
+        <svg {...svgProps}>
+          <circle cx={cx} cy={8} r={5} fill={c} opacity={0.85}/>
+          <rect x={14} y={14} width={10} height={12} rx={4} fill={c} opacity={0.8}/>
+          <line x1={cx} y1={26} x2={cx} y2={33} stroke="#94a3b8" strokeWidth={2}/>
+          <ellipse cx={cx} cy={34} rx={6} ry={2} fill="#64748b" opacity={0.6}/>
+        </svg>
+      );
+
+    // ── Kiyim stakani ──────────────────────────
+    case 'clothing_rack':
+    case 'center_rack':
+      return (
+        <svg {...svgProps}>
+          <line x1={5} y1={12} x2={33} y2={12} stroke={c} strokeWidth={2.5} strokeLinecap="round"/>
+          <line x1={7}  y1={12} x2={7}  y2={34} stroke={c} strokeWidth={2} strokeLinecap="round"/>
+          <line x1={31} y1={12} x2={31} y2={34} stroke={c} strokeWidth={2} strokeLinecap="round"/>
+          {[12, 19, 26].map((x,i) => (
+            <g key={i}>
+              <path d={`M${x},12 Q${x},9 ${x+3},9 Q${x+6},9 ${x+6},12`} fill="none" stroke="#94a3b8" strokeWidth={1.2}/>
+              <rect x={x} y={12} width={7} height={9} rx={1} fill={['#f43f5e','#3b82f6','#10b981'][i]} opacity={0.85}/>
+            </g>
+          ))}
+        </svg>
+      );
+
+    // ── Kiyinish xonasi ────────────────────────
+    case 'fitting_room':
+      return (
+        <svg {...svgProps}>
+          <rect x={6} y={5} width={26} height={28} rx={2} fill="none" stroke={c} strokeWidth={2.5}/>
+          <rect x={14} y={5} width={10} height={22} rx={1} fill="#e0e7ff" opacity={0.5}/>
+          <line x1={14} y1={5} x2={14} y2={27} stroke={c} strokeWidth={1.5}/>
+          <circle cx={24} cy={17} r={1.5} fill={c}/>
+        </svg>
+      );
+
+    // ── Treadmill ──────────────────────────────
+    case 'treadmill':
+      return (
+        <svg {...svgProps}>
+          <rect x={5} y={20} width={28} height={8} rx={3} fill={c} opacity={0.85}/>
+          <rect x={8} y={21} width={22} height={5} rx={1} fill="#1e293b" opacity={0.7}/>
+          <line x1={8}  y1={20} x2={8}  y2={10} stroke="#475569" strokeWidth={2} strokeLinecap="round"/>
+          <line x1={30} y1={20} x2={30} y2={10} stroke="#475569" strokeWidth={2} strokeLinecap="round"/>
+          <rect x={14} y={6} width={10} height={6} rx={2} fill="#0f172a"/>
+          <rect x={15} y={7} width={8} height={4} rx={1} fill="#3b82f6" opacity={0.7}/>
+        </svg>
+      );
+
+    // ── Velosiped ──────────────────────────────
+    case 'bike':
+      return (
+        <svg {...svgProps}>
+          <circle cx={11} cy={26} r={7} fill="none" stroke={c} strokeWidth={2.5}/>
+          <circle cx={27} cy={26} r={7} fill="none" stroke={c} strokeWidth={2.5}/>
+          <line x1={19} y1={26} x2={27} y2={26} stroke={c} strokeWidth={2}/>
+          <line x1={19} y1={26} x2={14} y2={14} stroke={c} strokeWidth={2}/>
+          <line x1={19} y1={26} x2={11} y2={26} stroke={c} strokeWidth={2}/>
+          <rect x={11} y={10} width={10} height={3} rx={1} fill={c} opacity={0.8}/>
+        </svg>
+      );
+
+    // ── Bench press ────────────────────────────
+    case 'bench':
+      return (
+        <svg {...svgProps}>
+          <rect x={6} y={16} width={26} height={6} rx={3} fill={c} opacity={0.85}/>
+          {[7,29].map((x,i) => <line key={i} x1={x} y1={22} x2={x} y2={30} stroke="#64748b" strokeWidth={2} strokeLinecap="round"/>)}
+          <line x1={5} y1={10} x2={33} y2={10} stroke="#94a3b8" strokeWidth={2.5} strokeLinecap="round"/>
+          <circle cx={8}  cy={10} r={4} fill="#1e293b" opacity={0.7}/>
+          <circle cx={30} cy={10} r={4} fill="#1e293b" opacity={0.7}/>
+        </svg>
+      );
+
+    // ── Crossover ──────────────────────────────
+    case 'crossover':
+      return (
+        <svg {...svgProps}>
+          <rect x={4}  y={5} width={5} height={28} rx={2} fill={c} opacity={0.85}/>
+          <rect x={29} y={5} width={5} height={28} rx={2} fill={c} opacity={0.85}/>
+          <line x1={9} y1={5} x2={29} y2={5} stroke={c} strokeWidth={3}/>
+          <line x1={9}  y1={14} x2={16} y2={22} stroke="#94a3b8" strokeWidth={1.5} strokeLinecap="round"/>
+          <line x1={29} y1={14} x2={22} y2={22} stroke="#94a3b8" strokeWidth={1.5} strokeLinecap="round"/>
+          <rect x={5}  y={20} width={4} height={10} rx={1} fill="#334155" opacity={0.7}/>
+          <rect x={29} y={20} width={4} height={10} rx={1} fill="#334155" opacity={0.7}/>
+        </svg>
+      );
+
+    // ── Gantel stendi ──────────────────────────
+    case 'dumbbell_rack':
+      return (
+        <svg {...svgProps}>
+          <rect x={4} y={18} width={30} height={10} rx={2} fill={c} opacity={0.8}/>
+          {[9, 19, 29].map((x,i) => (
+            <g key={i}>
+              <circle cx={x-2} cy={21} r={3} fill="#374151"/>
+              <line x1={x-2} y1={21} x2={x+2} y2={21} stroke="#94a3b8" strokeWidth={1.5}/>
+              <circle cx={x+2} cy={21} r={3} fill="#374151"/>
+            </g>
+          ))}
+        </svg>
+      );
+
+    // ── Shkaf (lockers) ────────────────────────
+    case 'lockers':
+      return (
+        <svg {...svgProps}>
+          {[5, 15, 25].map((x,i) => (
+            <g key={i}>
+              <rect x={x} y={5} width={9} height={28} rx={1} fill={c} opacity={0.8}/>
+              <rect x={x+1} y={6} width={7} height={26} rx={1} fill={c} opacity={0.4}/>
+              <circle cx={x+7} cy={19} r={1.2} fill="#f1f5f9"/>
+            </g>
+          ))}
+        </svg>
+      );
+
+    // ── Grim stoli ─────────────────────────────
+    case 'table':
+      return (
+        <svg {...svgProps}>
+          <rect x={5} y={18} width={28} height={10} rx={2} fill={c} opacity={0.8}/>
+          <rect x={4} y={15} width={30} height={3} rx={1} fill="#f8fafc"/>
+          <rect x={10} y={5} width={18} height={12} rx={2} fill="#e0f2fe" opacity={0.8}/>
+          <line x1={10} y1={4} x2={28} y2={4} stroke="#fef08a" strokeWidth={2.5} strokeLinecap="round"/>
+        </svg>
+      );
+
+    // ── TV devor ───────────────────────────────
+    case 'tv_wall':
+      return (
+        <svg {...svgProps}>
+          <rect x={3} y={8} width={32} height={20} rx={2} fill={c} opacity={0.85}/>
+          <rect x={6} y={10} width={12} height={7} rx={1} fill="#0f172a"/>
+          <rect x={7} y={11} width={10} height={5} rx={1} fill="#3b82f6" opacity={0.7}/>
+          <rect x={20} y={10} width={12} height={7} rx={1} fill="#0f172a"/>
+          <rect x={21} y={11} width={10} height={5} rx={1} fill="#3b82f6" opacity={0.7}/>
+        </svg>
+      );
+
+    // ── Stol + stul ────────────────────────────
+    case 'seating':
+    case 'sofa':
+      return (
+        <svg {...svgProps}>
+          <circle cx={cx} cy={18} r={8} fill="#d97706" opacity={0.7}/>
+          <circle cx={cx} cy={18} r={2} fill="#92400e"/>
+          {[0, 1, 2, 3].map(i => {
+            const a = i * Math.PI / 2;
+            return (
+              <rect key={i}
+                x={cx + Math.sin(a)*10 - 4} y={18 + Math.cos(a)*10 - 5}
+                width={8} height={7} rx={2} fill={c} opacity={0.85}/>
+            );
+          })}
+        </svg>
+      );
+
+    // ── Dori javoni (drawer) ───────────────────
+    case 'drawer':
+      return (
+        <svg {...svgProps}>
+          <rect x={7} y={4} width={24} height={30} rx={2} fill={c} opacity={0.8}/>
+          {[7,13,19,25].map((y,i) => (
+            <g key={i}>
+              <rect x={9} y={y} width={10} height={5} rx={1} fill="#e0f2fe" opacity={0.8}/>
+              <rect x={21} y={y} width={8} height={5} rx={1} fill="#e0f2fe" opacity={0.8}/>
+              <circle cx={14} cy={y+2.5} r={1} fill="#0d9488"/>
+              <circle cx={25} cy={y+2.5} r={1} fill="#0d9488"/>
+            </g>
+          ))}
+        </svg>
+      );
+
+    // ── Shinalar ───────────────────────────────
+    case 'tire_stand':
+      return (
+        <svg {...svgProps}>
+          <rect x={14} y={4} width={5} height={30} rx={2} fill={c} opacity={0.7}/>
+          {[8, 16, 24].map((y,i) => (
+            <g key={i}>
+              <circle cx={cx} cy={y} r={7} fill="none" stroke="#1e293b" strokeWidth={4}/>
+              <circle cx={cx} cy={y} r={3} fill="#475569" opacity={0.6}/>
+            </g>
+          ))}
+        </svg>
+      );
+
+    // ── Gul stendi ─────────────────────────────
+    case 'flower_stand':
+      return (
+        <svg {...svgProps}>
+          <rect x={8} y={22} width={22} height={4} rx={1} fill={c} opacity={0.8}/>
+          <rect x={12} y={14} width={16} height={4} rx={1} fill={c} opacity={0.7}/>
+          <rect x={16} y={8} width={10} height={4} rx={1} fill={c} opacity={0.6}/>
+          {[[19,6],[14,12],[24,12],[19,20]].map(([x,y],i) => (
+            <g key={i}>
+              <circle cx={x} cy={y} r={3} fill={['#f43f5e','#84cc16','#ec4899','#f59e0b'][i]} opacity={0.9}/>
+            </g>
+          ))}
+        </svg>
+      );
+
+    // ── Sovuq xona ─────────────────────────────
+    case 'cold_room':
+      return (
+        <svg {...svgProps}>
+          <rect x={4} y={5} width={30} height={28} rx={3} fill="#e0f2fe" opacity={0.5} stroke={c} strokeWidth={2}/>
+          {[10,17,24].map((y,i) => (
+            <rect key={i} x={7} y={y} width={24} height={3} rx={1} fill="#f1f5f9" opacity={0.8}/>
+          ))}
+          <text x={cx} y={20} textAnchor="middle" fontSize={10} fill={c} fontWeight="bold">❄</text>
+        </svg>
+      );
+
+    // ── Kofe bar ───────────────────────────────
+    case 'coffee_bar':
+      return (
+        <svg {...svgProps}>
+          <rect x={3} y={16} width={32} height={12} rx={3} fill={c} opacity={0.85}/>
+          <rect x={2} y={12} width={34} height={5} rx={2} fill="#f1f5f9"/>
+          <rect x={5} y={6} width={10} height={8} rx={2} fill="#1e293b"/>
+          <line x1={10} y1={14} x2={10} y2={17} stroke="#94a3b8" strokeWidth={1.5}/>
+          {[18,23,28].map((x,i) => (
+            <ellipse key={i} cx={x} cy={16} rx={3} ry={3.5} fill={['#f8fafc','#fef9c3','#ffe4e6'][i]} opacity={0.9}/>
+          ))}
+        </svg>
+      );
+
+    // ── Meva-sabzavot ──────────────────────────
+    case 'produce':
+      return (
+        <svg {...svgProps}>
+          <rect x={5} y={14} width={28} height={14} rx={3} fill={c} opacity={0.8}/>
+          <rect x={4} y={11} width={30} height={4} rx={2} fill="#f1f5f9"/>
+          {[10,19,28].map((x,i) => (
+            <circle key={i} cx={x} cy={17} r={4} fill={['#f43f5e','#84cc16','#f59e0b'][i]} opacity={0.9}/>
+          ))}
+          {[15,24].map((x,i) => (
+            <circle key={i} cx={x} cy={22} r={3.5} fill={['#22c55e','#f97316'][i]} opacity={0.9}/>
+          ))}
+        </svg>
+      );
+
+    // ── Default ────────────────────────────────
+    default:
+      return (
+        <svg {...svgProps}>
+          <rect x={8} y={4} width={22} height={30} rx={3} fill={c} opacity={0.8}/>
+          <rect x={10} y={8} width={18} height={4} rx={1} fill="#f1f5f9" opacity={0.7}/>
+          <rect x={10} y={15} width={18} height={4} rx={1} fill="#f1f5f9" opacity={0.7}/>
+          <rect x={10} y={22} width={18} height={4} rx={1} fill="#f1f5f9" opacity={0.7}/>
+        </svg>
+      );
+  }
+};
 
 export const SidebarControls = () => {
   const {
@@ -15,8 +363,11 @@ export const SidebarControls = () => {
     autoFillInventory,
     toggleAutoFill,
     currency,
-    selectedCategory
+    selectedCategory,
+    applyLayoutTemplate
   } = useAppStore();
+
+  const [showTemplates, setShowTemplates] = useState(false);
 
   const area = roomDimensions.width * roomDimensions.length;
 
@@ -71,6 +422,86 @@ export const SidebarControls = () => {
           </button>
         </div>
       </div>
+
+      {/* ── Tayyor Joylashuv Shablonlari ── */}
+      <div>
+        <button
+          onClick={() => setShowTemplates(v => !v)}
+          style={{
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '10px 14px',
+            background: showTemplates ? '#eff6ff' : '#f8fafc',
+            border: `1.5px solid ${showTemplates ? '#3b82f6' : '#e2e8f0'}`,
+            borderRadius: 'var(--radius-md)',
+            cursor: 'pointer',
+            fontFamily: 'var(--font-family)',
+            fontSize: '0.88rem',
+            fontWeight: 700,
+            color: showTemplates ? '#1d4ed8' : 'var(--text-primary)',
+            marginBottom: showTemplates ? '0.5rem' : '0'
+          }}
+        >
+          <span>📐 Tayyor Joylashuv Shablonlari</span>
+          <span style={{ transition: 'transform 0.2s', transform: showTemplates ? 'rotate(180deg)' : 'rotate(0deg)', display: 'inline-block' }}>▼</span>
+        </button>
+
+        {showTemplates && (
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+
+            {/* 1: Devor bo'ylab */}
+            <div onClick={() => applyLayoutTemplate('linear')} className="template-card-hover" style={{ border: '1.5px solid #e2e8f0', borderRadius: '8px', padding: '7px', cursor: 'pointer', background: '#fff', textAlign: 'center' }}>
+              <svg width="100%" height="46" viewBox="0 0 100 60" style={{ display: 'block', background: '#f8fafc', borderRadius: '4px' }}>
+                <rect x="5" y="5" width="90" height="50" rx="3" fill="none" stroke="#cbd5e1" strokeWidth="2"/>
+                <rect x="7" y="7" width="86" height="5" fill="#10b981" rx="1"/>
+                <rect x="7" y="14" width="5" height="23" fill="#10b981" rx="1"/>
+                <rect x="88" y="14" width="5" height="23" fill="#10b981" rx="1"/>
+                <rect x="35" y="44" width="30" height="8" fill="#3b82f6" rx="1"/>
+              </svg>
+              <div style={{ fontSize: '0.75rem', fontWeight: 700, marginTop: '4px', color: '#1e293b' }}>Devor bo'ylab</div>
+            </div>
+
+            {/* 2: Orolcha */}
+            <div onClick={() => applyLayoutTemplate('island')} className="template-card-hover" style={{ border: '1.5px solid #e2e8f0', borderRadius: '8px', padding: '7px', cursor: 'pointer', background: '#fff', textAlign: 'center' }}>
+              <svg width="100%" height="46" viewBox="0 0 100 60" style={{ display: 'block', background: '#f8fafc', borderRadius: '4px' }}>
+                <rect x="5" y="5" width="90" height="50" rx="3" fill="none" stroke="#cbd5e1" strokeWidth="2"/>
+                <rect x="7" y="7" width="86" height="5" fill="#10b981" rx="1"/>
+                <rect x="32" y="22" width="36" height="6" fill="#7c3aed" rx="1"/>
+                <rect x="32" y="30" width="36" height="6" fill="#7c3aed" rx="1"/>
+                <rect x="84" y="40" width="7" height="12" fill="#3b82f6" rx="1"/>
+              </svg>
+              <div style={{ fontSize: '0.75rem', fontWeight: 700, marginTop: '4px', color: '#1e293b' }}>Orolcha</div>
+            </div>
+
+            {/* 3: U-simon */}
+            <div onClick={() => applyLayoutTemplate('ushape')} className="template-card-hover" style={{ border: '1.5px solid #e2e8f0', borderRadius: '8px', padding: '7px', cursor: 'pointer', background: '#fff', textAlign: 'center' }}>
+              <svg width="100%" height="46" viewBox="0 0 100 60" style={{ display: 'block', background: '#f8fafc', borderRadius: '4px' }}>
+                <rect x="5" y="5" width="90" height="50" rx="3" fill="none" stroke="#cbd5e1" strokeWidth="2"/>
+                <rect x="7" y="7" width="5" height="35" fill="#10b981" rx="1"/>
+                <rect x="14" y="7" width="72" height="5" fill="#10b981" rx="1"/>
+                <rect x="88" y="7" width="5" height="35" fill="#10b981" rx="1"/>
+                <rect x="38" y="46" width="24" height="6" fill="#3b82f6" rx="1"/>
+              </svg>
+              <div style={{ fontSize: '0.75rem', fontWeight: 700, marginTop: '4px', color: '#1e293b' }}>U-simon</div>
+            </div>
+
+            {/* 4: Burchakli */}
+            <div onClick={() => applyLayoutTemplate('corner')} className="template-card-hover" style={{ border: '1.5px solid #e2e8f0', borderRadius: '8px', padding: '7px', cursor: 'pointer', background: '#fff', textAlign: 'center' }}>
+              <svg width="100%" height="46" viewBox="0 0 100 60" style={{ display: 'block', background: '#f8fafc', borderRadius: '4px' }}>
+                <rect x="5" y="5" width="90" height="50" rx="3" fill="none" stroke="#cbd5e1" strokeWidth="2"/>
+                <rect x="7" y="7" width="5" height="38" fill="#10b981" rx="1"/>
+                <rect x="14" y="7" width="72" height="5" fill="#10b981" rx="1"/>
+                <rect x="65" y="44" width="20" height="8" fill="#3b82f6" rx="1"/>
+              </svg>
+              <div style={{ fontSize: '0.75rem', fontWeight: 700, marginTop: '4px', color: '#1e293b' }}>Burchakli (L)</div>
+            </div>
+
+          </div>
+        )}
+      </div>
+
 
       {/* Room Dimensions Sliders */}
       <div style={{
@@ -133,22 +564,6 @@ export const SidebarControls = () => {
           />
         </div>
 
-        {/* Height Slider */}
-        <div className="control-group">
-          <div className="control-label">
-            <span>Balandligi (Height)</span>
-            <span className="control-value">{roomDimensions.height} m</span>
-          </div>
-          <input
-            type="range"
-            min="2.5"
-            max="6.0"
-            step="0.1"
-            className="range-slider"
-            value={roomDimensions.height}
-            onChange={(e) => setRoomDimensions({ height: parseFloat(e.target.value) })}
-          />
-        </div>
       </div>
 
       {/* Target Budget Input */}
@@ -165,12 +580,13 @@ export const SidebarControls = () => {
               width: '100%',
               padding: '10px 14px',
               borderRadius: 'var(--radius-md)',
-              background: 'rgba(255, 255, 255, 0.05)',
-              border: '1px solid var(--border-color)',
-              color: '#fff',
+              background: '#f8fafc',
+              border: '1.5px solid var(--border-color)',
+              color: 'var(--text-primary)',
               fontSize: '1rem',
               fontWeight: 700,
-              outline: 'none'
+              outline: 'none',
+              boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.06)'
             }}
           />
         </div>
@@ -204,42 +620,96 @@ export const SidebarControls = () => {
         </div>
       </div>
 
-      {/* Equipment List Counter Controls */}
+      {/* Equipment Library — Click to add to room */}
       <div>
-        <div style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        <div style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-primary)' }}>
           <Layers size={16} color="var(--accent-indigo)" />
-          Jihozlar Katalogi va Soni
+          3D Jihozlar Kutubxonasi
+        </div>
+        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>
+          Bosing → xonaga qo'shiladi
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-          {equipmentList.map((item) => (
-            <div key={item.id} style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              background: 'rgba(255, 255, 255, 0.03)',
-              padding: '8px 12px',
-              borderRadius: 'var(--radius-sm)',
-              border: '1px solid rgba(255, 255, 255, 0.05)'
-            }}>
-              <div>
-                <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#fff' }}>{item.name}</div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{formatPrice(item.unitPrice)} / dona</div>
-              </div>
+          {equipmentList.map((item) => {
+            const meta = SHAPE_META[item.type] || SHAPE_META.default;
+            return (
+              <div
+                key={item.id}
+                onClick={() => updateEquipmentCount(item.id, 1)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.75rem',
+                  background: item.count > 0 ? meta.bg : '#f8fafc',
+                  padding: '8px 10px',
+                  borderRadius: 'var(--radius-sm)',
+                  border: `1.5px solid ${item.count > 0 ? meta.border : '#e2e8f0'}`,
+                  cursor: 'pointer',
+                  transition: 'all 0.18s ease',
+                  boxShadow: item.count > 0 ? `0 2px 8px ${meta.border}22` : 'none',
+                  userSelect: 'none'
+                }}
+              >
+                {/* SVG mini chizma preview */}
+                <div style={{
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '10px',
+                  background: meta.bg,
+                  border: `2px solid ${meta.border}`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                  overflow: 'hidden'
+                }}>
+                  <ShapePreviewSVG type={item.type} color={item.color || meta.border} size={34} />
+                </div>
 
-              <div className="item-counter">
-                <button className="count-btn" onClick={() => updateEquipmentCount(item.id, -1)}>
-                  <Minus size={12} />
-                </button>
-                <span style={{ fontSize: '0.85rem', fontWeight: 700, minWidth: '18px', textAlign: 'center' }}>
-                  {item.count}
-                </span>
-                <button className="count-btn" onClick={() => updateEquipmentCount(item.id, 1)}>
-                  <Plus size={12} />
-                </button>
+                {/* Name & price */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    {item.name}
+                  </div>
+                  <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                    {formatPrice(item.unitPrice)} / dona
+                  </div>
+                </div>
+
+                {/* Counter */}
+                <div
+                  className="item-counter"
+                  style={{ flexShrink: 0 }}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <button
+                    className="count-btn"
+                    onClick={(e) => { e.stopPropagation(); updateEquipmentCount(item.id, -1); }}
+                    style={{ background: item.count === 0 ? '#f1f5f9' : undefined }}
+                  >
+                    <Minus size={11} />
+                  </button>
+                  <span style={{
+                    fontSize: '0.85rem',
+                    fontWeight: 800,
+                    minWidth: '20px',
+                    textAlign: 'center',
+                    color: item.count > 0 ? meta.border : 'var(--text-muted)'
+                  }}>
+                    {item.count}
+                  </span>
+                  <button
+                    className="count-btn"
+                    onClick={(e) => { e.stopPropagation(); updateEquipmentCount(item.id, 1); }}
+                    style={{ background: meta.bg, borderColor: meta.border }}
+                  >
+                    <Plus size={11} />
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>

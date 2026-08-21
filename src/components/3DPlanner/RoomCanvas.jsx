@@ -1,6 +1,6 @@
 import React, { useRef, useMemo, useState, useCallback } from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
-import { OrbitControls, Grid, Text, Html } from '@react-three/drei';
+import { OrbitControls, Grid, Html } from '@react-three/drei';
 import { useAppStore } from '../../store/useAppStore';
 import * as THREE from 'three';
 
@@ -519,6 +519,205 @@ const SeatingShape = ({ color }) => (
   </group>
 );
 
+/** Divan (Sofa) */
+const SofaShape = ({ color }) => (
+  <group>
+    {/* Seat base */}
+    <mesh position={[0, 0.22, 0]} castShadow>
+      <boxGeometry args={[1.9, 0.3, 0.85]} />
+      <meshStandardMaterial color={color} roughness={0.8} />
+    </mesh>
+    {/* Seat cushions */}
+    {[-0.55, 0, 0.55].map((x, i) => (
+      <mesh key={i} position={[x, 0.42, 0]}>
+        <boxGeometry args={[0.58, 0.14, 0.82]} />
+        <meshStandardMaterial color={color} roughness={0.9} />
+      </mesh>
+    ))}
+    {/* Back rest */}
+    <mesh position={[0, 0.66, -0.38]} castShadow>
+      <boxGeometry args={[1.9, 0.6, 0.12]} />
+      <meshStandardMaterial color={color} roughness={0.8} />
+    </mesh>
+    {/* Armrests */}
+    <mesh position={[-0.9, 0.52, -0.05]}>
+      <boxGeometry args={[0.12, 0.44, 0.82]} />
+      <meshStandardMaterial color={color} roughness={0.7} />
+    </mesh>
+    <mesh position={[0.9, 0.52, -0.05]}>
+      <boxGeometry args={[0.12, 0.44, 0.82]} />
+      <meshStandardMaterial color={color} roughness={0.7} />
+    </mesh>
+    {/* Legs */}
+    {[[-0.8, -0.35], [0.8, -0.35], [-0.8, 0.35], [0.8, 0.35]].map(([x, z], i) => (
+      <mesh key={i} position={[x, 0.05, z]}>
+        <boxGeometry args={[0.06, 0.1, 0.06]} />
+        <meshStandardMaterial color="#78350f" metalness={0.3} />
+      </mesh>
+    ))}
+  </group>
+);
+
+/** Velosiped trenajyor (Bike) */
+const BikeShape = ({ color }) => (
+  <group>
+    {/* Frame body */}
+    <mesh position={[0, 0.52, 0]} castShadow>
+      <boxGeometry args={[0.55, 0.08, 0.55]} />
+      <meshStandardMaterial color={color} metalness={0.5} roughness={0.4} />
+    </mesh>
+    {/* Front wheel */}
+    <mesh position={[0, 0.35, 0.25]} rotation={[0, 0, Math.PI / 2]}>
+      <torusGeometry args={[0.28, 0.04, 8, 20]} />
+      <meshStandardMaterial color="#1e293b" roughness={0.8} />
+    </mesh>
+    {/* Rear wheel */}
+    <mesh position={[0, 0.35, -0.25]} rotation={[0, 0, Math.PI / 2]}>
+      <torusGeometry args={[0.28, 0.04, 8, 20]} />
+      <meshStandardMaterial color="#1e293b" roughness={0.8} />
+    </mesh>
+    {/* Pedal crank */}
+    <mesh position={[0, 0.35, 0]} rotation={[0, 0, Math.PI / 2]}>
+      <cylinderGeometry args={[0.06, 0.06, 0.12, 8]} />
+      <meshStandardMaterial color="#475569" metalness={0.8} />
+    </mesh>
+    {/* Handle bars */}
+    <mesh position={[0, 1.1, 0.2]}>
+      <boxGeometry args={[0.55, 0.04, 0.04]} />
+      <meshStandardMaterial color="#64748b" metalness={0.8} />
+    </mesh>
+    {/* Stem */}
+    <mesh position={[0, 0.78, 0.2]}>
+      <cylinderGeometry args={[0.025, 0.025, 0.64, 8]} />
+      <meshStandardMaterial color="#475569" metalness={0.7} />
+    </mesh>
+    {/* Screen */}
+    <mesh position={[0, 1.25, 0.05]}>
+      <boxGeometry args={[0.24, 0.16, 0.04]} />
+      <meshStandardMaterial color="#0f172a" />
+    </mesh>
+    <mesh position={[0, 1.25, 0.04]}>
+      <boxGeometry args={[0.2, 0.12, 0.01]} />
+      <meshStandardMaterial color="#1d4ed8" emissive="#3b82f6" emissiveIntensity={0.5} />
+    </mesh>
+    {/* Seat */}
+    <mesh position={[0, 0.82, -0.15]}>
+      <boxGeometry args={[0.26, 0.04, 0.4]} />
+      <meshStandardMaterial color="#1e293b" roughness={0.7} />
+    </mesh>
+  </group>
+);
+
+/** Moy va suyuqliklar vitrinasi */
+const OilDisplayShape = ({ color }) => (
+  <group>
+    {/* Frame */}
+    <mesh position={[0, 1.0, 0]} castShadow>
+      <boxGeometry args={[1.5, 2.0, 0.45]} />
+      <meshStandardMaterial color={color} roughness={0.5} />
+    </mesh>
+    {/* Shelves */}
+    {[0.3, 0.75, 1.2, 1.65].map((y, i) => (
+      <mesh key={i} position={[0, y, 0.22]}>
+        <boxGeometry args={[1.35, 0.04, 0.38]} />
+        <meshStandardMaterial color="#f1f5f9" />
+      </mesh>
+    ))}
+    {/* Oil bottles */}
+    {[0.3, 0.75, 1.2, 1.65].map((y, row) =>
+      [-0.45, 0, 0.45].map((x, col) => (
+        <group key={`${row}-${col}`} position={[x, y + 0.14, 0.1]}>
+          <mesh>
+            <cylinderGeometry args={[0.08, 0.07, 0.26, 8]} />
+            <meshStandardMaterial
+              color={[['#f97316', '#fbbf24', '#84cc16'], ['#38bdf8', '#60a5fa', '#a78bfa'], ['#fb923c', '#facc15', '#4ade80'], ['#22d3ee', '#818cf8', '#f472b6']][row][col]}
+            />
+          </mesh>
+          {/* Cap */}
+          <mesh position={[0, 0.15, 0]}>
+            <cylinderGeometry args={[0.04, 0.05, 0.06, 8]} />
+            <meshStandardMaterial color="#1e293b" />
+          </mesh>
+        </group>
+      ))
+    )}
+  </group>
+);
+
+/** Spinner / Kantselyariya aylana stendi */
+const SpinnerRackShape = ({ color }) => (
+  <group>
+    {/* Central pole */}
+    <mesh position={[0, 1.0, 0]}>
+      <cylinderGeometry args={[0.03, 0.03, 2.0, 8]} />
+      <meshStandardMaterial color="#94a3b8" metalness={0.8} />
+    </mesh>
+    {/* Base */}
+    <mesh position={[0, 0.05, 0]}>
+      <cylinderGeometry args={[0.25, 0.3, 0.1, 16]} />
+      <meshStandardMaterial color="#64748b" metalness={0.6} />
+    </mesh>
+    {/* Rotating shelves */}
+    {[0.4, 0.8, 1.2, 1.6].map((y, row) => (
+      <group key={row} position={[0, y, 0]} rotation={[0, row * 0.5, 0]}>
+        {[0, Math.PI / 2, Math.PI, (3 * Math.PI) / 2].map((angle, j) => {
+          const r = 0.3;
+          return (
+            <group key={j} position={[Math.sin(angle) * r, 0, Math.cos(angle) * r]} rotation={[0, -angle, 0]}>
+              <mesh>
+                <boxGeometry args={[0.14, 0.22, 0.04]} />
+                <meshStandardMaterial color={[color, '#f43f5e', '#3b82f6', '#10b981'][j]} />
+              </mesh>
+            </group>
+          );
+        })}
+      </group>
+    ))}
+  </group>
+);
+
+/** Mutolaa stoli (Reader table) */
+const ReaderTableShape = ({ color }) => (
+  <group>
+    {/* Table top */}
+    <mesh position={[0, 0.76, 0]} castShadow>
+      <boxGeometry args={[1.7, 0.06, 0.85]} />
+      <meshStandardMaterial color={color} roughness={0.6} />
+    </mesh>
+    {/* Legs */}
+    {[[-0.75, -0.35], [0.75, -0.35], [-0.75, 0.35], [0.75, 0.35]].map(([x, z], i) => (
+      <mesh key={i} position={[x, 0.37, z]}>
+        <boxGeometry args={[0.05, 0.74, 0.05]} />
+        <meshStandardMaterial color={color} roughness={0.6} />
+      </mesh>
+    ))}
+    {/* Books on table */}
+    {[-0.4, 0, 0.4].map((x, i) => (
+      <mesh key={i} position={[x, 0.82, 0.1]} rotation={[0, (i - 1) * 0.15, 0]}>
+        <boxGeometry args={[0.18, 0.26, 0.04]} />
+        <meshStandardMaterial color={['#6366f1', '#f43f5e', '#10b981'][i]} />
+      </mesh>
+    ))}
+    {/* Chair */}
+    <group position={[0, 0, 0.55]}>
+      <mesh position={[0, 0.24, 0]}>
+        <boxGeometry args={[0.5, 0.06, 0.5]} />
+        <meshStandardMaterial color="#c7d2fe" roughness={0.7} />
+      </mesh>
+      {[[-0.2, -0.2], [0.2, -0.2], [-0.2, 0.2], [0.2, 0.2]].map(([x, z], i) => (
+        <mesh key={i} position={[x, 0.12, z]}>
+          <cylinderGeometry args={[0.02, 0.02, 0.24, 6]} />
+          <meshStandardMaterial color="#4338ca" />
+        </mesh>
+      ))}
+      <mesh position={[0, 0.58, -0.22]} rotation={[0.2, 0, 0]}>
+        <boxGeometry args={[0.48, 0.44, 0.04]} />
+        <meshStandardMaterial color="#c7d2fe" roughness={0.7} />
+      </mesh>
+    </group>
+  </group>
+);
+
 // ─── PHARMACY ────────────────────────
 
 const DrawerRackShape = ({ color }) => (
@@ -664,35 +863,39 @@ const BookShelfShape = ({ color }) => (
 
 const ShapeFor = ({ type, color, height }) => {
   switch (type) {
-    case 'fridge':       return <FridgeShape color={color} />;
-    case 'wall_shelf':   return <ShelfShape color={color} height={height} />;
-    case 'counter':      return <CounterShape color={color} />;
-    case 'island_shelf': return <ShelfShape color={color} height={1.4} />;
-    case 'produce':      return <ShelfShape color={color} height={1.4} />;
+    case 'fridge':        return <FridgeShape color={color} />;
+    case 'wall_shelf':    return <ShelfShape color={color} height={height} />;
+    case 'counter':       return <CounterShape color={color} />;
+    case 'island_shelf':  return <ShelfShape color={color} height={1.4} />;
+    case 'produce':       return <ShelfShape color={color} height={1.4} />;
     case 'chest_freezer': return <FridgeShape color={color} />;
-    case 'mannequin':    return <ManekenShape color={color} />;
+    case 'mannequin':     return <ManekenShape color={color} />;
     case 'clothing_rack': return <ClothingRackShape color={color} />;
-    case 'center_rack':  return <ClothingRackShape color={color} />;
-    case 'shoe_shelf':   return <ShelfShape color={color} height={1.8} />;
-    case 'fitting_room': return <FittingRoomShape color={color} />;
-    case 'treadmill':    return <TreadmillShape color={color} />;
-    case 'bike':         return <TreadmillShape color={color} />;
-    case 'bench':        return <BenchShape color={color} />;
-    case 'crossover':    return <CrossoverShape color={color} />;
+    case 'center_rack':   return <ClothingRackShape color={color} />;
+    case 'shoe_shelf':    return <ShelfShape color={color} height={1.8} />;
+    case 'fitting_room':  return <FittingRoomShape color={color} />;
+    case 'treadmill':     return <TreadmillShape color={color} />;
+    case 'bike':          return <BikeShape color={color} />;
+    case 'bench':         return <BenchShape color={color} />;
+    case 'crossover':     return <CrossoverShape color={color} />;
     case 'dumbbell_rack': return <DumbbellRackShape color={color} />;
-    case 'lockers':      return <LockerShape color={color} />;
-    case 'table':        return <MakeupTableShape color={color} />;
-    case 'tv_wall':      return <TVWallShape color={color} />;
-    case 'seating':      return <SeatingShape color={color} />;
-    case 'sofa':         return <SeatingShape color={color} />;
-    case 'drawer':       return <DrawerRackShape color={color} />;
-    case 'tire_stand':   return <TireStandShape color={color} />;
-    case 'oil_display':  return <ShelfShape color={color} height={2.0} />;
-    case 'flower_stand': return <FlowerStandShape color={color} />;
-    case 'cold_room':    return <ColdRoomShape color={color} />;
-    case 'demo_table':   return <DemoTableShape color={color} />;
-    case 'coffee_bar':   return <CoffeeBarShape color={color} />;
-    default:             return <ShelfShape color={color} height={height || 2.0} />;
+    case 'lockers':       return <LockerShape color={color} />;
+    case 'table':         return <MakeupTableShape color={color} />;
+    case 'tv_wall':       return <TVWallShape color={color} />;
+    case 'seating':       return <SeatingShape color={color} />;
+    case 'sofa':          return <SofaShape color={color} />;
+    case 'drawer':        return <DrawerRackShape color={color} />;
+    case 'tire_stand':    return <TireStandShape color={color} />;
+    case 'oil_display':   return <OilDisplayShape color={color} />;
+    case 'flower_stand':  return <FlowerStandShape color={color} />;
+    case 'cold_room':     return <ColdRoomShape color={color} />;
+    case 'demo_table':    return <DemoTableShape color={color} />;
+    case 'coffee_bar':    return <CoffeeBarShape color={color} />;
+    case 'book_shelf':    return <BookShelfShape color={color} />;
+    case 'island_shelf':  return <SpinnerRackShape color={color} />;
+    case 'stationery':    return <SpinnerRackShape color={color} />;
+    case 'read_table':    return <ReaderTableShape color={color} />;
+    default:              return <ShelfShape color={color} height={height || 2.0} />;
   }
 };
 
@@ -700,21 +903,70 @@ const ShapeFor = ({ type, color, height }) => {
 // DRAGGABLE EQUIPMENT ITEM
 // ─────────────────────────────────────────────
 
-const DraggableEquipment = ({ item, position, id, onDragStart, onDragEnd, onPositionChange, isSelected, onSelect }) => {
-  const { camera, gl, raycaster } = useThree();
+// ─── AABB Collision Helper ─────────────────────────────────────────────────
+const getEffectiveDims = (w, d, rotAngle) => {
+  const rotStep = Math.round(rotAngle / (Math.PI / 2)) % 4;
+  const swapped = rotStep === 1 || rotStep === 3;
+  return { ew: swapped ? d : w, ed: swapped ? w : d };
+};
+
+const checkCollision = (ax, az, aw, ad, bx, bz, bw, bd, gap = 0.05) => {
+  return (
+    Math.abs(ax - bx) < (aw + bw) / 2 + gap &&
+    Math.abs(az - bz) < (ad + bd) / 2 + gap
+  );
+};
+
+const resolveCollision = (newPos, selfW, selfD, others) => {
+  const MAX_ITERS = 6;
+  let x = newPos.x;
+  let z = newPos.z;
+  for (let iter = 0; iter < MAX_ITERS; iter++) {
+    let moved = false;
+    for (const other of others) {
+      const overlapX = (selfW + other.ew) / 2 + 0.05 - Math.abs(x - other.x);
+      const overlapZ = (selfD + other.ed) / 2 + 0.05 - Math.abs(z - other.z);
+      if (overlapX > 0 && overlapZ > 0) {
+        // Push out along the smaller overlap axis
+        if (overlapX < overlapZ) {
+          x += x >= other.x ? overlapX : -overlapX;
+        } else {
+          z += z >= other.z ? overlapZ : -overlapZ;
+        }
+        moved = true;
+      }
+    }
+    if (!moved) break;
+  }
+  return { x, z };
+};
+
+const DraggableEquipment = ({
+  item, position, id, rotation,
+  onDragStart, onDragEnd, onPositionChange,
+  isSelected, onSelect, onRotate, onDelete,
+  roomW, roomL,
+  allPositions, allItems
+}) => {
+  const { gl, raycaster } = useThree();
   const meshRef = useRef();
   const isDragging = useRef(false);
   const dragPlane = useMemo(() => new THREE.Plane(new THREE.Vector3(0, 1, 0), 0), []);
   const dragOffset = useRef(new THREE.Vector3());
   const posRef = useRef(new THREE.Vector3(...position));
 
+  // posRef ni prop o'zgarganda yangilab turish (shablon qo'llanilganda)
+  React.useEffect(() => {
+    if (!isDragging.current) {
+      posRef.current.set(...position);
+      if (meshRef.current) {
+        meshRef.current.position.set(...position);
+      }
+    }
+  }, [position[0], position[1], position[2]]);
+
   const handlePointerDown = useCallback((e) => {
     e.stopPropagation();
-    // Pointer'ni ushbu obyektga "bog'lab" qo'yamiz — shunda kursor
-    // tez harakatlanib mesh chegarasidan chiqib ketsa ham,
-    // onPointerMove hodisasi shu obyekt uchun kelishda davom etadi.
-    // Shu qatorsiz drag "qotib qolar" edi, chunki R3F faqat kursor
-    // aynan mesh ustida bo'lgandagina hodisa yuboradi.
     e.target.setPointerCapture(e.pointerId);
     isDragging.current = true;
     onDragStart();
@@ -733,11 +985,43 @@ const DraggableEquipment = ({ item, position, id, onDragStart, onDragEnd, onPosi
     raycaster.ray.intersectPlane(dragPlane, intersection);
     const newPos = intersection.clone().sub(dragOffset.current);
     newPos.y = 0;
+
+    // ── Rotation hisobga olingan o'lchamlar ──
+    const { ew: effectiveW, ed: effectiveD } = getEffectiveDims(
+      item.width || 1.0, item.depth || 1.0, rotation
+    );
+    const hw = effectiveW / 2;
+    const hd = effectiveD / 2;
+    const margin = 0.05;
+
+    // ── Xona chegarasida ushlab turish ──
+    newPos.x = Math.max(-roomW / 2 + hw + margin, Math.min(roomW / 2 - hw - margin, newPos.x));
+    newPos.z = Math.max(-roomL / 2 + hd + margin, Math.min(roomL / 2 - hd - margin, newPos.z));
+
+    // ── Collision detection: boshqa elementlar bilan to'qnashmasligi ──
+    const others = allItems
+      .filter(({ uid }) => uid !== id)
+      .map(({ uid, item: otherItem, rotAngle }) => {
+        const pos = allPositions[uid] || [0, 0, 0];
+        const { ew, ed } = getEffectiveDims(otherItem.width || 1.0, otherItem.depth || 1.0, rotAngle);
+        return { x: pos[0], z: pos[2], ew, ed };
+      });
+
+    const resolved = resolveCollision(
+      { x: newPos.x, z: newPos.z },
+      effectiveW, effectiveD,
+      others
+    );
+
+    // Chegaradan chiqib ketmaslik (collision resolve dan keyin)
+    newPos.x = Math.max(-roomW / 2 + hw + margin, Math.min(roomW / 2 - hw - margin, resolved.x));
+    newPos.z = Math.max(-roomL / 2 + hd + margin, Math.min(roomL / 2 - hd - margin, resolved.z));
+
     posRef.current.copy(newPos);
     if (meshRef.current) {
       meshRef.current.position.copy(newPos);
     }
-  }, [raycaster, dragPlane]);
+  }, [raycaster, dragPlane, item, roomW, roomL, rotation, allPositions, allItems, id]);
 
   const handlePointerUp = useCallback((e) => {
     if (!isDragging.current) return;
@@ -749,10 +1033,13 @@ const DraggableEquipment = ({ item, position, id, onDragStart, onDragEnd, onPosi
     onPositionChange(id, [posRef.current.x, 0, posRef.current.z]);
   }, [id, onDragEnd, onPositionChange, gl]);
 
+  const floatY = (item.height || 2.0) + 0.6;
+
   return (
     <group
       ref={meshRef}
       position={position}
+      rotation={[0, rotation || 0, 0]}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
@@ -763,21 +1050,73 @@ const DraggableEquipment = ({ item, position, id, onDragStart, onDragEnd, onPosi
       {isSelected && (
         <mesh position={[0, 0.02, 0]}>
           <planeGeometry args={[item.width + 0.3, item.depth + 0.3]} />
-          <meshStandardMaterial color="#3b82f6" transparent opacity={0.25} />
+          <meshStandardMaterial color="#3b82f6" transparent opacity={0.22} />
         </mesh>
       )}
 
-      {/* Label */}
-      <Text
-        position={[0, (item.height || 2.0) + 0.35, 0]}
-        fontSize={0.22}
-        color={isSelected ? '#2563eb' : '#475569'}
-        anchorX="center"
-        anchorY="bottom"
-        fontWeight={isSelected ? 'bold' : 'normal'}
-      >
-        {item.name}
-      </Text>
+      {/* Floating action panel — only when selected */}
+      {isSelected && (
+        <Html
+          position={[0, floatY, 0]}
+          center
+          distanceFactor={8}
+          style={{ pointerEvents: 'auto' }}
+        >
+          <div style={{
+            display: 'flex',
+            gap: '6px',
+            background: 'rgba(255,255,255,0.97)',
+            borderRadius: '40px',
+            padding: '5px 10px',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.18)',
+            border: '1.5px solid #e2e8f0',
+            whiteSpace: 'nowrap',
+            userSelect: 'none'
+          }}>
+            {/* Rotate button */}
+            <button
+              onPointerDown={(e) => e.stopPropagation()}
+              onClick={(e) => { e.stopPropagation(); onRotate(id); }}
+              title="90° ga aylantirish"
+              style={{
+                display: 'flex', alignItems: 'center', gap: '4px',
+                padding: '4px 10px',
+                borderRadius: '20px',
+                border: '1.5px solid #3b82f6',
+                background: '#eff6ff',
+                color: '#1d4ed8',
+                fontWeight: 700,
+                fontSize: '12px',
+                cursor: 'pointer',
+                transition: 'all 0.15s'
+              }}
+            >
+              <span style={{ fontSize: '15px' }}>🔄</span> Aylantir
+            </button>
+
+            {/* Delete button */}
+            <button
+              onPointerDown={(e) => e.stopPropagation()}
+              onClick={(e) => { e.stopPropagation(); onDelete(id); }}
+              title="Olib tashlash"
+              style={{
+                display: 'flex', alignItems: 'center', gap: '4px',
+                padding: '4px 10px',
+                borderRadius: '20px',
+                border: '1.5px solid #e11d48',
+                background: '#fff1f2',
+                color: '#be123c',
+                fontWeight: 700,
+                fontSize: '12px',
+                cursor: 'pointer',
+                transition: 'all 0.15s'
+              }}
+            >
+              <span style={{ fontSize: '15px' }}>🗑️</span> O'chir
+            </button>
+          </div>
+        </Html>
+      )}
     </group>
   );
 };
@@ -787,9 +1126,17 @@ const DraggableEquipment = ({ item, position, id, onDragStart, onDragEnd, onPosi
 // ─────────────────────────────────────────────
 
 const RoomScene = ({ isDragging, setIsDragging }) => {
-  const { roomDimensions, equipmentList, autoFillInventory, viewMode } = useAppStore();
+  const {
+    roomDimensions,
+    equipmentList,
+    viewMode,
+    updateEquipmentCount,
+    positions,
+    setPositions,
+    rotations,
+    setRotations
+  } = useAppStore();
   const { width: W, length: L, height: H } = roomDimensions;
-  const [positions, setPositions] = useState({});
   const [selectedId, setSelectedId] = useState(null);
 
   const initialPositions = useMemo(() => {
@@ -814,12 +1161,63 @@ const RoomScene = ({ isDragging, setIsDragging }) => {
       }
     });
     return map;
-  }, [equipmentList, W, L]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [equipmentList, W, L, positions]);
 
   const getPos = (uid) => positions[uid] || initialPositions[uid] || [0, 0, 0];
 
   const handlePositionChange = useCallback((uid, newPos) => {
-    setPositions(prev => ({ ...prev, [uid]: newPos }));
+    setPositions({ ...positions, [uid]: newPos });
+  }, [positions, setPositions]);
+
+  // 90° qadam bilan aylantirish
+  const handleRotate = useCallback((uid) => {
+    const current = rotations[uid] || 0;
+    setRotations({ ...rotations, [uid]: (current + 1) % 4 });
+  }, [rotations, setRotations]);
+
+  // Elementni olib tashlash va uning pozitsiyalarini tartiblash
+  const handleDelete = useCallback((uid) => {
+    const itemId = uid.substring(0, uid.lastIndexOf('_'));
+    const index = parseInt(uid.substring(uid.lastIndexOf('_') + 1), 10);
+    
+    const item = equipmentList.find(e => e.id === itemId);
+    if (!item) return;
+    
+    const count = item.count;
+    
+    // Pozitsiyalarni siljitish
+    const nextPositions = { ...positions };
+    for (let i = index; i < count - 1; i++) {
+      const currentUid = `${itemId}_${i}`;
+      const nextUid = `${itemId}_${i + 1}`;
+      if (nextUid in nextPositions) {
+        nextPositions[currentUid] = nextPositions[nextUid];
+      } else if (initialPositions[nextUid]) {
+        nextPositions[currentUid] = initialPositions[nextUid];
+      }
+    }
+    delete nextPositions[`${itemId}_${count - 1}`];
+    setPositions(nextPositions);
+
+    // Burilish burchaklarini siljitish
+    const nextRotations = { ...rotations };
+    for (let i = index; i < count - 1; i++) {
+      const currentUid = `${itemId}_${i}`;
+      const nextUid = `${itemId}_${i + 1}`;
+      nextRotations[currentUid] = nextRotations[nextUid] || 0;
+    }
+    delete nextRotations[`${itemId}_${count - 1}`];
+    setRotations(nextRotations);
+
+    // Store dagi sonini kamaytirish
+    updateEquipmentCount(itemId, -1);
+    setSelectedId(null);
+  }, [equipmentList, initialPositions, updateEquipmentCount, positions, rotations, setPositions, setRotations]);
+
+  // Fon bosilganda selection tushsin
+  const handleMissed = useCallback(() => {
+    setSelectedId(null);
   }, []);
 
   const placedItems = useMemo(() => {
@@ -838,8 +1236,13 @@ const RoomScene = ({ isDragging, setIsDragging }) => {
       <directionalLight position={[12, 18, 14]} intensity={1.0} castShadow shadow-mapSize={[2048, 2048]} />
       <pointLight position={[0, H - 0.5, 0]} intensity={0.6} color="#dbeafe" />
 
-      {/* Floor */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
+      {/* Floor — klik bo'sh joyga tushganda selection olib tashlanadi */}
+      <mesh
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[0, 0, 0]}
+        receiveShadow
+        onPointerDown={handleMissed}
+      >
         <planeGeometry args={[W, L]} />
         <meshStandardMaterial color="#f8fafc" roughness={0.4} />
       </mesh>
@@ -886,17 +1289,40 @@ const RoomScene = ({ isDragging, setIsDragging }) => {
       {placedItems.map(({ uid, item }) => {
         const pos = getPos(uid);
         if (!pos || pos.length < 3) return null;
+        const rotStep = rotations[uid] || 0;
+        const rotAngle = rotStep * (Math.PI / 2);
+
+        // allItems: collision uchun barcha boshqa elementlarning pozitsiyalari va o'lchamlari
+        const allItemsForCollision = placedItems.map(({ uid: u, item: it }) => ({
+          uid: u,
+          item: it,
+          rotAngle: (rotations[u] || 0) * (Math.PI / 2)
+        }));
+
+        // allPositions: har bir uid uchun joriy pozitsiya
+        const allPositionsForCollision = {};
+        placedItems.forEach(({ uid: u }) => {
+          allPositionsForCollision[u] = getPos(u);
+        });
+
         return (
           <DraggableEquipment
             key={uid}
             id={uid}
             item={item}
             position={pos}
+            rotation={rotAngle}
             isSelected={selectedId === uid}
             onSelect={setSelectedId}
             onDragStart={() => setIsDragging(true)}
             onDragEnd={() => setIsDragging(false)}
             onPositionChange={handlePositionChange}
+            onRotate={handleRotate}
+            onDelete={handleDelete}
+            roomW={W}
+            roomL={L}
+            allPositions={allPositionsForCollision}
+            allItems={allItemsForCollision}
           />
         );
       })}

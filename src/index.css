@@ -613,6 +613,15 @@ body {
 
 .tier-btn.active { background: var(--accent-blue); color: #fff; box-shadow: 0 2px 8px rgba(37,99,235,0.3); }
 
+.template-card-hover {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.template-card-hover:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent-blue) !important;
+  box-shadow: 0 4px 12px rgba(37,99,235,0.12) !important;
+}
+
 /* ===== SMETA CARDS ===== */
 .smeta-card {
   background: #f8fafc;

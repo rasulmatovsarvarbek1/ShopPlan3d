@@ -143,11 +143,12 @@ export const LiveSmetaPanel = () => {
             width: '100%',
             padding: '8px 12px',
             borderRadius: 'var(--radius-sm)',
-            background: 'rgba(255,255,255,0.05)',
-            border: '1px solid var(--border-color)',
-            color: '#fff',
+            background: '#f8fafc',
+            border: '1.5px solid var(--border-color)',
+            color: 'var(--text-primary)',
             fontSize: '0.88rem',
-            outline: 'none'
+            outline: 'none',
+            boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.05)'
           }}
         />
 
