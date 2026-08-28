@@ -1,20 +1,32 @@
 import { create } from 'zustand';
 import { BUSINESS_CATEGORIES } from '../data/businessCategories';
+import { clearAutosaveDraft } from '../utils/autosaveStorage';
 
 export const UZS_RATE = 12800; // 1 USD = 12,800 UZS
+
+export const DEFAULT_MONTHLY_EXPENSES = {
+  rent: 0,
+  utilities: 0,
+  staffSalary: 0,
+  staffCount: 1,
+  otherExpenses: 0,
+};
 
 export const useAppStore = create((set, get) => ({
   // Navigation & View
   activePage: 'landing', // 'landing' | 'selector' | 'planner' | 'user-panel' | 'admin-panel'
   viewMode: '3d', // '3d' | 'top2d'
 
-  // Business Category & Package Tier
+  // ── Kamera/Controls'ga to'g'ridan-to'g'ri (imperativ) murojaat — PDF eksport uchun ──
+  cameraApi: null, // { camera, controls }
+  setCameraApi: (camera, controls) => set({ cameraApi: { camera, controls } }),
+
+  // Business Category
   selectedCategory: BUSINESS_CATEGORIES[0],
-  activeTier: 'standard', // 'economy' | 'standard' | 'premium'
 
   // Room & Budget Parameters
   roomDimensions: { width: 10, length: 12, height: 3.2 },
-  userBudget: 25000,
+  userBudget: '',
   currency: 'USD', // 'USD' | 'UZS'
 
   // Equipment & Inventory
@@ -22,6 +34,24 @@ export const useAppStore = create((set, get) => ({
   autoFillInventory: true,
   positions: {},
   rotations: {},
+
+  // ── Foot Traffic Simulation State ──
+  footTrafficActive: false,
+  footTrafficAnalytics: { avgWalkTimeSec: 0, pathLengthMeters: 0, warningMessage: '', isWarning: false },
+
+  // ── Lighting & Time Simulation State ──
+  lightingActive: false,
+  timeOfDay: 13.0, // 6.0 to 22.0
+  customLights: [], // array of { id, x, z, color, intensity, unitPrice: 120 }
+
+  // ── Oylik xarajatlar va ROI ──
+  monthlyExpenses: { ...DEFAULT_MONTHLY_EXPENSES },
+  expectedMonthlyRevenue: 0,
+
+  // ── Auto-save UI ──
+  lastAutosaveAt: null,
+  autosaveJustSaved: false,
+  pendingAutosaveDraft: null, // { savedAt, state } — restore prompt uchun
 
   // Saved Projects
   savedProjects: [
@@ -43,14 +73,26 @@ export const useAppStore = create((set, get) => ({
   updatePosition: (uid, pos) => set(state => ({ positions: { ...state.positions, [uid]: pos } })),
   updateRotation: (uid, rot) => set(state => ({ rotations: { ...state.rotations, [uid]: rot } })),
 
+  // Simulation Toggles & Handlers
+  toggleFootTraffic: () => set(state => ({ footTrafficActive: !state.footTrafficActive })),
+  setFootTrafficAnalytics: (analytics) => set({ footTrafficAnalytics: analytics }),
+
+  toggleLighting: () => set(state => ({ lightingActive: !state.lightingActive })),
+  setTimeOfDay: (time) => set({ timeOfDay: Number(time) }),
+  addCustomLight: (light) => set(state => ({ customLights: [...state.customLights, light] })),
+  removeCustomLight: (id) => set(state => ({ customLights: state.customLights.filter(l => l.id !== id) })),
+  updateCustomLightPos: (id, x, z) => set(state => ({
+    customLights: state.customLights.map(l => l.id === id ? { ...l, x, z } : l)
+  })),
+  clearCustomLights: () => set({ customLights: [] }),
+
   selectCategory: (category) => {
     const defaultTier = 'standard';
     const initialEquipment = category.equipmentPresets[defaultTier].map(item => ({ ...item, count: 0 }));
     set({
       selectedCategory: category,
-      activeTier: defaultTier,
       roomDimensions: { ...category.defaultDimensions },
-      userBudget: category.defaultBudget,
+      userBudget: '',
       equipmentList: initialEquipment,
       positions: {},
       rotations: {},
@@ -58,18 +100,7 @@ export const useAppStore = create((set, get) => ({
     });
   },
 
-  setActiveTier: (tier) => {
-    const { selectedCategory } = get();
-    if (selectedCategory && selectedCategory.equipmentPresets[tier]) {
-      const newEquipment = selectedCategory.equipmentPresets[tier].map(item => ({ ...item, count: 0 }));
-      set({
-        activeTier: tier,
-        equipmentList: newEquipment,
-        positions: {},
-        rotations: {},
-      });
-    }
-  },
+
 
   setRoomDimensions: (dims) => set((state) => ({
     roomDimensions: { ...state.roomDimensions, ...dims }
@@ -89,15 +120,24 @@ export const useAppStore = create((set, get) => ({
     })
   })),
 
+  // ── Foydalanuvchi qo'shgan maxsus (custom) jihozlar ──
+  addCustomEquipmentItem: (item) => set((state) => ({
+    equipmentList: [...state.equipmentList, item]
+  })),
+
+  removeCustomEquipmentItem: (id) => set((state) => ({
+    equipmentList: state.equipmentList.filter(item => item.id !== id)
+  })),
+
   applyLayoutTemplate: (layoutType) => {
-    const { roomDimensions, equipmentList, selectedCategory, activeTier } = get();
+    const { roomDimensions, equipmentList, selectedCategory } = get();
     const { width: W, length: L } = roomDimensions;
 
-    // Shablon tanlanganda, agar jihozlar soni 0 bo'lsa, activePreset dagi default miqdorlarni yuklaymiz
+    // Shablon tanlanganda, agar jihozlar soni 0 bo'lsa, standard preset dagi default miqdorlarni yuklaymiz
     let activeEquipment = equipmentList.map(item => ({ ...item }));
     const totalCount = activeEquipment.reduce((sum, item) => sum + item.count, 0);
     if (totalCount === 0) {
-      const preset = selectedCategory.equipmentPresets[activeTier] || selectedCategory.equipmentPresets.standard;
+      const preset = selectedCategory.equipmentPresets.standard;
       activeEquipment = preset.map(item => ({ ...item }));
     }
 
@@ -325,10 +365,38 @@ export const useAppStore = create((set, get) => ({
       });
 
       seatings.forEach((s, idx) => {
-        newPositions[s.uid] = [W / 2 - 1.6, 0, -L / 2 + 1.8 + (idx * 1.6)];
-        newRotations[s.uid] = 3;
+        const sW = s.width || 1.2;
+        const cols = Math.max(1, Math.floor((W - 2) / 1.6));
+        const col = idx % cols;
+        const row = Math.floor(idx / cols);
+        newPositions[s.uid] = [
+          -W / 2 + 1.2 + col * 1.6,
+          0,
+          L / 2 - 1.6 - row * 1.6
+        ];
+        newRotations[s.uid] = 0;
       });
     }
+
+    // ── Xona chegaralariga majburiy sig'dirish (Strict Clamp) ──
+    // Har bir jihoz o'z o'lchamini hisobga olgan holda devor ichida qolishini kafolatlaydi
+    flatItems.forEach(item => {
+      const pos = newPositions[item.uid];
+      if (pos) {
+        const rotStep = newRotations[item.uid] || 0;
+        const isRot = rotStep === 1 || rotStep === 3;
+        const effW = isRot ? (item.depth || 0.8) : (item.width || 1.2);
+        const effD = isRot ? (item.width || 1.2) : (item.depth || 0.8);
+
+        const minX = -W / 2 + effW / 2 + 0.05;
+        const maxX = W / 2 - effW / 2 - 0.05;
+        const minZ = -L / 2 + effD / 2 + 0.05;
+        const maxZ = L / 2 - effD / 2 - 0.05;
+
+        pos[0] = Math.max(minX, Math.min(maxX, pos[0]));
+        pos[2] = Math.max(minZ, Math.min(maxZ, pos[2]));
+      }
+    });
 
     set({
       equipmentList: activeEquipment,
@@ -350,7 +418,12 @@ export const useAppStore = create((set, get) => ({
       title: title || `${state.selectedCategory.name} (${area} m²)`,
       categoryName: state.selectedCategory.name,
       categoryId: state.selectedCategory.id,
-      dimensions: { ...state.roomDimensions },
+      dimensions: JSON.parse(JSON.stringify(state.roomDimensions)),
+      equipmentList: JSON.parse(JSON.stringify(state.equipmentList)),
+      positions: JSON.parse(JSON.stringify(state.positions)),
+      rotations: JSON.parse(JSON.stringify(state.rotations)),
+      customLights: JSON.parse(JSON.stringify(state.customLights)),
+      autoFillInventory: state.autoFillInventory,
       totalCost: grandTotal,
       createdAt: new Date().toISOString().split('T')[0]
     };
@@ -358,7 +431,72 @@ export const useAppStore = create((set, get) => ({
     set((s) => ({ savedProjects: [newProj, ...s.savedProjects] }));
   },
 
+  loadSavedProject: (proj) => {
+    const cat = BUSINESS_CATEGORIES.find(c => c.id === proj.categoryId) || BUSINESS_CATEGORIES[0];
+    set({
+      selectedCategory: cat,
+      roomDimensions: proj.dimensions ? JSON.parse(JSON.stringify(proj.dimensions)) : { ...cat.defaultDimensions },
+      equipmentList: proj.equipmentList ? JSON.parse(JSON.stringify(proj.equipmentList)) : cat.equipmentPresets.standard.map(i => ({ ...i })),
+      positions: proj.positions ? JSON.parse(JSON.stringify(proj.positions)) : {},
+      rotations: proj.rotations ? JSON.parse(JSON.stringify(proj.rotations)) : {},
+      customLights: proj.customLights ? JSON.parse(JSON.stringify(proj.customLights)) : [],
+      autoFillInventory: proj.autoFillInventory !== undefined ? proj.autoFillInventory : true,
+      lightingActive: (proj.customLights && proj.customLights.length > 0) ? true : get().lightingActive,
+      activePage: 'planner'
+    });
+  },
+
   deleteProject: (id) => set((state) => ({
     savedProjects: state.savedProjects.filter(p => p.id !== id)
   })),
+
+  // ── Oylik xarajatlar ──
+  setMonthlyExpense: (field, value) => set((state) => ({
+    monthlyExpenses: { ...state.monthlyExpenses, [field]: value },
+  })),
+  setExpectedMonthlyRevenue: (value) => set({ expectedMonthlyRevenue: value }),
+
+  // ── Auto-save ──
+  setLastAutosaveAt: (iso) => set({ lastAutosaveAt: iso }),
+  flashAutosaveSaved: () => {
+    set({ autosaveJustSaved: true });
+    setTimeout(() => set({ autosaveJustSaved: false }), 2000);
+  },
+  checkPendingAutosaveDraft: () => {
+    try {
+      const raw = localStorage.getItem('shopplan_autosave_draft');
+      if (!raw) return;
+      const draft = JSON.parse(raw);
+      if (draft?.savedAt && draft?.state) {
+        set({ pendingAutosaveDraft: draft });
+      }
+    } catch { /* ignore */ }
+  },
+  restoreFromAutosaveDraft: () => {
+    const draft = get().pendingAutosaveDraft;
+    if (!draft?.state) return;
+    const cat = BUSINESS_CATEGORIES.find(c => c.id === draft.state.selectedCategoryId) || BUSINESS_CATEGORIES[0];
+    set({
+      selectedCategory: cat,
+      roomDimensions: draft.state.roomDimensions || { ...cat.defaultDimensions },
+      equipmentList: draft.state.equipmentList || cat.equipmentPresets.standard.map(i => ({ ...i })),
+      positions: draft.state.positions || {},
+      rotations: draft.state.rotations || {},
+      customLights: draft.state.customLights || [],
+      autoFillInventory: draft.state.autoFillInventory ?? true,
+      userBudget: draft.state.userBudget ?? '',
+      monthlyExpenses: draft.state.monthlyExpenses || { ...DEFAULT_MONTHLY_EXPENSES },
+      expectedMonthlyRevenue: draft.state.expectedMonthlyRevenue ?? 0,
+      pendingAutosaveDraft: null,
+      activePage: 'planner',
+    });
+  },
+  dismissAutosaveDraft: () => {
+    clearAutosaveDraft();
+    set({ pendingAutosaveDraft: null });
+  },
+
+  // Faqat bannerni yopadi — saqlangan loyiha localStorage'da qolaveradi,
+  // sahifa qayta ochilganda banner yana chiqadi
+  hideAutosaveDraftBanner: () => set({ pendingAutosaveDraft: null }),
 }));

@@ -3,21 +3,21 @@ import { useAppStore } from '../../store/useAppStore';
 import { SidebarControls } from './SidebarControls';
 import { RoomCanvas } from './RoomCanvas';
 import { LiveSmetaPanel } from './LiveSmetaPanel';
+import { AutoSaveIndicator, AutoSaveCloudIcon } from './AutoSaveIndicator';
+import { usePlannerAutosave } from '../../hooks/usePlannerAutosave';
 import { Eye, Box, ArrowLeft } from 'lucide-react';
 
 export const PlannerPage = () => {
-  const { viewMode, setViewMode, setActivePage, selectedCategory } = useAppStore();
+  const { viewMode, setViewMode, setActivePage } = useAppStore();
+
+  usePlannerAutosave();
 
   return (
     <div className="animate-fade-in">
-      {/* 3D Planner Main Workspace Grid */}
       <div className="planner-wrapper">
-        {/* Left Control Panel */}
         <SidebarControls />
 
-        {/* Center 3D Viewport */}
         <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-          {/* Floating Top Toolbar */}
           <div className="viewport-toolbar">
             <button
               className="toolbar-btn"
@@ -47,13 +47,14 @@ export const PlannerPage = () => {
             </button>
           </div>
 
-          {/* 3D Three.js Canvas */}
+          <AutoSaveCloudIcon />
           <RoomCanvas />
         </div>
 
-        {/* Right Smeta Panel */}
         <LiveSmetaPanel />
       </div>
+
+      <AutoSaveIndicator />
     </div>
   );
 };

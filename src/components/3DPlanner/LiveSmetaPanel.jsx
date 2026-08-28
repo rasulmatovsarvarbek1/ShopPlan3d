@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { useAppStore, UZS_RATE } from '../../store/useAppStore';
 import confetti from 'canvas-confetti';
-import { Calculator, Download, Save, CheckCircle, AlertTriangle, FileText } from 'lucide-react';
+import { Calculator, Save, CheckCircle, AlertTriangle } from 'lucide-react';
+import { MonthlyRoiPanel } from './MonthlyRoiPanel';
+import { PdfExportButton } from './PdfExportButton';
 
 export const LiveSmetaPanel = () => {
   const {
@@ -11,7 +13,8 @@ export const LiveSmetaPanel = () => {
     selectedCategory,
     userBudget,
     currency,
-    saveCurrentProject
+    saveCurrentProject,
+    customLights
   } = useAppStore();
 
   const [savedSuccess, setSavedSuccess] = useState(false);
@@ -20,13 +23,14 @@ export const LiveSmetaPanel = () => {
   const area = roomDimensions.width * roomDimensions.length;
 
   // Cost Calculations
-  const equipmentTotal = equipmentList.reduce((sum, item) => sum + (item.unitPrice * item.count), 0);
+  const customLightsTotal = customLights ? customLights.reduce((sum, light) => sum + (light.unitPrice || 120), 0) : 0;
+  const equipmentTotal = equipmentList.reduce((sum, item) => sum + (item.unitPrice * item.count), 0) + customLightsTotal;
   const inventoryTotal = autoFillInventory ? Math.round(area * selectedCategory.inventoryPricePerM2) : 0;
   const renovationTotal = Math.round(area * selectedCategory.renovationPricePerM2);
   const grandTotal = equipmentTotal + inventoryTotal + renovationTotal;
 
-  const budgetUsagePercent = Math.min(100, Math.round((grandTotal / userBudget) * 100));
-  const isOverBudget = grandTotal > userBudget;
+  const budgetUsagePercent = userBudget ? Math.min(100, Math.round((grandTotal / userBudget) * 100)) : 0;
+  const isOverBudget = userBudget ? grandTotal > userBudget : false;
 
   const formatPrice = (usd) => {
     if (currency === 'UZS') {
@@ -44,10 +48,6 @@ export const LiveSmetaPanel = () => {
     });
     setSavedSuccess(true);
     setTimeout(() => setSavedSuccess(false), 3000);
-  };
-
-  const handleExportPrint = () => {
-    window.print();
   };
 
   return (
@@ -74,7 +74,7 @@ export const LiveSmetaPanel = () => {
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', fontWeight: 600 }}>
             <span>Byudjetga sig'ish ({budgetUsagePercent}%)</span>
             <span style={{ color: isOverBudget ? 'var(--accent-rose)' : 'var(--accent-emerald)' }}>
-              Target: {formatPrice(userBudget)}
+              Target: {userBudget ? formatPrice(userBudget) : "Kiritilmagan"}
             </span>
           </div>
 
@@ -98,7 +98,7 @@ export const LiveSmetaPanel = () => {
               marginTop: '6px'
             }}>
               <AlertTriangle size={14} />
-              Byudjet chegarsidan {formatPrice(grandTotal - userBudget)} oshdi.
+              Byudjet chegarasidan {formatPrice(grandTotal - userBudget)} oshdi.
             </div>
           )}
         </div>
@@ -127,6 +127,9 @@ export const LiveSmetaPanel = () => {
           <strong style={{ color: '#fff' }}>{formatPrice(renovationTotal)}</strong>
         </div>
       </div>
+
+      {/* Oylik xarajatlar & ROI */}
+      <MonthlyRoiPanel grandTotal={grandTotal} formatPrice={formatPrice} />
 
       {/* Save Project Section */}
       <div className="smeta-card" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
@@ -158,15 +161,16 @@ export const LiveSmetaPanel = () => {
         </button>
       </div>
 
-      {/* Export Report */}
-      <button
-        className="btn-secondary"
-        style={{ justifyContent: 'center', width: '100%', padding: '12px' }}
-        onClick={handleExportPrint}
-      >
-        <FileText size={16} />
-        Smetani Eksport / Chop Etish
-      </button>
+      {/* PDF Export */}
+      <PdfExportButton
+        projectName={projName.trim() || `${selectedCategory.name} (${area} m²)`}
+        area={area}
+        equipmentTotal={equipmentTotal}
+        inventoryTotal={inventoryTotal}
+        renovationTotal={renovationTotal}
+        grandTotal={grandTotal}
+        autoFillInventory={autoFillInventory}
+      />
     </div>
   );
 };

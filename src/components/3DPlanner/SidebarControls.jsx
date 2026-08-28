@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAppStore, UZS_RATE } from '../../store/useAppStore';
-import { Maximize2, Package, Layers, Plus, Minus, Check } from 'lucide-react';
+import { Maximize2, Package, Layers, Plus, Minus, Check, Users, Sun, Moon, Zap, AlertTriangle, CheckCircle2, Trash2, Clock, PackagePlus, X } from 'lucide-react';
 
 // ─── Har bir 3D tip uchun meta (bg, border rang) ───
 const SHAPE_META = {
@@ -20,6 +20,10 @@ const SHAPE_META = {
   bench:         { bg: '#fdf2f8', border: '#db2777' },
   crossover:     { bg: '#eff6ff', border: '#2563eb' },
   dumbbell_rack: { bg: '#fafafa', border: '#64748b' },
+  leg_press:     { bg: '#e0f2fe', border: '#0284c7' },
+  lat_pulldown:  { bg: '#f1f5f9', border: '#475569' },
+  elliptical:    { bg: '#ecfdf5', border: '#10b981' },
+  punching_bag:  { bg: '#fef2f2', border: '#ef4444' },
   lockers:       { bg: '#f0f9ff', border: '#0284c7' },
   table:         { bg: '#fdf4ff', border: '#c026d3' },
   tv_wall:       { bg: '#f1f5f9', border: '#334155' },
@@ -35,6 +39,83 @@ const SHAPE_META = {
   book_shelf:    { bg: '#f5f3ff', border: '#6d28d9' },
   default:       { bg: '#f1f5f9', border: '#94a3b8' },
 };
+
+// ─── RoomCanvas.jsx'da mavjud barcha 3D shakllar — Yangi jihoz qo'shishda tanlash uchun ───
+// Guruhlangan holda: foydalanuvchi to'g'ri kategoriyaga mos shaklni tanlaydi (masalan fitnes uchun trenajyor shakli)
+const SHAPE_TYPE_GROUPS = [
+  {
+    label: 'Fitnes / Sport Zali',
+    options: [
+      { value: 'treadmill', label: 'Yugurish trenajyori (Treadmill)' },
+      { value: 'bike', label: 'Velosiped trenajyori' },
+      { value: 'stationary_bike', label: 'Statsionar velosiped' },
+      { value: 'bench', label: 'Bench Press' },
+      { value: 'flat_bench', label: 'Yassi skameyka' },
+      { value: 'adjustable_bench', label: 'Moslashuvchan skameyka' },
+      { value: 'crossover', label: 'Crossover mashinasi' },
+      { value: 'leg_press', label: 'Leg Press' },
+      { value: 'lat_pulldown', label: 'Lat Pulldown' },
+      { value: 'chest_press', label: "Ko'krak Press mashinasi" },
+      { value: 'shoulder_press', label: 'Yelka Press mashinasi' },
+      { value: 'seated_row', label: "O'tirib tortish mashinasi" },
+      { value: 'stair_climber', label: 'Zinapoya trenajyori' },
+      { value: 'elliptical', label: 'Elliptik trenajyor' },
+      { value: 'squat_cage', label: 'Squat qafasi' },
+      { value: 'smith_machine', label: 'Smith mashinasi' },
+      { value: 'olympic_barbell', label: 'Shtanga stendi' },
+      { value: 'weight_plates', label: "Og'irlik disklari stendi" },
+      { value: 'dumbbell_rack', label: 'Gantel stendi' },
+      { value: 'kettlebell_rack', label: 'Girya stendi' },
+      { value: 'medicine_ball_rack', label: "Meditsina to'pi stendi" },
+      { value: 'plyo_boxes', label: 'Plyo qutilar' },
+      { value: 'trx', label: 'TRX tizimi' },
+      { value: 'mats_rollers', label: 'Gilamcha / Rolikli mashq' },
+      { value: 'punching_bag', label: 'Boks grushasi' },
+      { value: 'lockers', label: 'Shkaflar' },
+    ]
+  },
+  {
+    label: "Do'kon / Savdo",
+    options: [
+      { value: 'wall_shelf', label: 'Devoriy stellaj' },
+      { value: 'island_shelf', label: 'Orol javon' },
+      { value: 'counter', label: 'Kassa stoli' },
+      { value: 'produce', label: 'Meva-sabzavot stendi' },
+      { value: 'fridge', label: 'Vertikal muzlatgich' },
+      { value: 'chest_freezer', label: 'Gorizontal muzlatgich' },
+      { value: 'cold_room', label: 'Sovutish xonasi' },
+      { value: 'oil_display', label: 'Vitrina stend' },
+      { value: 'tire_stand', label: 'Shina/Aylanma stend' },
+      { value: 'demo_table', label: 'Demo stol' },
+    ]
+  },
+  {
+    label: 'Kiyim-kechak',
+    options: [
+      { value: 'clothing_rack', label: 'Kiyim ilgichi (devoriy)' },
+      { value: 'center_rack', label: 'Aylana kiyim stendi' },
+      { value: 'mannequin', label: 'Maneken' },
+      { value: 'shoe_shelf', label: 'Poyabzal javoni' },
+      { value: 'fitting_room', label: 'Kiyinish xonasi' },
+      { value: 'drawer', label: 'Tortmali javon' },
+    ]
+  },
+  {
+    label: 'Kafe / Ofis / Boshqa',
+    options: [
+      { value: 'coffee_bar', label: 'Kofe bar' },
+      { value: 'seating', label: "Stol va o'tirish joyi" },
+      { value: 'sofa', label: 'Divan' },
+      { value: 'table', label: 'Stol' },
+      { value: 'tv_wall', label: 'TV devor' },
+      { value: 'flower_stand', label: 'Gul stendi' },
+      { value: 'book_shelf', label: 'Kitob javoni' },
+      { value: 'stationery', label: 'Kantselyariya stendi' },
+      { value: 'read_table', label: "O'qish stoli" },
+      { value: 'custom', label: 'Oddiy quti (standart shakl)' },
+    ]
+  }
+];
 
 // ─── Mini SVG chizma — har bir tip uchun alohida ───
 const ShapePreviewSVG = ({ type, color, size = 38 }) => {
@@ -304,7 +385,7 @@ const ShapePreviewSVG = ({ type, color, size = 38 }) => {
           {[10,17,24].map((y,i) => (
             <rect key={i} x={7} y={y} width={24} height={3} rx={1} fill="#f1f5f9" opacity={0.8}/>
           ))}
-          <text x={cx} y={20} textAnchor="middle" fontSize={10} fill={c} fontWeight="bold">❄</text>
+          <rect x={14} y={15} width={12} height={10} rx={1} fill={c} opacity={0.6}/>
         </svg>
       );
 
@@ -356,18 +437,63 @@ export const SidebarControls = () => {
     setRoomDimensions,
     userBudget,
     setUserBudget,
-    activeTier,
-    setActiveTier,
     equipmentList,
     updateEquipmentCount,
     autoFillInventory,
     toggleAutoFill,
     currency,
     selectedCategory,
-    applyLayoutTemplate
+    applyLayoutTemplate,
+    footTrafficActive,
+    toggleFootTraffic,
+    footTrafficAnalytics,
+    lightingActive,
+    toggleLighting,
+    timeOfDay,
+    setTimeOfDay,
+    customLights,
+    addCustomLight,
+    clearCustomLights,
+    addCustomEquipmentItem,
+    removeCustomEquipmentItem
   } = useAppStore();
 
   const [showTemplates, setShowTemplates] = useState(false);
+
+  // ── Yangi (custom) jihoz qo'shish formasi ──
+  const [showAddItemForm, setShowAddItemForm] = useState(false);
+  const [newItemName, setNewItemName] = useState('');
+  const [newItemPrice, setNewItemPrice] = useState('');
+  const [newItemWidth, setNewItemWidth] = useState('1');
+  const [newItemDepth, setNewItemDepth] = useState('0.6');
+  const [newItemHeight, setNewItemHeight] = useState('1.5');
+  const [newItemColor, setNewItemColor] = useState('#3b82f6');
+  const [newItemShapeType, setNewItemShapeType] = useState('custom');
+
+  const handleAddCustomItem = () => {
+    if (!newItemName.trim() || !newItemPrice) return;
+    const newItem = {
+      id: `custom_${Date.now()}`,
+      name: newItemName.trim(),
+      type: newItemShapeType,
+      custom: true,
+      unitPrice: Number(newItemPrice) || 0,
+      width: Number(newItemWidth) || 1,
+      depth: Number(newItemDepth) || 0.6,
+      height: Number(newItemHeight) || 1.5,
+      color: newItemColor,
+      count: 0
+    };
+    addCustomEquipmentItem(newItem);
+    setNewItemName('');
+    setNewItemPrice('');
+    setNewItemWidth('1');
+    setNewItemDepth('0.6');
+    setNewItemHeight('1.5');
+    setNewItemColor('#3b82f6');
+    setNewItemShapeType('custom');
+    setShowAddItemForm(false);
+  };
 
   const area = roomDimensions.width * roomDimensions.length;
 
@@ -396,32 +522,7 @@ export const SidebarControls = () => {
         </div>
       </div>
 
-      {/* Package Tier Pills */}
-      <div>
-        <div style={{ fontSize: '0.85rem', fontWeight: 700, marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>
-          Paket Darajasi (Preset Tier)
-        </div>
-        <div className="tier-pills">
-          <button
-            className={`tier-btn ${activeTier === 'economy' ? 'active' : ''}`}
-            onClick={() => setActiveTier('economy')}
-          >
-            Ekonom
-          </button>
-          <button
-            className={`tier-btn ${activeTier === 'standard' ? 'active' : ''}`}
-            onClick={() => setActiveTier('standard')}
-          >
-            Standart
-          </button>
-          <button
-            className={`tier-btn ${activeTier === 'premium' ? 'active' : ''}`}
-            onClick={() => setActiveTier('premium')}
-          >
-            Premium
-          </button>
-        </div>
-      </div>
+
 
       {/* ── Tayyor Joylashuv Shablonlari ── */}
       <div>
@@ -444,7 +545,7 @@ export const SidebarControls = () => {
             marginBottom: showTemplates ? '0.5rem' : '0'
           }}
         >
-          <span>📐 Tayyor Joylashuv Shablonlari</span>
+          <span>Tayyor Joylashuv Shablonlari</span>
           <span style={{ transition: 'transform 0.2s', transform: showTemplates ? 'rotate(180deg)' : 'rotate(0deg)', display: 'inline-block' }}>▼</span>
         </button>
 
@@ -569,13 +670,26 @@ export const SidebarControls = () => {
       {/* Target Budget Input */}
       <div className="control-group">
         <div className="control-label">
-          <span>Byudjet Chegarangiz ({currency})</span>
+          <span>Byudjet Chegarangiz ({currency === 'UZS' ? "So'm" : "$ USD"})</span>
         </div>
         <div style={{ position: 'relative' }}>
           <input
             type="number"
-            value={userBudget}
-            onChange={(e) => setUserBudget(e.target.value)}
+            value={userBudget === '' || userBudget === null || userBudget === undefined ? '' : (currency === 'UZS' ? Math.round(userBudget * UZS_RATE) : userBudget)}
+            onChange={(e) => {
+              const raw = e.target.value;
+              if (raw === '') {
+                setUserBudget('');
+              } else {
+                const val = parseFloat(raw);
+                if (currency === 'UZS') {
+                  setUserBudget(val / UZS_RATE);
+                } else {
+                  setUserBudget(val);
+                }
+              }
+            }}
+            placeholder={currency === 'UZS' ? "Masalan: 300000000" : "Masalan: 25000"}
             style={{
               width: '100%',
               padding: '10px 14px',
@@ -590,6 +704,195 @@ export const SidebarControls = () => {
             }}
           />
         </div>
+      </div>
+
+      {/* ── 1-FUNKSIYA: MIJOZ OQIMI SIMULYATSIYASI (Foot Traffic) ── */}
+      <div style={{
+        background: footTrafficActive ? '#f0fdf4' : 'rgba(255, 255, 255, 0.03)',
+        border: `1.5px solid ${footTrafficActive ? '#10b981' : 'var(--border-color)'}`,
+        padding: '1rem',
+        borderRadius: 'var(--radius-md)',
+        transition: 'all 0.2s ease'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: footTrafficActive ? '0.75rem' : 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 700, fontSize: '0.92rem', color: footTrafficActive ? '#047857' : 'var(--text-primary)' }}>
+            <Users size={18} color={footTrafficActive ? '#10b981' : '#64748b'} />
+            Mijoz Oqimi Simulyatsiyasi
+          </div>
+          <button
+            onClick={toggleFootTraffic}
+            style={{
+              padding: '5px 12px',
+              borderRadius: '20px',
+              border: 'none',
+              background: footTrafficActive ? '#10b981' : '#e2e8f0',
+              color: footTrafficActive ? '#fff' : '#475569',
+              fontWeight: 700,
+              fontSize: '0.78rem',
+              cursor: 'pointer',
+              transition: 'all 0.15s'
+            }}
+          >
+            {footTrafficActive ? 'O\'chirish' : 'Yoqish'}
+          </button>
+        </div>
+
+        {footTrafficActive && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.82rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', background: '#fff', padding: '6px 10px', borderRadius: '6px', border: '1px solid #a7f3d0' }}>
+              <span>Kassaga o'rtacha yurish:</span>
+              <strong style={{ color: '#047857' }}>{footTrafficAnalytics.avgWalkTimeSec} soniya</strong>
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', background: '#fff', padding: '6px 10px', borderRadius: '6px', border: '1px solid #a7f3d0' }}>
+              <span>Oqim masofasi:</span>
+              <strong style={{ color: '#047857' }}>{footTrafficAnalytics.pathLengthMeters} metr</strong>
+            </div>
+
+            {footTrafficAnalytics.warningMessage && (
+              <div style={{
+                background: footTrafficAnalytics.isWarning ? '#fff1f2' : '#ecfdf5',
+                color: footTrafficAnalytics.isWarning ? '#be123c' : '#047857',
+                border: `1px solid ${footTrafficAnalytics.isWarning ? '#fda4af' : '#6ee7b7'}`,
+                padding: '8px 10px',
+                borderRadius: '6px',
+                fontSize: '0.78rem',
+                fontWeight: 600,
+                lineHeight: 1.35
+              }}>
+                {footTrafficAnalytics.warningMessage}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* ── 2-FUNKSIYA: KUN/TUN YORUG'LIK SIMULYATSIYASI ── */}
+      <div style={{
+        background: lightingActive ? '#fefce8' : 'rgba(255, 255, 255, 0.03)',
+        border: `1.5px solid ${lightingActive ? '#eab308' : 'var(--border-color)'}`,
+        padding: '1rem',
+        borderRadius: 'var(--radius-md)',
+        transition: 'all 0.2s ease'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: lightingActive ? '0.75rem' : 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 700, fontSize: '0.92rem', color: lightingActive ? '#a16207' : 'var(--text-primary)' }}>
+            {timeOfDay >= 19 ? <Moon size={18} color="#6366f1" /> : <Sun size={18} color="#eab308" />}
+            Kun/Tun Yorug'lik Simulyatsiyasi
+          </div>
+          <button
+            onClick={toggleLighting}
+            style={{
+              padding: '5px 12px',
+              borderRadius: '20px',
+              border: 'none',
+              background: lightingActive ? '#eab308' : '#e2e8f0',
+              color: lightingActive ? '#fff' : '#475569',
+              fontWeight: 700,
+              fontSize: '0.78rem',
+              cursor: 'pointer',
+              transition: 'all 0.15s'
+            }}
+          >
+            {lightingActive ? 'O\'chirish' : 'Yoqish'}
+          </button>
+        </div>
+
+        {lightingActive && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.82rem' }}>
+            {/* Time Slider */}
+            <div className="control-group">
+              <div className="control-label" style={{ marginBottom: '4px' }}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <Clock size={14} color="#a16207" /> Kun vaqti:
+                </span>
+                <strong style={{ color: '#a16207' }}>
+                  {Math.floor(timeOfDay).toString().padStart(2, '0')}:00{' '}
+                  {timeOfDay < 9 ? '(Ertalab)' : timeOfDay < 16 ? '(Tush)' : timeOfDay < 19 ? '(Kechqurun)' : '(Tun)'}
+                </strong>
+              </div>
+              <input
+                type="range"
+                min="6"
+                max="22"
+                step="0.5"
+                className="range-slider"
+                value={timeOfDay}
+                onChange={(e) => setTimeOfDay(e.target.value)}
+              />
+            </div>
+
+            {/* Custom LED Spotlights Control */}
+            <div style={{ background: '#fff', padding: '10px', borderRadius: '8px', border: '1px solid #fef08a' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                <span style={{ fontWeight: 700, color: '#713f12' }}>LED Chiroqlar: {customLights.length} dona</span>
+                <span style={{ fontSize: '0.75rem', color: '#854d0e', fontWeight: 600 }}>$120/dona</span>
+              </div>
+              <div style={{ display: 'flex', gap: '6px' }}>
+                <button
+                  onClick={() => {
+                    const newLight = {
+                      id: 'light_' + Date.now(),
+                      x: (Math.random() - 0.5) * (roomDimensions.width * 0.5),
+                      z: (Math.random() - 0.5) * (roomDimensions.length * 0.5),
+                      color: '#fef08a',
+                      intensity: 1.2,
+                      unitPrice: 120
+                    };
+                    addCustomLight(newLight);
+                  }}
+                  style={{
+                    flex: 1,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px',
+                    padding: '6px',
+                    borderRadius: '6px',
+                    border: '1px solid #ca8a04',
+                    background: '#fef9c3',
+                    color: '#854d0e',
+                    fontWeight: 700,
+                    fontSize: '0.75rem',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <Plus size={14} /> Chiroq qo'shish
+                </button>
+                {customLights.length > 0 && (
+                  <button
+                    onClick={clearCustomLights}
+                    style={{
+                      padding: '6px 10px',
+                      borderRadius: '6px',
+                      border: '1px solid #f87171',
+                      background: '#fff1f2',
+                      color: '#991b1b',
+                      fontWeight: 700,
+                      fontSize: '0.75rem',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Tozalash
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Night Lighting Warning */}
+            {timeOfDay >= 19 && customLights.length < Math.ceil((roomDimensions.width * roomDimensions.length) / 30) && (
+              <div style={{
+                background: '#fff1f2',
+                color: '#991b1b',
+                border: '1px solid #fca5a5',
+                padding: '8px 10px',
+                borderRadius: '6px',
+                fontSize: '0.78rem',
+                fontWeight: 600,
+                lineHeight: 1.35
+              }}>
+                <strong>Tungi rejim:</strong> Xonada sun'iy yoritish yetarlicha emas! Qo'shimcha LED chiroqlar o'rnatish tavsiya etiladi.
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Auto-Fill Inventory Switch */}
@@ -622,10 +925,147 @@ export const SidebarControls = () => {
 
       {/* Equipment Library — Click to add to room */}
       <div>
-        <div style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-primary)' }}>
-          <Layers size={16} color="var(--accent-indigo)" />
-          3D Jihozlar Kutubxonasi
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+          <div style={{ fontSize: '0.9rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-primary)' }}>
+            <Layers size={16} color="var(--accent-indigo)" />
+            3D Jihozlar Kutubxonasi
+          </div>
+          <button
+            onClick={() => setShowAddItemForm(v => !v)}
+            style={{
+              display: 'flex', alignItems: 'center', gap: '4px',
+              padding: '5px 10px',
+              borderRadius: '6px',
+              border: '1px solid var(--accent-indigo, #6366f1)',
+              background: showAddItemForm ? 'var(--accent-indigo, #6366f1)' : '#eef2ff',
+              color: showAddItemForm ? '#fff' : '#4338ca',
+              fontWeight: 700,
+              fontSize: '0.75rem',
+              cursor: 'pointer'
+            }}
+          >
+            {showAddItemForm ? <X size={13} /> : <PackagePlus size={13} />}
+            {showAddItemForm ? 'Bekor qilish' : 'Yangi jihoz'}
+          </button>
         </div>
+
+        {/* ── Yangi jihoz qo'shish formasi ── */}
+        {showAddItemForm && (
+          <div style={{
+            background: '#f8fafc',
+            border: '1.5px solid #c7d2fe',
+            borderRadius: 'var(--radius-md)',
+            padding: '0.85rem',
+            marginBottom: '0.85rem',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '0.55rem'
+          }}>
+            <input
+              type="text"
+              placeholder="Jihoz nomi (masalan: Vitrina)"
+              value={newItemName}
+              onChange={(e) => setNewItemName(e.target.value)}
+              style={{
+                width: '100%', padding: '8px 10px', borderRadius: '6px',
+                border: '1.5px solid #e2e8f0', fontSize: '0.85rem', outline: 'none'
+              }}
+            />
+
+            <div>
+              <label style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 600 }}>
+                3D Shakli (jihoz turiga mos ko'rinish tanlang)
+              </label>
+              <select
+                value={newItemShapeType}
+                onChange={(e) => setNewItemShapeType(e.target.value)}
+                style={{
+                  width: '100%', padding: '8px 10px', borderRadius: '6px',
+                  border: '1.5px solid #e2e8f0', fontSize: '0.83rem', outline: 'none',
+                  background: '#fff', cursor: 'pointer', marginTop: '3px'
+                }}
+              >
+                {SHAPE_TYPE_GROUPS.map(group => (
+                  <optgroup key={group.label} label={group.label}>
+                    {group.options.map(opt => (
+                      <option key={opt.value} value={opt.value}>{opt.label}</option>
+                    ))}
+                  </optgroup>
+                ))}
+              </select>
+            </div>
+
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <input
+                type="number"
+                placeholder="Narxi ($)"
+                value={newItemPrice}
+                onChange={(e) => setNewItemPrice(e.target.value)}
+                style={{
+                  flex: 1, padding: '8px 10px', borderRadius: '6px',
+                  border: '1.5px solid #e2e8f0', fontSize: '0.85rem', outline: 'none'
+                }}
+              />
+              <input
+                type="color"
+                value={newItemColor}
+                onChange={(e) => setNewItemColor(e.target.value)}
+                title="Rang"
+                style={{
+                  width: '38px', height: '36px', borderRadius: '6px',
+                  border: '1.5px solid #e2e8f0', padding: '2px', cursor: 'pointer'
+                }}
+              />
+            </div>
+
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <div style={{ flex: 1 }}>
+                <label style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 600 }}>Kenglik (m)</label>
+                <input
+                  type="number" step="0.1" value={newItemWidth}
+                  onChange={(e) => setNewItemWidth(e.target.value)}
+                  style={{ width: '100%', padding: '7px 8px', borderRadius: '6px', border: '1.5px solid #e2e8f0', fontSize: '0.8rem', outline: 'none' }}
+                />
+              </div>
+              <div style={{ flex: 1 }}>
+                <label style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 600 }}>Chuqurlik (m)</label>
+                <input
+                  type="number" step="0.1" value={newItemDepth}
+                  onChange={(e) => setNewItemDepth(e.target.value)}
+                  style={{ width: '100%', padding: '7px 8px', borderRadius: '6px', border: '1.5px solid #e2e8f0', fontSize: '0.8rem', outline: 'none' }}
+                />
+              </div>
+              <div style={{ flex: 1 }}>
+                <label style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontWeight: 600 }}>Balandlik (m)</label>
+                <input
+                  type="number" step="0.1" value={newItemHeight}
+                  onChange={(e) => setNewItemHeight(e.target.value)}
+                  style={{ width: '100%', padding: '7px 8px', borderRadius: '6px', border: '1.5px solid #e2e8f0', fontSize: '0.8rem', outline: 'none' }}
+                />
+              </div>
+            </div>
+
+            <button
+              onClick={handleAddCustomItem}
+              disabled={!newItemName.trim() || !newItemPrice}
+              style={{
+                width: '100%',
+                padding: '9px',
+                borderRadius: '6px',
+                border: 'none',
+                background: (!newItemName.trim() || !newItemPrice) ? '#cbd5e1' : '#4338ca',
+                color: '#fff',
+                fontWeight: 700,
+                fontSize: '0.82rem',
+                cursor: (!newItemName.trim() || !newItemPrice) ? 'not-allowed' : 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px'
+              }}
+            >
+              <Plus size={14} /> Kutubxonaga Qo'shish
+            </button>
+          </div>
+        )}
+
         <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>
           Bosing → xonaga qo'shiladi
         </div>
@@ -707,6 +1147,26 @@ export const SidebarControls = () => {
                     <Plus size={11} />
                   </button>
                 </div>
+
+                {/* Faqat foydalanuvchi qo'shgan custom jihozlar uchun o'chirish tugmasi */}
+                {item.custom && (
+                  <button
+                    onClick={(e) => { e.stopPropagation(); removeCustomEquipmentItem(item.id); }}
+                    title="Kutubxonadan o'chirish"
+                    style={{
+                      flexShrink: 0,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      width: '26px', height: '26px',
+                      borderRadius: '6px',
+                      border: '1px solid #fecdd3',
+                      background: '#fff1f2',
+                      color: '#be123c',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    <Trash2 size={12} />
+                  </button>
+                )}
               </div>
             );
           })}

@@ -3,6 +3,9 @@ import { Canvas, useThree } from '@react-three/fiber';
 import { OrbitControls, Grid, Html } from '@react-three/drei';
 import { useAppStore } from '../../store/useAppStore';
 import * as THREE from 'three';
+import { RefreshCcw, Trash2 } from 'lucide-react';
+import { FootTrafficSimulator } from './FootTrafficSimulator';
+import { LightingSimulator } from './LightingSimulator';
 
 // ─────────────────────────────────────────────
 // BUSINESS-SPECIFIC 3D SHAPES
@@ -303,6 +306,130 @@ const CrossoverShape = ({ color }) => (
         <meshStandardMaterial color="#334155" metalness={0.5} />
       </mesh>
     ))}
+  </group>
+);
+
+/** Oyoq trenajyori (Leg Press Machine) */
+const LegPressShape = ({ color }) => (
+  <group>
+    {/* Incline frame */}
+    <mesh position={[0, 0.65, 0]} rotation={[0.45, 0, 0]} castShadow>
+      <boxGeometry args={[0.9, 0.12, 1.8]} />
+      <meshStandardMaterial color={color} metalness={0.6} roughness={0.3} />
+    </mesh>
+    {/* Seat / Backrest */}
+    <mesh position={[0, 0.55, -0.4]} rotation={[-0.3, 0, 0]}>
+      <boxGeometry args={[0.55, 0.65, 0.12]} />
+      <meshStandardMaterial color="#1e293b" roughness={0.7} />
+    </mesh>
+    {/* Footplate */}
+    <mesh position={[0, 1.1, 0.5]} rotation={[-0.45, 0, 0]}>
+      <boxGeometry args={[0.7, 0.6, 0.08]} />
+      <meshStandardMaterial color="#475569" metalness={0.8} />
+    </mesh>
+    {/* Weight horns & plates */}
+    {[-0.55, 0.55].map((x, i) => (
+      <mesh key={i} position={[x, 0.8, 0.1]} rotation={[0, Math.PI / 2, 0]}>
+        <cylinderGeometry args={[0.22, 0.22, 0.08, 16]} />
+        <meshStandardMaterial color="#0f172a" metalness={0.7} />
+      </mesh>
+    ))}
+  </group>
+);
+
+/** Tepadan tortish trenajyori (Lat Pulldown) */
+const LatPulldownShape = ({ color }) => (
+  <group>
+    {/* Main vertical column */}
+    <mesh position={[0, 1.25, -0.3]} castShadow>
+      <boxGeometry args={[0.2, 2.5, 0.2]} />
+      <meshStandardMaterial color={color} metalness={0.6} />
+    </mesh>
+    {/* Top overhead beam */}
+    <mesh position={[0, 2.4, 0]}>
+      <boxGeometry args={[0.16, 0.16, 0.9]} />
+      <meshStandardMaterial color={color} metalness={0.6} />
+    </mesh>
+    {/* Pulley bar */}
+    <mesh position={[0, 2.2, 0.35]} rotation={[0, 0, Math.PI / 2]}>
+      <cylinderGeometry args={[0.02, 0.02, 1.2, 8]} />
+      <meshStandardMaterial color="#94a3b8" metalness={0.9} />
+    </mesh>
+    {/* Seat cushion */}
+    <mesh position={[0, 0.45, 0.05]}>
+      <boxGeometry args={[0.45, 0.1, 0.45]} />
+      <meshStandardMaterial color="#1e293b" roughness={0.8} />
+    </mesh>
+    {/* Thigh hold-down pads */}
+    {[-0.18, 0.18].map((x, i) => (
+      <mesh key={i} position={[x, 0.65, 0.15]} rotation={[Math.PI / 2, 0, 0]}>
+        <cylinderGeometry args={[0.08, 0.08, 0.22, 12]} />
+        <meshStandardMaterial color="#334155" />
+      </mesh>
+    ))}
+    {/* Weight stack */}
+    <mesh position={[0, 0.7, -0.3]}>
+      <boxGeometry args={[0.35, 1.1, 0.22]} />
+      <meshStandardMaterial color="#1e293b" metalness={0.5} />
+    </mesh>
+  </group>
+);
+
+/** Elliptik Cardio Trenajyor (Elliptical Cross Trainer) */
+const EllipticalShape = ({ color }) => (
+  <group>
+    {/* Base frame */}
+    <mesh position={[0, 0.15, 0]} castShadow>
+      <boxGeometry args={[0.7, 0.15, 1.7]} />
+      <meshStandardMaterial color={color} metalness={0.5} />
+    </mesh>
+    {/* Flywheel cover */}
+    <mesh position={[0, 0.45, -0.4]} rotation={[Math.PI / 2, 0, 0]}>
+      <cylinderGeometry args={[0.35, 0.35, 0.25, 20]} />
+      <meshStandardMaterial color="#1f2937" metalness={0.7} />
+    </mesh>
+    {/* Long handle levers */}
+    {[-0.32, 0.32].map((x, i) => (
+      <mesh key={i} position={[x, 1.2, 0.2]} rotation={[(i === 0 ? 0.2 : -0.2), 0, 0]}>
+        <cylinderGeometry args={[0.025, 0.025, 1.5, 8]} />
+        <meshStandardMaterial color="#64748b" metalness={0.8} />
+      </mesh>
+    ))}
+    {/* Display console */}
+    <mesh position={[0, 1.45, 0.2]}>
+      <boxGeometry args={[0.28, 0.22, 0.05]} />
+      <meshStandardMaterial color="#0f172a" />
+    </mesh>
+  </group>
+);
+
+/** Boks heavy bag stand (Punching Bag) */
+const PunchingBagShape = ({ color }) => (
+  <group>
+    {/* Steel stand base & pole */}
+    <mesh position={[0, 0.05, 0]}>
+      <cylinderGeometry args={[0.4, 0.45, 0.08, 16]} />
+      <meshStandardMaterial color="#475569" metalness={0.8} />
+    </mesh>
+    <mesh position={[0, 1.25, -0.3]}>
+      <cylinderGeometry args={[0.04, 0.04, 2.5, 10]} />
+      <meshStandardMaterial color="#334155" metalness={0.8} />
+    </mesh>
+    {/* Overhead arm */}
+    <mesh position={[0, 2.45, 0]} rotation={[Math.PI / 2, 0, 0]}>
+      <cylinderGeometry args={[0.035, 0.035, 0.7, 8]} />
+      <meshStandardMaterial color="#334155" metalness={0.8} />
+    </mesh>
+    {/* Heavy Punching Bag */}
+    <mesh position={[0, 1.5, 0.2]} castShadow>
+      <cylinderGeometry args={[0.22, 0.22, 1.1, 16]} />
+      <meshStandardMaterial color={color || '#dc2626'} roughness={0.6} />
+    </mesh>
+    {/* Hanging chain */}
+    <mesh position={[0, 2.15, 0.2]}>
+      <cylinderGeometry args={[0.01, 0.01, 0.22, 6]} />
+      <meshStandardMaterial color="#94a3b8" metalness={0.9} />
+    </mesh>
   </group>
 );
 
@@ -857,6 +984,523 @@ const BookShelfShape = ({ color }) => (
   </group>
 );
 
+/** Smith Machine */
+const SmithMachineShape = ({ color }) => (
+  <group>
+    {/* 4 Vertical Steel columns */}
+    {[[-0.6, -0.45], [0.6, -0.45], [-0.6, 0.45], [0.6, 0.45]].map(([x, z], i) => (
+      <mesh key={i} position={[x, 1.15, z]} castShadow>
+        <boxGeometry args={[0.07, 2.3, 0.07]} />
+        <meshStandardMaterial color={color} metalness={0.7} />
+      </mesh>
+    ))}
+    {/* Guide Rods (Chrome cylinders) */}
+    {[-0.58, 0.58].map((x, i) => (
+      <mesh key={i} position={[x, 1.15, 0]}>
+        <cylinderGeometry args={[0.025, 0.025, 2.2, 8]} />
+        <meshStandardMaterial color="#cbd5e1" metalness={0.9} roughness={0.05} />
+      </mesh>
+    ))}
+    {/* Top cross beams */}
+    {[-0.45, 0.45].map((z, i) => (
+      <mesh key={i} position={[0, 2.3, z]}>
+        <boxGeometry args={[1.28, 0.07, 0.07]} />
+        <meshStandardMaterial color={color} metalness={0.7} />
+      </mesh>
+    ))}
+    {/* Guided Barbell */}
+    <group position={[0, 1.2, 0]}>
+      <mesh rotation={[0, Math.PI / 2, 0]}>
+        <cylinderGeometry args={[0.028, 0.028, 1.8, 8]} />
+        <meshStandardMaterial color="#94a3b8" metalness={0.9} />
+      </mesh>
+      {/* Red weights on ends */}
+      {[-0.75, 0.75].map((x, i) => (
+        <mesh key={i} position={[x, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
+          <cylinderGeometry args={[0.22, 0.22, 0.08, 16]} />
+          <meshStandardMaterial color="#dc2626" metalness={0.5} />
+        </mesh>
+      ))}
+    </group>
+  </group>
+);
+
+/** Power Rack (Squat Cage) */
+const SquatCageShape = ({ color }) => (
+  <group>
+    {/* 4 Vertical Pillars */}
+    {[[-0.7, -0.6], [0.7, -0.6], [-0.7, 0.6], [0.7, 0.6]].map(([x, z], i) => (
+      <mesh key={i} position={[x, 1.15, z]} castShadow>
+        <boxGeometry args={[0.08, 2.3, 0.08]} />
+        <meshStandardMaterial color={color} metalness={0.7} />
+      </mesh>
+    ))}
+    {/* Top Connectors */}
+    {[-0.6, 0.6].map((z, i) => (
+      <mesh key={i} position={[0, 2.3, z]}>
+        <boxGeometry args={[1.48, 0.08, 0.08]} />
+        <meshStandardMaterial color={color} metalness={0.7} />
+      </mesh>
+    ))}
+    {[-0.7, 0.7].map((x, i) => (
+      <mesh key={i} position={[x, 2.3, 0]}>
+        <boxGeometry args={[0.08, 0.08, 1.28]} />
+        <meshStandardMaterial color={color} metalness={0.7} />
+      </mesh>
+    ))}
+    {/* Chin up bar */}
+    <mesh position={[0, 2.25, 0.55]} rotation={[0, 0, Math.PI / 2]}>
+      <cylinderGeometry args={[0.02, 0.02, 1.4, 8]} />
+      <meshStandardMaterial color="#94a3b8" metalness={0.9} />
+    </mesh>
+    {/* Barbell resting at chest height */}
+    <group position={[0, 1.3, 0]}>
+      <mesh rotation={[0, Math.PI / 2, 0]}>
+        <cylinderGeometry args={[0.025, 0.025, 2.0, 8]} />
+        <meshStandardMaterial color="#94a3b8" metalness={0.9} />
+      </mesh>
+      {/* Weight plates */}
+      {[-0.88, 0.88].map((x, i) => (
+        <mesh key={i} position={[x, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
+          <cylinderGeometry args={[0.22, 0.22, 0.08, 16]} />
+          <meshStandardMaterial color="#1e293b" metalness={0.5} />
+        </mesh>
+      ))}
+    </group>
+  </group>
+);
+
+/** Olympic Barbell (Horizontal Barbell Stand) */
+const OlympicBarbellShape = ({ color }) => (
+  <group>
+    {/* Frame Base */}
+    <mesh position={[0, 0.05, 0]} castShadow>
+      <boxGeometry args={[1.5, 0.1, 0.6]} />
+      <meshStandardMaterial color={color} metalness={0.6} />
+    </mesh>
+    {/* Vertical Pillars */}
+    {[-0.6, 0.6].map((x, i) => (
+      <mesh key={i} position={[x, 0.8, 0]} castShadow>
+        <boxGeometry args={[0.08, 1.5, 0.08]} />
+        <meshStandardMaterial color={color} metalness={0.6} />
+      </mesh>
+    ))}
+    {/* 3 Barbells resting horizontally */}
+    {[0.5, 0.9, 1.3].map((y, i) => (
+      <group key={i} position={[0, y, 0]}>
+        {/* Bar */}
+        <mesh rotation={[0, Math.PI / 2, 0]}>
+          <cylinderGeometry args={[0.02, 0.02, 1.8, 8]} />
+          <meshStandardMaterial color="#94a3b8" metalness={0.9} />
+        </mesh>
+        {/* Weights on ends */}
+        {[-0.8, 0.8].map((x, j) => (
+          <mesh key={j} position={[x, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
+            <cylinderGeometry args={[0.18, 0.18, 0.05, 12]} />
+            <meshStandardMaterial color="#1e293b" metalness={0.5} />
+          </mesh>
+        ))}
+      </group>
+    ))}
+  </group>
+);
+
+/** Weight Plates (Olympic Plate Tree Rack) */
+const WeightPlatesShape = ({ color }) => (
+  <group>
+    {/* Central Post */}
+    <mesh position={[0, 0.75, 0]} castShadow>
+      <cylinderGeometry args={[0.05, 0.05, 1.4, 8]} />
+      <meshStandardMaterial color={color} metalness={0.6} />
+    </mesh>
+    {/* Base */}
+    <mesh position={[0, 0.05, 0]}>
+      <cylinderGeometry args={[0.4, 0.45, 0.08, 12]} />
+      <meshStandardMaterial color="#334155" metalness={0.7} />
+    </mesh>
+    {/* Plate pegs and plates */}
+    {[0.3, 0.75, 1.15].map((y, idx) => (
+      <group key={idx} position={[0, y, 0]}>
+        {/* Horizontal Peg */}
+        <mesh rotation={[0, 0, Math.PI / 2]}>
+          <cylinderGeometry args={[0.025, 0.025, 0.8, 8]} />
+          <meshStandardMaterial color="#94a3b8" metalness={0.9} />
+        </mesh>
+        {/* Plates hanging on both sides */}
+        {[-0.28, 0.28].map((x, side) => (
+          <mesh key={side} position={[x, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
+            <cylinderGeometry args={[0.24 - idx * 0.04, 0.24 - idx * 0.04, 0.06, 16]} />
+            <meshStandardMaterial color="#0f172a" metalness={0.5} />
+          </mesh>
+        ))}
+      </group>
+    ))}
+  </group>
+);
+
+/** Chest Press Machine */
+const ChestPressShape = ({ color }) => (
+  <group>
+    {/* Weight stack shroud */}
+    <mesh position={[-0.35, 0.8, -0.3]} castShadow>
+      <boxGeometry args={[0.45, 1.6, 0.35]} />
+      <meshStandardMaterial color="#1f2937" metalness={0.4} />
+    </mesh>
+    {/* Base frame */}
+    <mesh position={[0, 0.05, 0]}>
+      <boxGeometry args={[0.9, 0.1, 1.1]} />
+      <meshStandardMaterial color={color} metalness={0.7} />
+    </mesh>
+    {/* Seat post and seat */}
+    <mesh position={[0.1, 0.5, 0.1]} castShadow>
+      <boxGeometry args={[0.4, 0.1, 0.45]} />
+      <meshStandardMaterial color="#111827" roughness={0.7} />
+    </mesh>
+    <mesh position={[0.1, 1.0, -0.15]} rotation={[0.1, 0, 0]}>
+      <boxGeometry args={[0.4, 0.6, 0.08]} />
+      <meshStandardMaterial color="#111827" roughness={0.7} />
+    </mesh>
+    {/* Press Arms */}
+    <group position={[0.15, 1.1, 0.1]}>
+      <mesh rotation={[Math.PI / 2, 0, 0]}>
+        <cylinderGeometry args={[0.025, 0.025, 0.5, 8]} />
+        <meshStandardMaterial color="#94a3b8" metalness={0.8} />
+      </mesh>
+      {/* Handles */}
+      {[-0.25, 0.25].map((x, i) => (
+        <group key={i} position={[x, -0.2, 0.25]}>
+          <mesh>
+            <cylinderGeometry args={[0.02, 0.02, 0.3, 8]} />
+            <meshStandardMaterial color="#475569" metalness={0.8} />
+          </mesh>
+        </group>
+      ))}
+    </group>
+  </group>
+);
+
+/** Shoulder Press Machine */
+const ShoulderPressShape = ({ color }) => (
+  <group>
+    {/* Weight stack shroud */}
+    <mesh position={[-0.35, 0.8, -0.3]} castShadow>
+      <boxGeometry args={[0.45, 1.6, 0.35]} />
+      <meshStandardMaterial color="#1f2937" metalness={0.4} />
+    </mesh>
+    {/* Frame */}
+    <mesh position={[0, 0.05, 0]}>
+      <boxGeometry args={[0.9, 0.1, 1.1]} />
+      <meshStandardMaterial color={color} metalness={0.7} />
+    </mesh>
+    {/* Seat and backrest */}
+    <mesh position={[0.15, 0.5, 0.1]} castShadow>
+      <boxGeometry args={[0.4, 0.1, 0.45]} />
+      <meshStandardMaterial color="#111827" roughness={0.7} />
+    </mesh>
+    <mesh position={[0.15, 1.0, -0.15]} rotation={[0.05, 0, 0]}>
+      <boxGeometry args={[0.4, 0.65, 0.08]} />
+      <meshStandardMaterial color="#111827" roughness={0.7} />
+    </mesh>
+    {/* Overhead levers */}
+    <group position={[0.15, 1.4, -0.15]}>
+      <mesh rotation={[0, 0, Math.PI / 2]}>
+        <cylinderGeometry args={[0.025, 0.025, 0.6, 8]} />
+        <meshStandardMaterial color="#94a3b8" metalness={0.8} />
+      </mesh>
+      {[-0.25, 0.25].map((x, i) => (
+        <mesh key={i} position={[x, -0.15, 0.2]} rotation={[0.4, 0, 0]}>
+          <cylinderGeometry args={[0.02, 0.02, 0.5, 8]} />
+          <meshStandardMaterial color="#475569" metalness={0.8} />
+        </mesh>
+      ))}
+    </group>
+  </group>
+);
+
+/** Seated Row Machine */
+const SeatedRowShape = ({ color }) => (
+  <group>
+    {/* Weight stack */}
+    <mesh position={[-0.4, 0.8, 0.4]} castShadow>
+      <boxGeometry args={[0.45, 1.6, 0.35]} />
+      <meshStandardMaterial color="#1f2937" metalness={0.4} />
+    </mesh>
+    {/* Main Bench platform */}
+    <mesh position={[0.1, 0.4, -0.1]} castShadow>
+      <boxGeometry args={[0.4, 0.1, 1.2]} />
+      <meshStandardMaterial color="#111827" roughness={0.7} />
+    </mesh>
+    {/* Base frame rails */}
+    <mesh position={[0.1, 0.1, -0.1]}>
+      <boxGeometry args={[0.12, 0.5, 1.4]} />
+      <meshStandardMaterial color={color} metalness={0.6} />
+    </mesh>
+    {/* Chest pad support */}
+    <mesh position={[0.1, 0.85, 0.3]} rotation={[0.1, 0, 0]}>
+      <boxGeometry args={[0.3, 0.3, 0.1]} />
+      <meshStandardMaterial color="#111827" roughness={0.7} />
+    </mesh>
+    <mesh position={[0.1, 0.55, 0.28]}>
+      <cylinderGeometry args={[0.025, 0.025, 0.6, 8]} />
+      <meshStandardMaterial color={color} metalness={0.6} />
+    </mesh>
+    {/* Pull handle and cable */}
+    <mesh position={[0.1, 0.75, 0.15]} rotation={[Math.PI / 2, 0, 0]}>
+      <cylinderGeometry args={[0.008, 0.008, 0.4, 4]} />
+      <meshStandardMaterial color="#94a3b8" metalness={0.9} />
+    </mesh>
+    <mesh position={[0.1, 0.75, -0.05]} rotation={[0, 0, Math.PI / 2]}>
+      <cylinderGeometry args={[0.015, 0.015, 0.3, 8]} />
+      <meshStandardMaterial color="#475569" metalness={0.8} />
+    </mesh>
+  </group>
+);
+
+/** Recumbent / Seated Stationary Bike */
+const StationaryBikeShape = ({ color }) => (
+  <group>
+    {/* Base platform */}
+    <mesh position={[0, 0.1, 0]} castShadow>
+      <boxGeometry args={[0.55, 0.1, 1.4]} />
+      <meshStandardMaterial color={color} metalness={0.6} />
+    </mesh>
+    {/* Flywheel front housing */}
+    <mesh position={[0, 0.45, 0.45]} rotation={[Math.PI / 2, 0, 0]} castShadow>
+      <cylinderGeometry args={[0.28, 0.28, 0.22, 16]} />
+      <meshStandardMaterial color="#1f2937" metalness={0.7} />
+    </mesh>
+    {/* Recumbent seat with backrest */}
+    <mesh position={[0, 0.45, -0.3]} castShadow>
+      <boxGeometry args={[0.46, 0.08, 0.46]} />
+      <meshStandardMaterial color="#111827" roughness={0.7} />
+    </mesh>
+    <mesh position={[0, 0.8, -0.52]} rotation={[0.15, 0, 0]}>
+      <boxGeometry args={[0.42, 0.55, 0.08]} />
+      <meshStandardMaterial color="#111827" roughness={0.7} />
+    </mesh>
+    {/* Handle grips next to seat */}
+    {[-0.26, 0.26].map((x, i) => (
+      <mesh key={i} position={[x, 0.55, -0.2]}>
+        <boxGeometry args={[0.03, 0.22, 0.3]} />
+        <meshStandardMaterial color="#475569" metalness={0.7} />
+      </mesh>
+    ))}
+    {/* Display console column front */}
+    <mesh position={[0, 0.95, 0.42]} rotation={[-0.2, 0, 0]}>
+      <cylinderGeometry args={[0.035, 0.035, 0.8, 8]} />
+      <meshStandardMaterial color="#64748b" metalness={0.6} />
+    </mesh>
+    <mesh position={[0, 1.32, 0.32]} rotation={[-0.3, 0, 0]}>
+      <boxGeometry args={[0.26, 0.18, 0.05]} />
+      <meshStandardMaterial color="#0f172a" />
+    </mesh>
+  </group>
+);
+
+/** Stair Climber (Stepper) */
+const StairClimberShape = ({ color }) => (
+  <group>
+    {/* Escalator step slope */}
+    <mesh position={[0, 0.75, -0.1]} rotation={[-0.6, 0, 0]} castShadow>
+      <boxGeometry args={[0.8, 0.4, 1.5]} />
+      <meshStandardMaterial color="#1f2937" roughness={0.8} />
+    </mesh>
+    {/* Base frame shroud */}
+    <mesh position={[0, 0.35, 0]} castShadow>
+      <boxGeometry args={[0.85, 0.7, 1.6]} />
+      <meshStandardMaterial color={color} metalness={0.5} />
+    </mesh>
+    {/* Side hand rails */}
+    {[-0.42, 0.42].map((x, i) => (
+      <mesh key={i} position={[x, 1.2, 0.1]} rotation={[-0.6, 0, 0]}>
+        <cylinderGeometry args={[0.025, 0.025, 1.6, 8]} />
+        <meshStandardMaterial color="#475569" metalness={0.8} />
+      </mesh>
+    ))}
+    {/* Display Console */}
+    <mesh position={[0, 1.7, 0.5]}>
+      <boxGeometry args={[0.3, 0.22, 0.06]} />
+      <meshStandardMaterial color="#0f172a" />
+    </mesh>
+    <mesh position={[0, 1.7, 0.54]}>
+      <boxGeometry args={[0.24, 0.16, 0.01]} />
+      <meshStandardMaterial color="#0284c7" emissive="#0ea5e9" emissiveIntensity={0.5} />
+    </mesh>
+  </group>
+);
+
+/** Kettlebell Rack */
+const KettlebellRackShape = ({ color }) => (
+  <group>
+    {/* Rack shelf frame */}
+    <mesh position={[0, 0.48, 0]} castShadow>
+      <boxGeometry args={[1.8, 0.9, 0.5]} />
+      <meshStandardMaterial color={color} metalness={0.5} />
+    </mesh>
+    {/* Two shelves */}
+    {[0.4, 0.8].map((y, idx) => (
+      <group key={idx} position={[0, y + 0.05, 0]}>
+        <mesh>
+          <boxGeometry args={[1.7, 0.04, 0.44]} />
+          <meshStandardMaterial color="#475569" metalness={0.6} />
+        </mesh>
+        {/* Kettlebells lined up */}
+        {[-0.6, -0.2, 0.2, 0.6].map((x, k) => (
+          <group key={k} position={[x, 0.12, 0]}>
+            <mesh>
+              <sphereGeometry args={[0.09 + idx * 0.02, 12, 12]} />
+              <meshStandardMaterial color={['#be123c', '#047857', '#a21caf', '#1d4ed8'][k]} roughness={0.4} />
+            </mesh>
+            <mesh position={[0, 0.1, 0]}>
+              <torusGeometry args={[0.06 + idx * 0.01, 0.015, 6, 12]} />
+              <meshStandardMaterial color="#1e293b" metalness={0.8} />
+            </mesh>
+          </group>
+        ))}
+      </group>
+    ))}
+  </group>
+);
+
+/** Medicine Ball Stand */
+const MedicineBallRackShape = ({ color }) => (
+  <group>
+    {/* Vertical Post */}
+    <mesh position={[0, 0.8, 0]} castShadow>
+      <cylinderGeometry args={[0.035, 0.035, 1.5, 8]} />
+      <meshStandardMaterial color={color} metalness={0.6} />
+    </mesh>
+    {/* Base */}
+    <mesh position={[0, 0.05, 0]}>
+      <cylinderGeometry args={[0.3, 0.32, 0.08, 12]} />
+      <meshStandardMaterial color="#334155" metalness={0.7} />
+    </mesh>
+    {/* Medicine balls stacked vertically on rings */}
+    {[0.35, 0.75, 1.15, 1.5].map((y, idx) => (
+      <group key={idx} position={[0, y, 0]}>
+        <mesh rotation={[Math.PI / 2, 0, 0]}>
+          <torusGeometry args={[0.12, 0.015, 6, 16]} />
+          <meshStandardMaterial color="#94a3b8" metalness={0.8} />
+        </mesh>
+        <mesh position={[0, 0.08, 0]}>
+          <sphereGeometry args={[0.14 - idx * 0.012, 16, 16]} />
+          <meshStandardMaterial color={['#f59e0b', '#ec4899', '#3b82f6', '#10b981'][idx]} roughness={0.8} />
+        </mesh>
+      </group>
+    ))}
+  </group>
+);
+
+/** Plyo Boxes */
+const PlyoBoxesShape = ({ color }) => (
+  <group>
+    {/* Large Box */}
+    <mesh position={[-0.32, 0.3, 0]} castShadow>
+      <boxGeometry args={[0.55, 0.6, 0.55]} />
+      <meshStandardMaterial color={color} roughness={0.8} />
+    </mesh>
+    {/* Medium Box */}
+    <mesh position={[0.32, 0.2, 0]} castShadow>
+      <boxGeometry args={[0.45, 0.4, 0.45]} />
+      <meshStandardMaterial color="#334155" roughness={0.8} />
+    </mesh>
+  </group>
+);
+
+/** TRX Suspension Trainer */
+const TrxShape = ({ color }) => (
+  <group>
+    <mesh position={[0, 1.4, 0]}>
+      <cylinderGeometry args={[0.01, 0.01, 2.0, 6]} />
+      <meshStandardMaterial color="#1e293b" />
+    </mesh>
+    {[-0.15, 0.15].map((x, i) => (
+      <group key={i} position={[x, 0.4, 0]} rotation={[0, 0, (i === 0 ? 0.25 : -0.25)]}>
+        <mesh position={[0, 0.2, 0]}>
+          <boxGeometry args={[0.02, 0.6, 0.04]} />
+          <meshStandardMaterial color="#eab308" />
+        </mesh>
+        <mesh position={[0, -0.1, 0]} rotation={[Math.PI / 2, 0, 0]}>
+          <cylinderGeometry args={[0.015, 0.015, 0.14, 8]} />
+          <meshStandardMaterial color="#111827" roughness={0.9} />
+        </mesh>
+      </group>
+    ))}
+  </group>
+);
+
+/** Flat Bench (Gorizontal Skameyka) */
+const FlatBenchShape = ({ color }) => (
+  <group>
+    <mesh position={[0, 0.48, 0]} castShadow>
+      <boxGeometry args={[1.3, 0.1, 0.38]} />
+      <meshStandardMaterial color={color} roughness={0.7} />
+    </mesh>
+    <mesh position={[0, 0.2, 0]}>
+      <boxGeometry args={[0.1, 0.08, 1.1]} />
+      <meshStandardMaterial color="#475569" metalness={0.7} />
+    </mesh>
+    {[-0.55, 0.55].map((z, i) => (
+      <group key={i} position={[0, 0.22, z]}>
+        <mesh>
+          <cylinderGeometry args={[0.025, 0.025, 0.44, 8]} />
+          <meshStandardMaterial color="#475569" metalness={0.8} />
+        </mesh>
+        <mesh position={[0, -0.2, 0]} rotation={[Math.PI / 2, 0, 0]}>
+          <cylinderGeometry args={[0.03, 0.03, 0.3, 8]} rotation={[0, Math.PI / 2, 0]} />
+          <meshStandardMaterial color="#1e293b" />
+        </mesh>
+      </group>
+    ))}
+  </group>
+);
+
+/** Adjustable Bench (Sozlanuvchi Skameyka) */
+const AdjustableBenchShape = ({ color }) => (
+  <group>
+    <mesh position={[0, 0.1, 0]} castShadow>
+      <boxGeometry args={[0.3, 0.1, 1.4]} />
+      <meshStandardMaterial color="#64748b" metalness={0.7} />
+    </mesh>
+    {[-0.6, 0.6].map((z, i) => (
+      <mesh key={i} position={[0, 0.2, z]}>
+        <cylinderGeometry args={[0.03, 0.03, 0.2, 8]} />
+        <meshStandardMaterial color="#475569" metalness={0.8} />
+      </mesh>
+    ))}
+    <mesh position={[0, 0.35, -0.4]}>
+      <boxGeometry args={[0.34, 0.08, 0.35]} />
+      <meshStandardMaterial color="#111827" roughness={0.7} />
+    </mesh>
+    <mesh position={[0, 0.65, 0.15]} rotation={[-0.45, 0, 0]} castShadow>
+      <boxGeometry args={[0.34, 0.08, 0.85]} />
+      <meshStandardMaterial color={color} roughness={0.7} />
+    </mesh>
+    <mesh position={[0, 0.42, 0.1]} rotation={[0.45, 0, 0]}>
+      <cylinderGeometry args={[0.02, 0.02, 0.5, 8]} />
+      <meshStandardMaterial color="#94a3b8" metalness={0.9} />
+    </mesh>
+  </group>
+);
+
+/** Mats & Foam Rollers (Yoga matlari va rolliklar) */
+const MatsRollersShape = ({ color }) => (
+  <group>
+    <mesh position={[0, 0.015, -0.2]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+      <planeGeometry args={[0.65, 1.2]} />
+      <meshStandardMaterial color={color} roughness={0.8} />
+    </mesh>
+    <mesh position={[-0.25, 0.06, 0.45]} rotation={[0, Math.PI / 2, 0]} castShadow>
+      <cylinderGeometry args={[0.06, 0.06, 0.6, 12]} />
+      <meshStandardMaterial color="#a855f7" roughness={0.7} />
+    </mesh>
+    <mesh position={[0.22, 0.07, 0.4]} rotation={[0, Math.PI / 4, 0]} castShadow>
+      <cylinderGeometry args={[0.07, 0.07, 0.45, 12]} />
+      <meshStandardMaterial color="#1e293b" roughness={0.9} />
+    </mesh>
+  </group>
+);
+
 // ─────────────────────────────────────────────
 // SHAPE DISPATCHER — maps item type to shape
 // ─────────────────────────────────────────────
@@ -878,6 +1522,10 @@ const ShapeFor = ({ type, color, height }) => {
     case 'bike':          return <BikeShape color={color} />;
     case 'bench':         return <BenchShape color={color} />;
     case 'crossover':     return <CrossoverShape color={color} />;
+    case 'leg_press':     return <LegPressShape color={color} />;
+    case 'lat_pulldown':  return <LatPulldownShape color={color} />;
+    case 'elliptical':   return <EllipticalShape color={color} />;
+    case 'punching_bag': return <PunchingBagShape color={color} />;
     case 'dumbbell_rack': return <DumbbellRackShape color={color} />;
     case 'lockers':       return <LockerShape color={color} />;
     case 'table':         return <MakeupTableShape color={color} />;
@@ -892,9 +1540,24 @@ const ShapeFor = ({ type, color, height }) => {
     case 'demo_table':    return <DemoTableShape color={color} />;
     case 'coffee_bar':    return <CoffeeBarShape color={color} />;
     case 'book_shelf':    return <BookShelfShape color={color} />;
-    case 'island_shelf':  return <SpinnerRackShape color={color} />;
     case 'stationery':    return <SpinnerRackShape color={color} />;
     case 'read_table':    return <ReaderTableShape color={color} />;
+    case 'squat_cage':    return <SquatCageShape color={color} />;
+    case 'smith_machine': return <SmithMachineShape color={color} />;
+    case 'olympic_barbell': return <OlympicBarbellShape color={color} />;
+    case 'weight_plates': return <WeightPlatesShape color={color} />;
+    case 'chest_press':   return <ChestPressShape color={color} />;
+    case 'shoulder_press': return <ShoulderPressShape color={color} />;
+    case 'seated_row':    return <SeatedRowShape color={color} />;
+    case 'stationary_bike': return <StationaryBikeShape color={color} />;
+    case 'stair_climber': return <StairClimberShape color={color} />;
+    case 'kettlebell_rack': return <KettlebellRackShape color={color} />;
+    case 'medicine_ball_rack': return <MedicineBallRackShape color={color} />;
+    case 'plyo_boxes':    return <PlyoBoxesShape color={color} />;
+    case 'trx':           return <TrxShape color={color} />;
+    case 'flat_bench':    return <FlatBenchShape color={color} />;
+    case 'adjustable_bench': return <AdjustableBenchShape color={color} />;
+    case 'mats_rollers':  return <MatsRollersShape color={color} />;
     default:              return <ShelfShape color={color} height={height || 2.0} />;
   }
 };
@@ -1046,12 +1709,18 @@ const DraggableEquipment = ({
     >
       <ShapeFor type={item.type} color={item.color} height={item.height} />
 
-      {/* Selection Highlight */}
+      {/* Selection Highlight (Glowing Blue Plane & Indicator) */}
       {isSelected && (
-        <mesh position={[0, 0.02, 0]}>
-          <planeGeometry args={[item.width + 0.3, item.depth + 0.3]} />
-          <meshStandardMaterial color="#3b82f6" transparent opacity={0.22} />
-        </mesh>
+        <group>
+          <mesh position={[0, 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+            <planeGeometry args={[(item.width || 1.0) + 0.35, (item.depth || 1.0) + 0.35]} />
+            <meshBasicMaterial color="#3b82f6" transparent opacity={0.35} side={THREE.DoubleSide} />
+          </mesh>
+          <mesh position={[0, 0.03, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+            <ringGeometry args={[Math.min((item.width || 1.0), (item.depth || 1.0)) * 0.45, Math.min((item.width || 1.0), (item.depth || 1.0)) * 0.55, 32]} />
+            <meshBasicMaterial color="#2563eb" side={THREE.DoubleSide} />
+          </mesh>
+        </group>
       )}
 
       {/* Floating action panel — only when selected */}
@@ -1091,7 +1760,7 @@ const DraggableEquipment = ({
                 transition: 'all 0.15s'
               }}
             >
-              <span style={{ fontSize: '15px' }}>🔄</span> Aylantir
+              <RefreshCcw size={14} strokeWidth={2.5} /> Aylantir
             </button>
 
             {/* Delete button */}
@@ -1112,7 +1781,7 @@ const DraggableEquipment = ({
                 transition: 'all 0.15s'
               }}
             >
-              <span style={{ fontSize: '15px' }}>🗑️</span> O'chir
+              <Trash2 size={14} strokeWidth={2.5} /> O'chir
             </button>
           </div>
         </Html>
@@ -1134,10 +1803,37 @@ const RoomScene = ({ isDragging, setIsDragging }) => {
     positions,
     setPositions,
     rotations,
-    setRotations
+    setRotations,
+    lightingActive,
+    setCameraApi
   } = useAppStore();
   const { width: W, length: L, height: H } = roomDimensions;
   const [selectedId, setSelectedId] = useState(null);
+  const controlsRef = useRef(null);
+  const { camera } = useThree();
+  const prevViewModeRef = useRef(viewMode);
+
+  // ── PDF eksport uchun kamera/controls'ga tashqaridan (store orqali) murojaat qilish imkonini beradi ──
+  const handleControlsRef = useCallback((ctrl) => {
+    controlsRef.current = ctrl;
+    if (ctrl) setCameraApi(camera, ctrl);
+  }, [camera, setCameraApi]);
+
+  // ── "3D Perspektiv" / "2D Tepadan Ko'rinish" tugmalari bosilganda kamerani HAQIQATDA ko'chirish ──
+  React.useEffect(() => {
+    if (prevViewModeRef.current === viewMode) return;
+    prevViewModeRef.current = viewMode;
+
+    const targetPos = viewMode === 'top2d' ? [0, 25, 0.01] : [14, 12, 18];
+    camera.position.set(...targetPos);
+    camera.lookAt(0, 1, 0);
+    camera.updateProjectionMatrix();
+    if (controlsRef.current) {
+      controlsRef.current.target.set(0, 1, 0);
+      controlsRef.current.update();
+    }
+  }, [viewMode, camera]);
+
 
   const initialPositions = useMemo(() => {
     const map = {};
@@ -1232,9 +1928,25 @@ const RoomScene = ({ isDragging, setIsDragging }) => {
 
   return (
     <>
-      <ambientLight intensity={1.2} />
-      <directionalLight position={[12, 18, 14]} intensity={1.0} castShadow shadow-mapSize={[2048, 2048]} />
-      <pointLight position={[0, H - 0.5, 0]} intensity={0.6} color="#dbeafe" />
+      {/* Default Lights (Active only when Lighting Simulator is OFF) */}
+      {!lightingActive && (
+        <>
+          <ambientLight intensity={1.2} />
+          <directionalLight position={[12, 18, 14]} intensity={1.0} castShadow shadow-mapSize={[2048, 2048]} />
+          <pointLight position={[0, H - 0.5, 0]} intensity={0.6} color="#dbeafe" />
+        </>
+      )}
+
+      {/* Lighting & Time Simulation Component */}
+      <LightingSimulator
+        selectedId={selectedId}
+        onSelect={setSelectedId}
+        onDragStart={() => setIsDragging(true)}
+        onDragEnd={() => setIsDragging(false)}
+      />
+
+      {/* Foot Traffic Pathfinding & Customer Animation Component */}
+      <FootTrafficSimulator />
 
       {/* Floor — klik bo'sh joyga tushganda selection olib tashlanadi */}
       <mesh
@@ -1329,6 +2041,7 @@ const RoomScene = ({ isDragging, setIsDragging }) => {
 
       {/* Orbit Controls — disabled while dragging */}
       <OrbitControls
+        ref={handleControlsRef}
         enabled={!isDragging}
         enableDamping
         dampingFactor={0.05}
@@ -1349,9 +2062,10 @@ export const RoomCanvas = () => {
   const [isDragging, setIsDragging] = useState(false);
 
   return (
-    <div className="viewport-container">
+    <div className="viewport-container" id="room-canvas-viewport">
       <Canvas
         shadows
+        gl={{ preserveDrawingBuffer: true }}
         camera={{
           position: viewMode === 'top2d' ? [0, 25, 0.01] : [14, 12, 18],
           fov: 42
@@ -1377,7 +2091,7 @@ export const RoomCanvas = () => {
         pointerEvents: 'none',
         whiteSpace: 'nowrap'
       }}>
-        🖱️ Jihozni bosib ushlab suring — o'rningini o'zgartiring
+        Jihozni bosib ushlab suring — o'rnini o'zgartiring
       </div>
     </div>
   );

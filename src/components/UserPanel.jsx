@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 
 export const UserPanel = () => {
-  const { savedProjects, deleteProject, selectCategory, setActivePage, currency } = useAppStore();
+  const { savedProjects, deleteProject, loadSavedProject, setActivePage, currency } = useAppStore();
   const [userName, setUserName] = useState('Foydalanuvchi');
   const [isEditingName, setIsEditingName] = useState(false);
 
@@ -20,8 +20,7 @@ export const UserPanel = () => {
   const totalArea = savedProjects.reduce((sum, p) => sum + p.dimensions.width * p.dimensions.length, 0);
 
   const handleOpenProject = (proj) => {
-    const cat = BUSINESS_CATEGORIES.find(c => c.id === proj.categoryId) || BUSINESS_CATEGORIES[0];
-    selectCategory(cat);
+    loadSavedProject(proj);
   };
 
   const initials = userName.slice(0, 2).toUpperCase();

@@ -225,7 +225,7 @@ export const LandingPage = () => {
           boxShadow: 'var(--shadow-glow-blue)'
         }}>
           <h2 style={{ fontSize: '1.8rem', fontWeight: 800, marginBottom: '0.75rem' }}>
-            Biznesingizni bugun rejalashtiring! 🚀
+            Biznesingizni bugun rejalashtiring!
           </h2>
           <p style={{ opacity: 0.85, marginBottom: '1.75rem', fontSize: '1rem' }}>
             10 turdagi biznes shablonlaridan birini tanlab, 3D rejangizni yarating va smetangizni PDF shaklida yuklab oling.

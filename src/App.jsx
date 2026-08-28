@@ -1,13 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useAppStore } from './store/useAppStore';
 import { Navbar } from './components/Navbar';
 import { LandingPage } from './components/LandingPage';
 import { BusinessSelectorPage } from './components/BusinessSelectorPage';
 import { PlannerPage } from './components/3DPlanner/PlannerPage';
 import { UserPanel } from './components/UserPanel';
+import { AutoSaveDraftBanner } from './components/3DPlanner/AutoSaveDraftBanner';
 
 export function App() {
-  const { activePage } = useAppStore();
+  const { activePage, checkPendingAutosaveDraft } = useAppStore();
+
+  useEffect(() => {
+    checkPendingAutosaveDraft();
+  }, [checkPendingAutosaveDraft]);
 
   return (
     <div className="app-container">
@@ -19,6 +24,8 @@ export function App() {
         {activePage === 'planner' && <PlannerPage />}
         {activePage === 'user-panel' && <UserPanel />}
       </main>
+
+      <AutoSaveDraftBanner />
 
       {activePage !== 'planner' && (
         <footer style={{
