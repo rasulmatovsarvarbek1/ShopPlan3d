@@ -1,43 +1,375 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAppStore, UZS_RATE } from '../../store/useAppStore';
-import { Maximize2, Package, Layers, Plus, Minus, Check, Users, Sun, Moon, Zap, AlertTriangle, CheckCircle2, Trash2, Clock, PackagePlus, X } from 'lucide-react';
+import { Maximize2, Package, Layers, Plus, Minus, Check, Users, Sun, Moon, Zap, AlertTriangle, CheckCircle2, Trash2, Clock, PackagePlus, X, Undo2 } from 'lucide-react';
+
+// ─── Raqam bosilganda klaviatura bilan to'g'ridan-to'g'ri son yozish imkoniyati ───
+const EquipmentItemCounter = ({ item, meta, updateEquipmentCount, setEquipmentCount }) => {
+  const [val, setVal] = useState(item.count);
+
+  useEffect(() => {
+    setVal(item.count);
+  }, [item.count]);
+
+  const commitValue = (inputVal) => {
+    const parsed = parseInt(inputVal, 10);
+    const validCount = isNaN(parsed) || parsed < 0 ? 0 : parsed;
+    setVal(validCount);
+    setEquipmentCount(item.id, validCount);
+  };
+
+  return (
+    <div
+      className="item-counter"
+      style={{ flexShrink: 0 }}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <button
+        type="button"
+        className="count-btn"
+        onClick={(e) => {
+          e.stopPropagation();
+          updateEquipmentCount(item.id, -1);
+        }}
+        style={{ background: item.count === 0 ? '#f1f5f9' : undefined }}
+      >
+        <Minus size={11} />
+      </button>
+
+      <input
+        type="number"
+        min="0"
+        max="999"
+        inputMode="numeric"
+        pattern="[0-9]*"
+        value={val === 0 && val !== item.count ? '' : val}
+        placeholder="0"
+        title="Raqam yozish uchun bosing"
+        onFocus={(e) => {
+          e.stopPropagation();
+          e.target.select();
+        }}
+        onClick={(e) => {
+          e.stopPropagation();
+          e.target.select();
+        }}
+        onChange={(e) => {
+          const raw = e.target.value;
+          setVal(raw);
+          if (raw !== '') {
+            const parsed = parseInt(raw, 10);
+            if (!isNaN(parsed) && parsed >= 0) {
+              setEquipmentCount(item.id, parsed);
+            }
+          }
+        }}
+        onBlur={(e) => {
+          commitValue(e.target.value);
+        }}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            commitValue(e.target.value);
+            e.target.blur();
+          }
+        }}
+        style={{
+          width: '36px',
+          height: '24px',
+          padding: '0 2px',
+          fontSize: '0.88rem',
+          fontWeight: 800,
+          textAlign: 'center',
+          border: '1.5px solid transparent',
+          borderRadius: '4px',
+          background: 'transparent',
+          color: item.count > 0 ? meta.border : 'var(--text-muted)',
+          outline: 'none',
+          cursor: 'text',
+          MozAppearance: 'textfield'
+        }}
+      />
+
+      <button
+        type="button"
+        className="count-btn"
+        onClick={(e) => {
+          e.stopPropagation();
+          updateEquipmentCount(item.id, 1);
+        }}
+        style={{ background: meta.bg, borderColor: meta.border }}
+      >
+        <Plus size={11} />
+      </button>
+    </div>
+  );
+};
+
+// ─── Swipeable Jihoz Kartochkasi (Surilganda o'z o'rnida 3s orqaga qaytarish ↩️ belgisi turadi) ───
+const SwipeableEquipmentCard = ({
+  item,
+  meta,
+  formatPrice,
+  updateEquipmentCount,
+  setEquipmentCount,
+  removeCustomEquipmentItem
+}) => {
+  const [offsetX, setOffsetX] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [isSwiped, setIsSwiped] = useState(false);
+  const [isPermanentlyDeleted, setIsPermanentlyDeleted] = useState(false);
+  const startXRef = useRef(0);
+  const hasMovedRef = useRef(false);
+  const timerRef = useRef(null);
+
+  // 3 sekund ichida bosilmasa o'z-o'zidan butunlay yo'q bo'ladi
+  useEffect(() => {
+    if (isSwiped && !isPermanentlyDeleted) {
+      timerRef.current = setTimeout(() => {
+        setIsPermanentlyDeleted(true);
+        setTimeout(() => {
+          removeCustomEquipmentItem(item.id);
+        }, 220);
+      }, 3000);
+    }
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, [isSwiped, isPermanentlyDeleted, item.id, removeCustomEquipmentItem]);
+
+  const handlePointerDown = (e) => {
+    if (!item.custom || isSwiped || isPermanentlyDeleted) return;
+    if (e.target.closest('button') || e.target.closest('input')) return;
+
+    startXRef.current = e.clientX ?? (e.touches && e.touches[0]?.clientX) ?? 0;
+    hasMovedRef.current = false;
+    setIsDragging(true);
+  };
+
+  const handlePointerMove = (e) => {
+    if (!isDragging || isSwiped || isPermanentlyDeleted) return;
+    const clientX = e.clientX ?? (e.touches && e.touches[0]?.clientX) ?? 0;
+    const diff = clientX - startXRef.current;
+
+    // Faqat o'ngdan chapga surish
+    if (diff < 0) {
+      if (Math.abs(diff) > 4) {
+        hasMovedRef.current = true;
+      }
+      // Yarmigacha (40px) surilganda o'z o'rnida qaytarish holatiga o'tadi
+      if (diff <= -40) {
+        triggerSwipe();
+        return;
+      }
+      setOffsetX(diff);
+    } else {
+      setOffsetX(0);
+    }
+  };
+
+  const triggerSwipe = () => {
+    setIsDragging(false);
+    setIsSwiped(true);
+    setOffsetX(-400);
+  };
+
+  const handlePointerUp = () => {
+    if (!isDragging || isSwiped || isPermanentlyDeleted) return;
+    setIsDragging(false);
+
+    if (offsetX < -25) {
+      triggerSwipe();
+    } else {
+      setOffsetX(0);
+    }
+  };
+
+  const handleUndo = (e) => {
+    e.stopPropagation();
+    if (timerRef.current) clearTimeout(timerRef.current);
+    setIsSwiped(false);
+    setOffsetX(0);
+  };
+
+  const handleCardClick = () => {
+    if (hasMovedRef.current || isSwiped || isPermanentlyDeleted) return;
+    updateEquipmentCount(item.id, 1);
+  };
+
+  return (
+    <div
+      style={{
+        position: 'relative',
+        overflow: 'hidden',
+        borderRadius: 'var(--radius-sm)',
+        transition: 'max-height 0.22s ease, margin 0.22s ease, opacity 0.22s ease',
+        maxHeight: isPermanentlyDeleted ? '0px' : '90px',
+        opacity: isPermanentlyDeleted ? 0 : 1,
+        marginBottom: isPermanentlyDeleted ? '0px' : '0.5rem'
+      }}
+    >
+      {/* Surilgandan keyin kartochka o'rnida turadigan 3 sekundlik qaytarish iconi */}
+      {isSwiped ? (
+        <div
+          style={{
+            height: '56px',
+            borderRadius: 'var(--radius-sm)',
+            border: '1.5px dashed #94a3b8',
+            background: '#f1f5f9',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            animation: 'fadeIn 0.2s ease'
+          }}
+        >
+          <button
+            onClick={handleUndo}
+            title="Orqaga qaytarish"
+            style={{
+              width: '38px',
+              height: '38px',
+              borderRadius: '50%',
+              border: '1.5px solid #2563eb',
+              background: '#eff6ff',
+              color: '#2563eb',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              boxShadow: '0 2px 8px rgba(37, 99, 235, 0.25)',
+              transition: 'transform 0.15s, background 0.15s'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'scale(1.1)';
+              e.currentTarget.style.background = '#dbeafe';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'scale(1)';
+              e.currentTarget.style.background = '#eff6ff';
+            }}
+          >
+            <Undo2 size={20} />
+          </button>
+        </div>
+      ) : (
+        /* Asosiy Kartochka */
+        <div
+          onClick={handleCardClick}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={handlePointerUp}
+          onTouchStart={handlePointerDown}
+          onTouchMove={handlePointerMove}
+          onTouchEnd={handlePointerUp}
+          style={{
+            position: 'relative',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.75rem',
+            background: item.count > 0 ? meta.bg : '#f8fafc',
+            padding: '8px 10px',
+            borderRadius: 'var(--radius-sm)',
+            border: `1.5px solid ${item.count > 0 ? meta.border : '#e2e8f0'}`,
+            cursor: isDragging ? 'grabbing' : 'pointer',
+            transform: `translateX(${offsetX}px)`,
+            transition: isDragging ? 'none' : 'transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.18s ease, background 0.15s ease',
+            boxShadow: item.count > 0 ? `0 2px 8px ${meta.border}22` : 'none',
+            userSelect: 'none',
+            touchAction: 'pan-y'
+          }}
+        >
+          {/* SVG mini chizma preview */}
+          <div style={{
+            width: '40px',
+            height: '40px',
+            borderRadius: '10px',
+            background: meta.bg,
+            border: `2px solid ${meta.border}`,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexShrink: 0,
+            overflow: 'hidden'
+          }}>
+            <ShapePreviewSVG type={item.type} color={item.color || meta.border} size={34} />
+          </div>
+
+          {/* Name & price */}
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              {item.name}
+            </div>
+            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+              {formatPrice(item.unitPrice)} / dona
+            </div>
+          </div>
+
+          {/* Interactive Counter with Keyboard & Direct Number Input */}
+          <EquipmentItemCounter
+            item={item}
+            meta={meta}
+            updateEquipmentCount={updateEquipmentCount}
+            setEquipmentCount={setEquipmentCount}
+          />
+        </div>
+      )}
+    </div>
+  );
+};
 
 // ─── Har bir 3D tip uchun meta (bg, border rang) ───
 const SHAPE_META = {
-  fridge:        { bg: '#dbeafe', border: '#3b82f6' },
-  wall_shelf:    { bg: '#f0fdf4', border: '#10b981' },
-  counter:       { bg: '#fef3c7', border: '#d97706' },
-  island_shelf:  { bg: '#ede9fe', border: '#7c3aed' },
-  produce:       { bg: '#dcfce7', border: '#16a34a' },
-  chest_freezer: { bg: '#e0f2fe', border: '#0891b2' },
-  mannequin:     { bg: '#ffe4e6', border: '#e11d48' },
-  clothing_rack: { bg: '#fce7f3', border: '#ec4899' },
-  center_rack:   { bg: '#f3e8ff', border: '#a855f7' },
-  shoe_shelf:    { bg: '#fff7ed', border: '#f97316' },
-  fitting_room:  { bg: '#f1f5f9', border: '#475569' },
-  treadmill:     { bg: '#fef9c3', border: '#ca8a04' },
-  bike:          { bg: '#ecfdf5', border: '#059669' },
-  bench:         { bg: '#fdf2f8', border: '#db2777' },
-  crossover:     { bg: '#eff6ff', border: '#2563eb' },
-  dumbbell_rack: { bg: '#fafafa', border: '#64748b' },
-  leg_press:     { bg: '#e0f2fe', border: '#0284c7' },
-  lat_pulldown:  { bg: '#f1f5f9', border: '#475569' },
-  elliptical:    { bg: '#ecfdf5', border: '#10b981' },
-  punching_bag:  { bg: '#fef2f2', border: '#ef4444' },
-  lockers:       { bg: '#f0f9ff', border: '#0284c7' },
-  table:         { bg: '#fdf4ff', border: '#c026d3' },
-  tv_wall:       { bg: '#f1f5f9', border: '#334155' },
-  seating:       { bg: '#fff7ed', border: '#b45309' },
-  sofa:          { bg: '#fef3c7', border: '#92400e' },
-  drawer:        { bg: '#f0fdfa', border: '#0d9488' },
-  tire_stand:    { bg: '#f8fafc', border: '#475569' },
-  oil_display:   { bg: '#fefce8', border: '#a16207' },
-  flower_stand:  { bg: '#fdf2f8', border: '#ec4899' },
-  cold_room:     { bg: '#e0f2fe', border: '#0369a1' },
-  demo_table:    { bg: '#eff6ff', border: '#1d4ed8' },
-  coffee_bar:    { bg: '#fef3c7', border: '#78350f' },
-  book_shelf:    { bg: '#f5f3ff', border: '#6d28d9' },
-  default:       { bg: '#f1f5f9', border: '#94a3b8' },
+  fridge:             { bg: '#dbeafe', border: '#3b82f6' },
+  wall_shelf:         { bg: '#f0fdf4', border: '#10b981' },
+  counter:            { bg: '#fef3c7', border: '#d97706' },
+  island_shelf:       { bg: '#ede9fe', border: '#7c3aed' },
+  produce:            { bg: '#dcfce7', border: '#16a34a' },
+  chest_freezer:      { bg: '#e0f2fe', border: '#0891b2' },
+  mannequin:          { bg: '#ffe4e6', border: '#e11d48' },
+  clothing_rack:      { bg: '#fce7f3', border: '#ec4899' },
+  center_rack:        { bg: '#f3e8ff', border: '#a855f7' },
+  shoe_shelf:         { bg: '#fff7ed', border: '#f97316' },
+  fitting_room:       { bg: '#f1f5f9', border: '#475569' },
+  treadmill:          { bg: '#fef9c3', border: '#ca8a04' },
+  bike:               { bg: '#ecfdf5', border: '#059669' },
+  stationary_bike:    { bg: '#ecfdf5', border: '#059669' },
+  bench:              { bg: '#fdf2f8', border: '#db2777' },
+  flat_bench:         { bg: '#f8fafc', border: '#64748b' },
+  adjustable_bench:   { bg: '#f1f5f9', border: '#475569' },
+  crossover:          { bg: '#eff6ff', border: '#2563eb' },
+  dumbbell_rack:      { bg: '#fafafa', border: '#64748b' },
+  kettlebell_rack:    { bg: '#fff7ed', border: '#ea580c' },
+  medicine_ball_rack: { bg: '#fdf2f8', border: '#db2777' },
+  plyo_boxes:         { bg: '#fef3c7', border: '#d97706' },
+  trx:                { bg: '#fef9c3', border: '#eab308' },
+  mats_rollers:       { bg: '#ecfdf5', border: '#10b981' },
+  squat_cage:         { bg: '#f1f5f9', border: '#334155' },
+  smith_machine:      { bg: '#f8fafc', border: '#475569' },
+  olympic_barbell:    { bg: '#fef2f2', border: '#ef4444' },
+  weight_plates:      { bg: '#eff6ff', border: '#3b82f6' },
+  chest_press:        { bg: '#f0fdf4', border: '#16a34a' },
+  shoulder_press:     { bg: '#fefce8', border: '#ca8a04' },
+  seated_row:         { bg: '#faf5ff', border: '#9333ea' },
+  stair_climber:      { bg: '#e0f2fe', border: '#0284c7' },
+  leg_press:          { bg: '#e0f2fe', border: '#0284c7' },
+  lat_pulldown:       { bg: '#f1f5f9', border: '#475569' },
+  elliptical:         { bg: '#ecfdf5', border: '#10b981' },
+  punching_bag:       { bg: '#fef2f2', border: '#ef4444' },
+  lockers:            { bg: '#f0f9ff', border: '#0284c7' },
+  table:              { bg: '#fdf4ff', border: '#c026d3' },
+  tv_wall:            { bg: '#f1f5f9', border: '#334155' },
+  seating:            { bg: '#fff7ed', border: '#b45309' },
+  sofa:               { bg: '#fef3c7', border: '#92400e' },
+  drawer:             { bg: '#f0fdfa', border: '#0d9488' },
+  tire_stand:         { bg: '#f8fafc', border: '#475569' },
+  oil_display:        { bg: '#fefce8', border: '#a16207' },
+  flower_stand:       { bg: '#fdf2f8', border: '#ec4899' },
+  cold_room:          { bg: '#e0f2fe', border: '#0369a1' },
+  demo_table:         { bg: '#eff6ff', border: '#1d4ed8' },
+  coffee_bar:         { bg: '#fef3c7', border: '#78350f' },
+  book_shelf:         { bg: '#f5f3ff', border: '#6d28d9' },
+  stationery:         { bg: '#fdf4ff', border: '#c026d3' },
+  read_table:         { bg: '#eff6ff', border: '#2563eb' },
+  default:            { bg: '#f1f5f9', border: '#94a3b8' },
 };
 
 // ─── RoomCanvas.jsx'da mavjud barcha 3D shakllar — Yangi jihoz qo'shishda tanlash uchun ───
@@ -236,196 +568,375 @@ const ShapePreviewSVG = ({ type, color, size = 38 }) => {
         </svg>
       );
 
-    // ── Bench press ────────────────────────────
-    case 'bench':
+    // ── Squat Cage (Power Rack) ──────────────
+    case 'squat_cage':
       return (
         <svg {...svgProps}>
-          <rect x={6} y={16} width={26} height={6} rx={3} fill={c} opacity={0.85}/>
-          {[7,29].map((x,i) => <line key={i} x1={x} y1={22} x2={x} y2={30} stroke="#64748b" strokeWidth={2} strokeLinecap="round"/>)}
-          <line x1={5} y1={10} x2={33} y2={10} stroke="#94a3b8" strokeWidth={2.5} strokeLinecap="round"/>
-          <circle cx={8}  cy={10} r={4} fill="#1e293b" opacity={0.7}/>
-          <circle cx={30} cy={10} r={4} fill="#1e293b" opacity={0.7}/>
+          {/* 4 Pillars */}
+          <rect x={7} y={4} width={3} height={30} rx={1} fill="#1e293b"/>
+          <rect x={28} y={4} width={3} height={30} rx={1} fill="#1e293b"/>
+          {/* Top connector */}
+          <rect x={7} y={4} width={24} height={3} rx={1} fill={c}/>
+          {/* Chinup bar */}
+          <line x1={8} y1={9} x2={30} y2={9} stroke="#94a3b8" strokeWidth={1.5}/>
+          {/* Barbell */}
+          <line x1={4} y1={17} x2={34} y2={17} stroke="#cbd5e1" strokeWidth={2.5}/>
+          {/* Weight plates */}
+          <rect x={4} y={12} width={2.5} height={10} rx={1} fill="#dc2626"/>
+          <rect x={31.5} y={12} width={2.5} height={10} rx={1} fill="#dc2626"/>
+          {/* Safety bars */}
+          <line x1={7} y1={23} x2={31} y2={23} stroke="#64748b" strokeWidth={1.5} strokeDasharray="2,2"/>
         </svg>
       );
 
-    // ── Crossover ──────────────────────────────
-    case 'crossover':
+    // ── Smith Machine ──────────────────────────
+    case 'smith_machine':
       return (
         <svg {...svgProps}>
-          <rect x={4}  y={5} width={5} height={28} rx={2} fill={c} opacity={0.85}/>
-          <rect x={29} y={5} width={5} height={28} rx={2} fill={c} opacity={0.85}/>
-          <line x1={9} y1={5} x2={29} y2={5} stroke={c} strokeWidth={3}/>
-          <line x1={9}  y1={14} x2={16} y2={22} stroke="#94a3b8" strokeWidth={1.5} strokeLinecap="round"/>
-          <line x1={29} y1={14} x2={22} y2={22} stroke="#94a3b8" strokeWidth={1.5} strokeLinecap="round"/>
-          <rect x={5}  y={20} width={4} height={10} rx={1} fill="#334155" opacity={0.7}/>
-          <rect x={29} y={20} width={4} height={10} rx={1} fill="#334155" opacity={0.7}/>
+          {/* Outer Frame */}
+          <rect x={6} y={4} width={3.5} height={30} rx={1} fill={c}/>
+          <rect x={28.5} y={4} width={3.5} height={30} rx={1} fill={c}/>
+          <rect x={6} y={4} width={26} height={3} rx={1} fill={c}/>
+          {/* Chrome guide rods */}
+          <line x1={11} y1={6} x2={11} y2={32} stroke="#cbd5e1" strokeWidth={1.5}/>
+          <line x1={27} y1={6} x2={27} y2={32} stroke="#cbd5e1" strokeWidth={1.5}/>
+          {/* Guided barbell */}
+          <line x1={4} y1={16} x2={34} y2={16} stroke="#94a3b8" strokeWidth={2.5}/>
+          <rect x={4} y={11} width={3} height={10} rx={1} fill="#ef4444"/>
+          <rect x={31} y={11} width={3} height={10} rx={1} fill="#ef4444"/>
         </svg>
       );
 
-    // ── Gantel stendi ──────────────────────────
-    case 'dumbbell_rack':
+    // ── Olympic Barbell (Shtanga Stend) ───────
+    case 'olympic_barbell':
       return (
         <svg {...svgProps}>
-          <rect x={4} y={18} width={30} height={10} rx={2} fill={c} opacity={0.8}/>
-          {[9, 19, 29].map((x,i) => (
+          {/* Base & Posts */}
+          <rect x={6} y={28} width={26} height={3} rx={1} fill={c}/>
+          <rect x={10} y={10} width={3} height={18} rx={1} fill={c}/>
+          <rect x={25} y={10} width={3} height={18} rx={1} fill={c}/>
+          {/* Barbells on tiers */}
+          {[12, 19, 26].map((y, i) => (
             <g key={i}>
-              <circle cx={x-2} cy={21} r={3} fill="#374151"/>
-              <line x1={x-2} y1={21} x2={x+2} y2={21} stroke="#94a3b8" strokeWidth={1.5}/>
-              <circle cx={x+2} cy={21} r={3} fill="#374151"/>
+              <line x1={3} y1={y} x2={35} y2={y} stroke="#cbd5e1" strokeWidth={2}/>
+              <rect x={4} y={y - 4} width={2} height={8} rx={1} fill={['#dc2626', '#2563eb', '#16a34a'][i]}/>
+              <rect x={32} y={y - 4} width={2} height={8} rx={1} fill={['#dc2626', '#2563eb', '#16a34a'][i]}/>
             </g>
           ))}
         </svg>
       );
 
-    // ── Shkaf (lockers) ────────────────────────
-    case 'lockers':
+    // ── Weight Plates (Disk-stend) ────────────
+    case 'weight_plates':
       return (
         <svg {...svgProps}>
-          {[5, 15, 25].map((x,i) => (
-            <g key={i}>
-              <rect x={x} y={5} width={9} height={28} rx={1} fill={c} opacity={0.8}/>
-              <rect x={x+1} y={6} width={7} height={26} rx={1} fill={c} opacity={0.4}/>
-              <circle cx={x+7} cy={19} r={1.2} fill="#f1f5f9"/>
-            </g>
-          ))}
-        </svg>
-      );
-
-    // ── Grim stoli ─────────────────────────────
-    case 'table':
-      return (
-        <svg {...svgProps}>
-          <rect x={5} y={18} width={28} height={10} rx={2} fill={c} opacity={0.8}/>
-          <rect x={4} y={15} width={30} height={3} rx={1} fill="#f8fafc"/>
-          <rect x={10} y={5} width={18} height={12} rx={2} fill="#e0f2fe" opacity={0.8}/>
-          <line x1={10} y1={4} x2={28} y2={4} stroke="#fef08a" strokeWidth={2.5} strokeLinecap="round"/>
-        </svg>
-      );
-
-    // ── TV devor ───────────────────────────────
-    case 'tv_wall':
-      return (
-        <svg {...svgProps}>
-          <rect x={3} y={8} width={32} height={20} rx={2} fill={c} opacity={0.85}/>
-          <rect x={6} y={10} width={12} height={7} rx={1} fill="#0f172a"/>
-          <rect x={7} y={11} width={10} height={5} rx={1} fill="#3b82f6" opacity={0.7}/>
-          <rect x={20} y={10} width={12} height={7} rx={1} fill="#0f172a"/>
-          <rect x={21} y={11} width={10} height={5} rx={1} fill="#3b82f6" opacity={0.7}/>
-        </svg>
-      );
-
-    // ── Stol + stul ────────────────────────────
-    case 'seating':
-    case 'sofa':
-      return (
-        <svg {...svgProps}>
-          <circle cx={cx} cy={18} r={8} fill="#d97706" opacity={0.7}/>
-          <circle cx={cx} cy={18} r={2} fill="#92400e"/>
-          {[0, 1, 2, 3].map(i => {
-            const a = i * Math.PI / 2;
+          {/* Central post and base */}
+          <rect x={16.5} y={4} width={5} height={28} rx={1} fill={c}/>
+          <rect x={9} y={30} width={20} height={3} rx={1.5} fill="#334155"/>
+          {/* Pegs with colorful weight plates */}
+          {[9, 17, 25].map((y, i) => {
+            const rad = 6 - i * 0.8;
+            const col = ['#dc2626', '#2563eb', '#16a34a'][i];
             return (
-              <rect key={i}
-                x={cx + Math.sin(a)*10 - 4} y={18 + Math.cos(a)*10 - 5}
-                width={8} height={7} rx={2} fill={c} opacity={0.85}/>
+              <g key={i}>
+                <line x1={9} y1={y} x2={29} y2={y} stroke="#94a3b8" strokeWidth={2}/>
+                <ellipse cx={10} cy={y} rx={2.5} ry={rad} fill={col}/>
+                <ellipse cx={28} cy={y} rx={2.5} ry={rad} fill={col}/>
+              </g>
             );
           })}
         </svg>
       );
 
-    // ── Dori javoni (drawer) ───────────────────
-    case 'drawer':
+    // ── Chest Press Machine ────────────────────
+    case 'chest_press':
       return (
         <svg {...svgProps}>
-          <rect x={7} y={4} width={24} height={30} rx={2} fill={c} opacity={0.8}/>
-          {[7,13,19,25].map((y,i) => (
+          {/* Weight stack on left */}
+          <rect x={4} y={6} width={9} height={24} rx={2} fill="#1f2937"/>
+          <rect x={6} y={9} width={5} height={18} rx={1} fill="#3b82f6" opacity={0.6}/>
+          {/* Seat & backrest */}
+          <rect x={18} y={15} width={4} height={10} rx={1} fill="#111827"/>
+          <rect x={18} y={23} width={10} height={4} rx={1} fill="#111827"/>
+          {/* Frame & press handles */}
+          <path d="M13,26 L32,26 L32,21" fill="none" stroke={c} strokeWidth={2}/>
+          <path d="M22,12 L30,12 L30,17" fill="none" stroke="#64748b" strokeWidth={2.5}/>
+          <circle cx={30} cy={17} r={2} fill="#f43f5e"/>
+        </svg>
+      );
+
+    // ── Shoulder Press Machine ─────────────────
+    case 'shoulder_press':
+      return (
+        <svg {...svgProps}>
+          {/* Weight stack on left */}
+          <rect x={4} y={6} width={9} height={24} rx={2} fill="#1f2937"/>
+          <rect x={6} y={9} width={5} height={18} rx={1} fill="#eab308" opacity={0.6}/>
+          {/* Vertical seat */}
+          <rect x={19} y={14} width={4} height={12} rx={1} fill="#111827"/>
+          <rect x={19} y={24} width={9} height={4} rx={1} fill="#111827"/>
+          {/* Overhead lever handles */}
+          <path d="M19,8 L28,8 L28,13" fill="none" stroke="#64748b" strokeWidth={2.5}/>
+          <circle cx={28} cy={13} r={2} fill="#eab308"/>
+        </svg>
+      );
+
+    // ── Seated Row Machine ─────────────────────
+    case 'seated_row':
+      return (
+        <svg {...svgProps}>
+          {/* Weight stack on right */}
+          <rect x={25} y={6} width={9} height={24} rx={2} fill="#1f2937"/>
+          <rect x={27} y={9} width={5} height={18} rx={1} fill="#a855f7" opacity={0.6}/>
+          {/* Long Bench */}
+          <rect x={5} y={22} width={16} height={4} rx={1} fill="#111827"/>
+          <rect x={15} y={15} width={4} height={8} rx={1} fill="#111827"/>
+          {/* Cable & Handle */}
+          <line x1={18} y1={17} x2={26} y2={17} stroke="#94a3b8" strokeWidth={1.5} strokeDasharray="1,1"/>
+          <line x1={18} y1={15} x2={18} y2={19} stroke="#f59e0b" strokeWidth={2}/>
+        </svg>
+      );
+
+    // ── Leg Press Machine ──────────────────────
+    case 'leg_press':
+      return (
+        <svg {...svgProps}>
+          {/* Angled sled & seat */}
+          <path d="M5,28 L32,10" stroke={c} strokeWidth={3} strokeLinecap="round"/>
+          <rect x={6} y={20} width={8} height={5} rx={1} transform="rotate(-30 10 22)" fill="#111827"/>
+          <rect x={10} y={15} width={4} height={9} rx={1} transform="rotate(-30 12 19)" fill="#111827"/>
+          {/* Footplate & weights */}
+          <rect x={26} y={8} width={6} height={8} rx={1} transform="rotate(-30 29 12)" fill="#0284c7"/>
+          <circle cx={28} cy={10} r={3} fill="#dc2626"/>
+        </svg>
+      );
+
+    // ── Lat Pulldown ───────────────────────────
+    case 'lat_pulldown':
+      return (
+        <svg {...svgProps}>
+          {/* Weight tower */}
+          <rect x={4} y={5} width={8} height={26} rx={2} fill="#1f2937"/>
+          {/* High pulley overhead arm */}
+          <path d="M8,5 L26,5 L26,8" fill="none" stroke={c} strokeWidth={2.5}/>
+          {/* Wide grip bar */}
+          <line x1={16} y1={11} x2={34} y2={11} stroke="#cbd5e1" strokeWidth={2.5} strokeLinecap="round"/>
+          <line x1={26} y1={5} x2={26} y2={11} stroke="#94a3b8" strokeWidth={1.5}/>
+          {/* Seat */}
+          <rect x={20} y={22} width={11} height={4} rx={1} fill="#111827"/>
+          <rect x={24} y={26} width={3} height={6} fill="#475569"/>
+        </svg>
+      );
+
+    // ── Elliptical ─────────────────────────────
+    case 'elliptical':
+      return (
+        <svg {...svgProps}>
+          {/* Flywheel base */}
+          <ellipse cx={27} cy={24} rx={6} ry={6} fill="none" stroke={c} strokeWidth={3}/>
+          <rect x={5} y={26} width={26} height={3} rx={1.5} fill="#1f2937"/>
+          {/* Moving ski handles */}
+          <line x1={12} y1={8} x2={16} y2={25} stroke="#475569" strokeWidth={2} strokeLinecap="round"/>
+          <line x1={16} y1={8} x2={20} y2={25} stroke="#475569" strokeWidth={2} strokeLinecap="round"/>
+          {/* Console */}
+          <rect x={12} y={9} width={6} height={5} rx={1} fill="#0f172a"/>
+          <rect x={13} y={10} width={4} height={3} rx={0.5} fill="#10b981"/>
+        </svg>
+      );
+
+    // ── Stationary / Recumbent Bike ────────────
+    case 'stationary_bike':
+      return (
+        <svg {...svgProps}>
+          {/* Base */}
+          <rect x={5} y={26} width={28} height={3} rx={1.5} fill="#1e293b"/>
+          {/* Front flywheel */}
+          <circle cx={26} cy={20} r={6} fill={c} opacity={0.8}/>
+          <circle cx={26} cy={20} r={3} fill="#0f172a"/>
+          {/* Seat with high backrest */}
+          <rect x={8} y={19} width={9} height={4} rx={1} fill="#111827"/>
+          <rect x={7} y={11} width={3.5} height={10} rx={1} fill="#111827"/>
+          {/* Console stem */}
+          <line x1={26} y1={20} x2={24} y2={10} stroke="#64748b" strokeWidth={2}/>
+          <rect x={21} y={8} width={6} height={4} rx={1} fill="#0f172a"/>
+        </svg>
+      );
+
+    // ── Stair Climber (Stepper) ────────────────
+    case 'stair_climber':
+      return (
+        <svg {...svgProps}>
+          {/* Stepped body */}
+          <path d="M6,28 L6,20 L13,20 L13,14 L20,14 L20,8 L29,8 L29,28 Z" fill={c} opacity={0.85}/>
+          {/* Steps lines */}
+          <line x1={6} y1={20} x2={13} y2={20} stroke="#f1f5f9" strokeWidth={2}/>
+          <line x1={13} y1={14} x2={20} y2={14} stroke="#f1f5f9" strokeWidth={2}/>
+          <line x1={20} y1={8} x2={29} y2={8} stroke="#f1f5f9" strokeWidth={2}/>
+          {/* Handrail & glowing screen */}
+          <path d="M10,18 L24,5 L28,5" fill="none" stroke="#475569" strokeWidth={2}/>
+          <rect x={25} y={3} width={6} height={5} rx={1} fill="#0284c7"/>
+        </svg>
+      );
+
+    // ── Kettlebell Rack ────────────────────────
+    case 'kettlebell_rack':
+      return (
+        <svg {...svgProps}>
+          {/* 2-tier rack */}
+          <rect x={4} y={15} width={30} height={3} rx={1} fill="#475569"/>
+          <rect x={4} y={27} width={30} height={3} rx={1} fill="#475569"/>
+          <line x1={6} y1={15} x2={6} y2={30} stroke={c} strokeWidth={2.5}/>
+          <line x1={32} y1={15} x2={32} y2={30} stroke={c} strokeWidth={2.5}/>
+          {/* Kettlebells on shelf 1 */}
+          {[10, 19, 28].map((x, i) => (
             <g key={i}>
-              <rect x={9} y={y} width={10} height={5} rx={1} fill="#e0f2fe" opacity={0.8}/>
-              <rect x={21} y={y} width={8} height={5} rx={1} fill="#e0f2fe" opacity={0.8}/>
-              <circle cx={14} cy={y+2.5} r={1} fill="#0d9488"/>
-              <circle cx={25} cy={y+2.5} r={1} fill="#0d9488"/>
+              <circle cx={x} cy={12} r={3} fill={['#dc2626', '#16a34a', '#2563eb'][i]}/>
+              <path d={`M${x-1.5},9 Q${x},6 ${x+1.5},9`} fill="none" stroke="#1e293b" strokeWidth={1.2}/>
+            </g>
+          ))}
+          {/* Kettlebells on shelf 2 */}
+          {[14, 23].map((x, i) => (
+            <g key={i}>
+              <circle cx={x} cy={24} r={3.5} fill={['#f59e0b', '#9333ea'][i]}/>
+              <path d={`M${x-2},20 Q${x},17 ${x+2},20`} fill="none" stroke="#1e293b" strokeWidth={1.5}/>
             </g>
           ))}
         </svg>
       );
 
-    // ── Shinalar ───────────────────────────────
-    case 'tire_stand':
+    // ── Medicine Ball Rack ─────────────────────
+    case 'medicine_ball_rack':
       return (
         <svg {...svgProps}>
-          <rect x={14} y={4} width={5} height={30} rx={2} fill={c} opacity={0.7}/>
-          {[8, 16, 24].map((y,i) => (
+          {/* Vertical pole & round base */}
+          <rect x={17.5} y={4} width={3} height={28} rx={1} fill={c}/>
+          <ellipse cx={cx} cy={31} rx={8} ry={2.5} fill="#334155"/>
+          {/* Stacked colorful medicine balls */}
+          {[8, 14, 20, 26].map((y, i) => (
             <g key={i}>
-              <circle cx={cx} cy={y} r={7} fill="none" stroke="#1e293b" strokeWidth={4}/>
-              <circle cx={cx} cy={y} r={3} fill="#475569" opacity={0.6}/>
+              <ellipse cx={cx} cy={y + 1} rx={4.5 - i * 0.3} ry={1} fill="#94a3b8"/>
+              <circle cx={cx} cy={y} r={3.8 - i * 0.3} fill={['#e11d48', '#3b82f6', '#10b981', '#f59e0b'][i]}/>
             </g>
           ))}
         </svg>
       );
 
-    // ── Gul stendi ─────────────────────────────
-    case 'flower_stand':
+    // ── Plyo Boxes ─────────────────────────────
+    case 'plyo_boxes':
       return (
         <svg {...svgProps}>
-          <rect x={8} y={22} width={22} height={4} rx={1} fill={c} opacity={0.8}/>
-          <rect x={12} y={14} width={16} height={4} rx={1} fill={c} opacity={0.7}/>
-          <rect x={16} y={8} width={10} height={4} rx={1} fill={c} opacity={0.6}/>
-          {[[19,6],[14,12],[24,12],[19,20]].map(([x,y],i) => (
+          {/* Large Box */}
+          <rect x={4} y={15} width={18} height={16} rx={2} fill={c}/>
+          <rect x={6} y={15} width={14} height={3} rx={1} fill="#1e293b"/>
+          {/* Small Box */}
+          <rect x={20} y={20} width={14} height={11} rx={2} fill="#d97706"/>
+          <rect x={21} y={20} width={12} height={2.5} rx={1} fill="#1e293b"/>
+        </svg>
+      );
+
+    // ── TRX Suspension Straps ──────────────────
+    case 'trx':
+      return (
+        <svg {...svgProps}>
+          {/* Top anchor */}
+          <rect x={14} y={3} width={10} height={3} rx={1} fill="#334155"/>
+          <circle cx={cx} cy={6} r={2} fill="#94a3b8"/>
+          {/* Yellow/black V-straps */}
+          <line x1={cx} y1={6} x2={10} y2={26} stroke="#eab308" strokeWidth={2.5}/>
+          <line x1={cx} y1={6} x2={28} y2={26} stroke="#eab308" strokeWidth={2.5}/>
+          {/* Handles */}
+          <rect x={6} y={26} width={8} height={3} rx={1} fill="#0f172a"/>
+          <rect x={24} y={26} width={8} height={3} rx={1} fill="#0f172a"/>
+        </svg>
+      );
+
+    // ── Flat Bench ─────────────────────────────
+    case 'flat_bench':
+      return (
+        <svg {...svgProps}>
+          {/* Leather Pad */}
+          <rect x={4} y={16} width={30} height={5} rx={2} fill="#111827"/>
+          <rect x={5} y={17} width={28} height={2} rx={1} fill="#374151"/>
+          {/* Steel T-legs */}
+          <rect x={8} y={21} width={3} height={9} rx={1} fill={c}/>
+          <rect x={27} y={21} width={3} height={9} rx={1} fill={c}/>
+          <line x1={5} y1={30} x2={14} y2={30} stroke={c} strokeWidth={2} strokeLinecap="round"/>
+          <line x1={24} y1={30} x2={33} y2={30} stroke={c} strokeWidth={2} strokeLinecap="round"/>
+        </svg>
+      );
+
+    // ── Adjustable / Incline Bench ─────────────
+    case 'adjustable_bench':
+      return (
+        <svg {...svgProps}>
+          {/* Flat seat */}
+          <rect x={6} y={22} width={10} height={4} rx={1} fill="#111827"/>
+          {/* Incline backrest */}
+          <rect x={14} y={9} width={17} height={4} rx={1} transform="rotate(-35 14 11)" fill="#111827"/>
+          {/* Frame & adjustment pin */}
+          <path d="M8,26 L30,26 M14,26 L22,14" stroke={c} strokeWidth={2.5} strokeLinecap="round"/>
+          <circle cx={22} cy={14} r={2} fill="#f59e0b"/>
+        </svg>
+      );
+
+    // ── Mats & Foam Rollers ────────────────────
+    case 'mats_rollers':
+      return (
+        <svg {...svgProps}>
+          {/* Rolled Yoga Mat */}
+          <ellipse cx={12} cy={18} rx={6} ry={10} fill="#10b981"/>
+          <ellipse cx={12} cy={18} rx={3} ry={6} fill="#047857"/>
+          <circle cx={12} cy={18} r={1.5} fill="#064e3b"/>
+          {/* Foam Roller */}
+          <rect x={22} y={10} width={10} height={18} rx={4} fill="#3b82f6"/>
+          {[13, 17, 21, 25].map((y, i) => (
+            <line key={i} x1={22} y1={y} x2={32} y2={y} stroke="#1d4ed8" strokeWidth={1}/>
+          ))}
+        </svg>
+      );
+
+    // ── Punching Bag ───────────────────────────
+    case 'punching_bag':
+      return (
+        <svg {...svgProps}>
+          {/* Ceiling Mount & Chains */}
+          <rect x={15} y={3} width={8} height={2} rx={1} fill="#475569"/>
+          <line x1={19} y1={5} x2={14} y2={10} stroke="#94a3b8" strokeWidth={1.5}/>
+          <line x1={19} y1={5} x2={24} y2={10} stroke="#94a3b8" strokeWidth={1.5}/>
+          {/* Heavy Bag Cylinder */}
+          <rect x={12} y={10} width={14} height={22} rx={6} fill="#dc2626"/>
+          <rect x={13} y={14} width={12} height={3} fill="#991b1b"/>
+          <rect x={13} y={22} width={12} height={3} fill="#991b1b"/>
+        </svg>
+      );
+
+    // ── Stationery / Spinner ───────────────────
+    case 'stationery':
+      return (
+        <svg {...svgProps}>
+          <rect x={17} y={4} width={4} height={28} rx={1} fill={c}/>
+          {[8, 16, 24].map((y, i) => (
             <g key={i}>
-              <circle cx={x} cy={y} r={3} fill={['#f43f5e','#84cc16','#ec4899','#f59e0b'][i]} opacity={0.9}/>
+              <rect x={8} y={y} width={22} height={5} rx={1} fill={['#f43f5e', '#3b82f6', '#10b981'][i]} opacity={0.9}/>
+              <line x1={8} y1={y+2.5} x2={30} y2={y+2.5} stroke="#fff" strokeWidth={1}/>
             </g>
           ))}
+          <ellipse cx={cx} cy={31} rx={8} ry={2.5} fill="#334155"/>
         </svg>
       );
 
-    // ── Sovuq xona ─────────────────────────────
-    case 'cold_room':
+    // ── Read Table ─────────────────────────────
+    case 'read_table':
       return (
         <svg {...svgProps}>
-          <rect x={4} y={5} width={30} height={28} rx={3} fill="#e0f2fe" opacity={0.5} stroke={c} strokeWidth={2}/>
-          {[10,17,24].map((y,i) => (
-            <rect key={i} x={7} y={y} width={24} height={3} rx={1} fill="#f1f5f9" opacity={0.8}/>
-          ))}
-          <rect x={14} y={15} width={12} height={10} rx={1} fill={c} opacity={0.6}/>
-        </svg>
-      );
-
-    // ── Kofe bar ───────────────────────────────
-    case 'coffee_bar':
-      return (
-        <svg {...svgProps}>
-          <rect x={3} y={16} width={32} height={12} rx={3} fill={c} opacity={0.85}/>
-          <rect x={2} y={12} width={34} height={5} rx={2} fill="#f1f5f9"/>
-          <rect x={5} y={6} width={10} height={8} rx={2} fill="#1e293b"/>
-          <line x1={10} y1={14} x2={10} y2={17} stroke="#94a3b8" strokeWidth={1.5}/>
-          {[18,23,28].map((x,i) => (
-            <ellipse key={i} cx={x} cy={16} rx={3} ry={3.5} fill={['#f8fafc','#fef9c3','#ffe4e6'][i]} opacity={0.9}/>
-          ))}
-        </svg>
-      );
-
-    // ── Meva-sabzavot ──────────────────────────
-    case 'produce':
-      return (
-        <svg {...svgProps}>
-          <rect x={5} y={14} width={28} height={14} rx={3} fill={c} opacity={0.8}/>
-          <rect x={4} y={11} width={30} height={4} rx={2} fill="#f1f5f9"/>
-          {[10,19,28].map((x,i) => (
-            <circle key={i} cx={x} cy={17} r={4} fill={['#f43f5e','#84cc16','#f59e0b'][i]} opacity={0.9}/>
-          ))}
-          {[15,24].map((x,i) => (
-            <circle key={i} cx={x} cy={22} r={3.5} fill={['#22c55e','#f97316'][i]} opacity={0.9}/>
-          ))}
-        </svg>
-      );
-
-    // ── Default ────────────────────────────────
-    default:
-      return (
-        <svg {...svgProps}>
-          <rect x={8} y={4} width={22} height={30} rx={3} fill={c} opacity={0.8}/>
-          <rect x={10} y={8} width={18} height={4} rx={1} fill="#f1f5f9" opacity={0.7}/>
-          <rect x={10} y={15} width={18} height={4} rx={1} fill="#f1f5f9" opacity={0.7}/>
-          <rect x={10} y={22} width={18} height={4} rx={1} fill="#f1f5f9" opacity={0.7}/>
+          <rect x={4} y={17} width={30} height={4} rx={1} fill={c}/>
+          <line x1={7} y1={21} x2={7} y2={32} stroke="#475569" strokeWidth={2}/>
+          <line x1={31} y1={21} x2={31} y2={32} stroke="#475569" strokeWidth={2}/>
+          {/* Open book */}
+          <path d="M12,17 Q15,14 18,16 Q21,14 24,17 Z" fill="#f8fafc" stroke="#3b82f6" strokeWidth={1}/>
+          {/* Lamp */}
+          <path d="M28,17 L28,11 L25,11" fill="none" stroke="#f59e0b" strokeWidth={1.5}/>
+          <polygon points="23,10 27,10 28,13 22,13" fill="#f59e0b"/>
         </svg>
       );
   }
@@ -439,6 +950,7 @@ export const SidebarControls = () => {
     setUserBudget,
     equipmentList,
     updateEquipmentCount,
+    setEquipmentCount,
     autoFillInventory,
     toggleAutoFill,
     currency,
@@ -455,7 +967,8 @@ export const SidebarControls = () => {
     addCustomLight,
     clearCustomLights,
     addCustomEquipmentItem,
-    removeCustomEquipmentItem
+    removeCustomEquipmentItem,
+    clearAllEquipment
   } = useAppStore();
 
   const [showTemplates, setShowTemplates] = useState(false);
@@ -640,7 +1153,7 @@ export const SidebarControls = () => {
           <input
             type="range"
             min="3"
-            max="30"
+            max="100"
             step="0.5"
             className="range-slider"
             value={roomDimensions.width}
@@ -657,7 +1170,7 @@ export const SidebarControls = () => {
           <input
             type="range"
             min="3"
-            max="30"
+            max="100"
             step="0.5"
             className="range-slider"
             value={roomDimensions.length}
@@ -895,34 +1408,6 @@ export const SidebarControls = () => {
         )}
       </div>
 
-      {/* Auto-Fill Inventory Switch */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        background: 'rgba(255, 255, 255, 0.03)',
-        padding: '10px 14px',
-        borderRadius: 'var(--radius-md)',
-        border: '1px solid var(--border-color)',
-        cursor: 'pointer'
-      }} onClick={toggleAutoFill}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', fontSize: '0.88rem', fontWeight: 600 }}>
-          <Package size={18} color="var(--accent-emerald)" />
-          Tovarlar bilan to'ldirish
-        </div>
-        <div style={{
-          width: '20px',
-          height: '20px',
-          borderRadius: '4px',
-          background: autoFillInventory ? 'var(--accent-emerald)' : 'rgba(255,255,255,0.1)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}>
-          {autoFillInventory && <Check size={14} color="#fff" />}
-        </div>
-      </div>
-
       {/* Equipment Library — Click to add to room */}
       <div>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
@@ -1066,108 +1551,69 @@ export const SidebarControls = () => {
           </div>
         )}
 
-        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>
-          Bosing → xonaga qo'shiladi
+        {/* ── Bosing -> xonaga qo'shiladi va Xonani Tozalash (Axlat qutisi) ── */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginBottom: '0.75rem'
+        }}>
+          <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+            Bosing → xonaga qo'shiladi
+          </div>
+
+          <button
+            type="button"
+            onClick={clearAllEquipment}
+            disabled={equipmentList.reduce((sum, item) => sum + (item.count || 0), 0) === 0}
+            title={
+              equipmentList.reduce((sum, item) => sum + (item.count || 0), 0) > 0
+                ? "Xonadagi barcha jihozlarni tozalash (o'chirish)"
+                : "Xonada jihozlar yo'q"
+            }
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              padding: '3px 8px',
+              borderRadius: '6px',
+              border: equipmentList.reduce((sum, item) => sum + (item.count || 0), 0) > 0 ? '1px solid #fecdd3' : '1px solid #e2e8f0',
+              background: equipmentList.reduce((sum, item) => sum + (item.count || 0), 0) > 0 ? '#fff1f2' : '#f8fafc',
+              color: equipmentList.reduce((sum, item) => sum + (item.count || 0), 0) > 0 ? '#e11d48' : '#94a3b8',
+              fontSize: '0.72rem',
+              fontWeight: 700,
+              cursor: equipmentList.reduce((sum, item) => sum + (item.count || 0), 0) > 0 ? 'pointer' : 'not-allowed',
+              transition: 'all 0.15s ease'
+            }}
+            onMouseEnter={(e) => {
+              if (equipmentList.reduce((sum, item) => sum + (item.count || 0), 0) > 0) {
+                e.currentTarget.style.background = '#ffe4e6';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (equipmentList.reduce((sum, item) => sum + (item.count || 0), 0) > 0) {
+                e.currentTarget.style.background = '#fff1f2';
+              }
+            }}
+          >
+            <Trash2 size={12} strokeWidth={2.2} />
+            <span>Tozalash</span>
+          </button>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
           {equipmentList.map((item) => {
             const meta = SHAPE_META[item.type] || SHAPE_META.default;
             return (
-              <div
+              <SwipeableEquipmentCard
                 key={item.id}
-                onClick={() => updateEquipmentCount(item.id, 1)}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.75rem',
-                  background: item.count > 0 ? meta.bg : '#f8fafc',
-                  padding: '8px 10px',
-                  borderRadius: 'var(--radius-sm)',
-                  border: `1.5px solid ${item.count > 0 ? meta.border : '#e2e8f0'}`,
-                  cursor: 'pointer',
-                  transition: 'all 0.18s ease',
-                  boxShadow: item.count > 0 ? `0 2px 8px ${meta.border}22` : 'none',
-                  userSelect: 'none'
-                }}
-              >
-                {/* SVG mini chizma preview */}
-                <div style={{
-                  width: '40px',
-                  height: '40px',
-                  borderRadius: '10px',
-                  background: meta.bg,
-                  border: `2px solid ${meta.border}`,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0,
-                  overflow: 'hidden'
-                }}>
-                  <ShapePreviewSVG type={item.type} color={item.color || meta.border} size={34} />
-                </div>
-
-                {/* Name & price */}
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    {item.name}
-                  </div>
-                  <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-                    {formatPrice(item.unitPrice)} / dona
-                  </div>
-                </div>
-
-                {/* Counter */}
-                <div
-                  className="item-counter"
-                  style={{ flexShrink: 0 }}
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <button
-                    className="count-btn"
-                    onClick={(e) => { e.stopPropagation(); updateEquipmentCount(item.id, -1); }}
-                    style={{ background: item.count === 0 ? '#f1f5f9' : undefined }}
-                  >
-                    <Minus size={11} />
-                  </button>
-                  <span style={{
-                    fontSize: '0.85rem',
-                    fontWeight: 800,
-                    minWidth: '20px',
-                    textAlign: 'center',
-                    color: item.count > 0 ? meta.border : 'var(--text-muted)'
-                  }}>
-                    {item.count}
-                  </span>
-                  <button
-                    className="count-btn"
-                    onClick={(e) => { e.stopPropagation(); updateEquipmentCount(item.id, 1); }}
-                    style={{ background: meta.bg, borderColor: meta.border }}
-                  >
-                    <Plus size={11} />
-                  </button>
-                </div>
-
-                {/* Faqat foydalanuvchi qo'shgan custom jihozlar uchun o'chirish tugmasi */}
-                {item.custom && (
-                  <button
-                    onClick={(e) => { e.stopPropagation(); removeCustomEquipmentItem(item.id); }}
-                    title="Kutubxonadan o'chirish"
-                    style={{
-                      flexShrink: 0,
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      width: '26px', height: '26px',
-                      borderRadius: '6px',
-                      border: '1px solid #fecdd3',
-                      background: '#fff1f2',
-                      color: '#be123c',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    <Trash2 size={12} />
-                  </button>
-                )}
-              </div>
+                item={item}
+                meta={meta}
+                formatPrice={formatPrice}
+                updateEquipmentCount={updateEquipmentCount}
+                setEquipmentCount={setEquipmentCount}
+                removeCustomEquipmentItem={removeCustomEquipmentItem}
+              />
             );
           })}
         </div>

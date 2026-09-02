@@ -5,7 +5,6 @@ import { LandingPage } from './components/LandingPage';
 import { BusinessSelectorPage } from './components/BusinessSelectorPage';
 import { PlannerPage } from './components/3DPlanner/PlannerPage';
 import { UserPanel } from './components/UserPanel';
-import { AutoSaveDraftBanner } from './components/3DPlanner/AutoSaveDraftBanner';
 
 export function App() {
   const { activePage, checkPendingAutosaveDraft } = useAppStore();
@@ -25,7 +24,6 @@ export function App() {
         {activePage === 'user-panel' && <UserPanel />}
       </main>
 
-      <AutoSaveDraftBanner />
 
       {activePage !== 'planner' && (
         <footer style={{

@@ -11,25 +11,25 @@ export const BUSINESS_CATEGORIES = [
     gradient: 'linear-gradient(135deg, #059669 0%, #10b981 100%)',
     equipmentPresets: {
       economy: [
-        { id: 'g_shelf_wall', name: 'Devoriy Stellaj', count: 6, unitPrice: 250, color: '#374151', width: 1.2, depth: 0.5, height: 2.2, type: 'wall_shelf' },
-        { id: 'g_fridge_stand', name: 'Vertikal Sovutgich', count: 2, unitPrice: 1200, color: '#3b82f6', width: 1.5, depth: 0.8, height: 2.0, type: 'fridge' },
-        { id: 'g_cash_counter', name: 'Kassa Stoli', count: 1, unitPrice: 450, color: '#4b5563', width: 1.6, depth: 0.9, height: 1.0, type: 'counter' },
+        { id: 'g_shelf_wall', name: 'Stellaj', count: 6, unitPrice: 250, color: '#374151', width: 1.2, depth: 0.5, height: 2.2, type: 'wall_shelf' },
+        { id: 'g_fridge_stand', name: 'Sovutgich', count: 2, unitPrice: 1200, color: '#3b82f6', width: 1.5, depth: 0.8, height: 2.0, type: 'fridge' },
+        { id: 'g_cash_counter', name: 'Kassa', count: 1, unitPrice: 450, color: '#4b5563', width: 1.6, depth: 0.9, height: 1.0, type: 'counter' },
       ],
       standard: [
-        { id: 'g_shelf_wall', name: 'Devoriy Stellaj', count: 10, unitPrice: 250, color: '#374151', width: 1.2, depth: 0.5, height: 2.2, type: 'wall_shelf' },
-        { id: 'g_shelf_island', name: 'Orol Javon (Dvuxstoronniy)', count: 4, unitPrice: 420, color: '#4b5563', width: 2.0, depth: 0.9, height: 1.8, type: 'island_shelf' },
-        { id: 'g_fridge_stand', name: 'Vertikal Sovutgich', count: 4, unitPrice: 1200, color: '#3b82f6', width: 1.5, depth: 0.8, height: 2.0, type: 'fridge' },
-        { id: 'g_freezer_chest', name: 'Gorizontal Muzlatgich-Larat', count: 2, unitPrice: 850, color: '#60a5fa', width: 2.0, depth: 0.9, height: 0.9, type: 'chest_freezer' },
-        { id: 'g_produce_rack', name: 'Meva-Sabzavot Stendi', count: 2, unitPrice: 380, color: '#84cc16', width: 1.8, depth: 0.8, height: 1.4, type: 'produce' },
-        { id: 'g_cash_counter', name: 'Lenta Bilan Kassa Stoli', count: 2, unitPrice: 850, color: '#1f2937', width: 2.2, depth: 1.0, height: 1.0, type: 'counter' },
+        { id: 'g_shelf_wall', name: 'Stellaj', count: 10, unitPrice: 250, color: '#374151', width: 1.2, depth: 0.5, height: 2.2, type: 'wall_shelf' },
+        { id: 'g_shelf_island', name: 'Orol-javon', count: 4, unitPrice: 420, color: '#4b5563', width: 2.0, depth: 0.9, height: 1.8, type: 'island_shelf' },
+        { id: 'g_fridge_stand', name: 'Sovutgich', count: 4, unitPrice: 1200, color: '#3b82f6', width: 1.5, depth: 0.8, height: 2.0, type: 'fridge' },
+        { id: 'g_freezer_chest', name: 'Muzlatgich', count: 2, unitPrice: 850, color: '#60a5fa', width: 2.0, depth: 0.9, height: 0.9, type: 'chest_freezer' },
+        { id: 'g_produce_rack', name: 'Meva-stend', count: 2, unitPrice: 380, color: '#84cc16', width: 1.8, depth: 0.8, height: 1.4, type: 'produce' },
+        { id: 'g_cash_counter', name: 'Kassa', count: 2, unitPrice: 850, color: '#1f2937', width: 2.2, depth: 1.0, height: 1.0, type: 'counter' },
       ],
       premium: [
-        { id: 'g_shelf_wall', name: 'Devoriy Stellaj (LED yoritgichli)', count: 14, unitPrice: 380, color: '#111827', width: 1.2, depth: 0.5, height: 2.4, type: 'wall_shelf' },
-        { id: 'g_shelf_island', name: 'Orol Javon (Dvuxstoronniy)', count: 6, unitPrice: 550, color: '#1f2937', width: 2.4, depth: 1.0, height: 1.8, type: 'island_shelf' },
-        { id: 'g_fridge_stand', name: 'Vitrinali Shisha Sovutgich', count: 6, unitPrice: 1600, color: '#2563eb', width: 1.8, depth: 0.8, height: 2.1, type: 'fridge' },
-        { id: 'g_freezer_chest', name: 'Gorizontal Muzlatgich-Larat', count: 4, unitPrice: 950, color: '#3b82f6', width: 2.2, depth: 1.0, height: 0.9, type: 'chest_freezer' },
-        { id: 'g_produce_rack', name: 'Meva-Sabzavot Stendi', count: 3, unitPrice: 480, color: '#65a30d', width: 2.0, depth: 0.9, height: 1.5, type: 'produce' },
-        { id: 'g_cash_counter', name: 'Ekspress Kassa & Self-Checkout', count: 3, unitPrice: 1400, color: '#0f172a', width: 2.4, depth: 1.1, height: 1.1, type: 'counter' },
+        { id: 'g_shelf_wall', name: 'Stellaj', count: 14, unitPrice: 380, color: '#111827', width: 1.2, depth: 0.5, height: 2.4, type: 'wall_shelf' },
+        { id: 'g_shelf_island', name: 'Orol-javon', count: 6, unitPrice: 550, color: '#1f2937', width: 2.4, depth: 1.0, height: 1.8, type: 'island_shelf' },
+        { id: 'g_fridge_stand', name: 'Sovutgich', count: 6, unitPrice: 1600, color: '#2563eb', width: 1.8, depth: 0.8, height: 2.1, type: 'fridge' },
+        { id: 'g_freezer_chest', name: 'Muzlatgich', count: 4, unitPrice: 950, color: '#3b82f6', width: 2.2, depth: 1.0, height: 0.9, type: 'chest_freezer' },
+        { id: 'g_produce_rack', name: 'Meva-stend', count: 3, unitPrice: 480, color: '#65a30d', width: 2.0, depth: 0.9, height: 1.5, type: 'produce' },
+        { id: 'g_cash_counter', name: 'Kassa', count: 3, unitPrice: 1400, color: '#0f172a', width: 2.4, depth: 1.1, height: 1.1, type: 'counter' },
       ]
     },
     inventoryPricePerM2: 120, // $120 worth of food stock per m2
@@ -47,26 +47,26 @@ export const BUSINESS_CATEGORIES = [
     gradient: 'linear-gradient(135deg, #db2777 0%, #ec4899 100%)',
     equipmentPresets: {
       economy: [
-        { id: 'c_rack_wall', name: 'Devoriy Kiyim Stellaji', count: 6, unitPrice: 180, color: '#e11d48', width: 1.5, depth: 0.4, height: 2.0, type: 'clothing_rack' },
-        { id: 'c_mannequin', name: 'Maneken (To\'liq bo\'y)', count: 2, unitPrice: 120, color: '#f43f5e', width: 0.5, depth: 0.5, height: 1.8, type: 'mannequin' },
-        { id: 'c_fitting_room', name: 'Kiyinish Xonasi (Kabina)', count: 2, unitPrice: 350, color: '#be123c', width: 1.2, depth: 1.2, height: 2.4, type: 'fitting_room' },
-        { id: 'c_cash_counter', name: 'Kassa Resepshn', count: 1, unitPrice: 400, color: '#881337', width: 1.5, depth: 0.7, height: 1.0, type: 'counter' }
+        { id: 'c_rack_wall', name: 'Kiyim-stellaj', count: 6, unitPrice: 180, color: '#e11d48', width: 1.5, depth: 0.4, height: 2.0, type: 'clothing_rack' },
+        { id: 'c_mannequin', name: 'Maneken', count: 2, unitPrice: 120, color: '#f43f5e', width: 0.5, depth: 0.5, height: 1.8, type: 'mannequin' },
+        { id: 'c_fitting_room', name: 'Kabina', count: 2, unitPrice: 350, color: '#be123c', width: 1.2, depth: 1.2, height: 2.4, type: 'fitting_room' },
+        { id: 'c_cash_counter', name: 'Kassa', count: 1, unitPrice: 400, color: '#881337', width: 1.5, depth: 0.7, height: 1.0, type: 'counter' }
       ],
       standard: [
-        { id: 'c_rack_wall', name: 'Devoriy Kiyim Stellaji', count: 10, unitPrice: 220, color: '#e11d48', width: 1.5, depth: 0.4, height: 2.1, type: 'clothing_rack' },
-        { id: 'c_rack_center', name: 'Aylana Orol Kiyim Stendi', count: 3, unitPrice: 320, color: '#fb7185', width: 1.2, depth: 1.2, height: 1.4, type: 'center_rack' },
-        { id: 'c_shoe_shelf', name: 'Poyabzal Vitrinasi', count: 4, unitPrice: 260, color: '#fda4af', width: 1.2, depth: 0.4, height: 1.8, type: 'shoe_shelf' },
-        { id: 'c_mannequin', name: 'Maneken (Premium)', count: 4, unitPrice: 160, color: '#f43f5e', width: 0.5, depth: 0.5, height: 1.8, type: 'mannequin' },
-        { id: 'c_fitting_room', name: 'Kiyinish Xonasi (Kuzguli)', count: 3, unitPrice: 450, color: '#be123c', width: 1.3, depth: 1.3, height: 2.4, type: 'fitting_room' },
-        { id: 'c_cash_counter', name: 'Butilka / Kassa Stoli', count: 1, unitPrice: 650, color: '#4c0519', width: 1.8, depth: 0.8, height: 1.0, type: 'counter' }
+        { id: 'c_rack_wall', name: 'Kiyim-stellaj', count: 10, unitPrice: 220, color: '#e11d48', width: 1.5, depth: 0.4, height: 2.1, type: 'clothing_rack' },
+        { id: 'c_rack_center', name: 'Aylana-stend', count: 3, unitPrice: 320, color: '#fb7185', width: 1.2, depth: 1.2, height: 1.4, type: 'center_rack' },
+        { id: 'c_shoe_shelf', name: 'Poyabzal-javon', count: 4, unitPrice: 260, color: '#fda4af', width: 1.2, depth: 0.4, height: 1.8, type: 'shoe_shelf' },
+        { id: 'c_mannequin', name: 'Maneken', count: 4, unitPrice: 160, color: '#f43f5e', width: 0.5, depth: 0.5, height: 1.8, type: 'mannequin' },
+        { id: 'c_fitting_room', name: 'Kabina', count: 3, unitPrice: 450, color: '#be123c', width: 1.3, depth: 1.3, height: 2.4, type: 'fitting_room' },
+        { id: 'c_cash_counter', name: 'Kassa', count: 1, unitPrice: 650, color: '#4c0519', width: 1.8, depth: 0.8, height: 1.0, type: 'counter' }
       ],
       premium: [
-        { id: 'c_rack_wall', name: 'Devoriy LED Kiyim Stellaji', count: 14, unitPrice: 350, color: '#9f1239', width: 1.6, depth: 0.4, height: 2.3, type: 'clothing_rack' },
-        { id: 'c_rack_center', name: 'Aylana Orol Kiyim Stendi', count: 5, unitPrice: 450, color: '#f43f5e', width: 1.4, depth: 1.4, height: 1.5, type: 'center_rack' },
-        { id: 'c_shoe_shelf', name: 'Poyabzal LED Vitrinasi', count: 6, unitPrice: 380, color: '#fda4af', width: 1.5, depth: 0.4, height: 2.0, type: 'shoe_shelf' },
-        { id: 'c_mannequin', name: 'Stilizatsiyalangan Manekenlar', count: 6, unitPrice: 220, color: '#fb7185', width: 0.5, depth: 0.5, height: 1.85, type: 'mannequin' },
-        { id: 'c_fitting_room', name: 'VIP Kiyinish Xonasi (Divanli)', count: 4, unitPrice: 750, color: '#881337', width: 1.5, depth: 1.5, height: 2.5, type: 'fitting_room' },
-        { id: 'c_cash_counter', name: 'Marmar Ko\'rinishli Kassa Bar', count: 1, unitPrice: 1200, color: '#4c0519', width: 2.2, depth: 0.9, height: 1.05, type: 'counter' }
+        { id: 'c_rack_wall', name: 'Kiyim-stellaj', count: 14, unitPrice: 350, color: '#9f1239', width: 1.6, depth: 0.4, height: 2.3, type: 'clothing_rack' },
+        { id: 'c_rack_center', name: 'Aylana-stend', count: 5, unitPrice: 450, color: '#f43f5e', width: 1.4, depth: 1.4, height: 1.5, type: 'center_rack' },
+        { id: 'c_shoe_shelf', name: 'Poyabzal-javon', count: 6, unitPrice: 380, color: '#fda4af', width: 1.5, depth: 0.4, height: 2.0, type: 'shoe_shelf' },
+        { id: 'c_mannequin', name: 'Maneken', count: 6, unitPrice: 220, color: '#fb7185', width: 0.5, depth: 0.5, height: 1.85, type: 'mannequin' },
+        { id: 'c_fitting_room', name: 'Kabina', count: 4, unitPrice: 750, color: '#881337', width: 1.5, depth: 1.5, height: 2.5, type: 'fitting_room' },
+        { id: 'c_cash_counter', name: 'Kassa', count: 1, unitPrice: 1200, color: '#4c0519', width: 2.2, depth: 0.9, height: 1.05, type: 'counter' }
       ]
     },
     inventoryPricePerM2: 150,
@@ -84,53 +84,53 @@ export const BUSINESS_CATEGORIES = [
     gradient: 'linear-gradient(135deg, #d97706 0%, #f59e0b 100%)',
     equipmentPresets: {
       economy: [
-        { id: 'f_treadmill', name: 'Yugurish Yo\'lakchasi (Cardio)', count: 4, unitPrice: 1500, color: '#1f2937', width: 1.8, depth: 0.9, height: 1.4, type: 'treadmill' },
-        { id: 'f_bench', name: 'Jim Yotish Skameyka (Bench Press)', count: 3, unitPrice: 350, color: '#374151', width: 1.5, depth: 0.8, height: 1.1, type: 'bench' },
-        { id: 'f_leg_press', name: 'Oyoq Trenajyori (Leg Press)', count: 1, unitPrice: 1800, color: '#4b5563', width: 1.6, depth: 1.0, height: 1.4, type: 'leg_press' },
-        { id: 'f_dumbbell_rack', name: 'Gantellar Stendi (Set)', count: 2, unitPrice: 800, color: '#4b5563', width: 2.0, depth: 0.6, height: 0.9, type: 'dumbbell_rack' },
-        { id: 'f_reception', name: 'Retsepsiya Stoli', count: 1, unitPrice: 600, color: '#b45309', width: 2.0, depth: 0.8, height: 1.1, type: 'counter' }
+        { id: 'f_treadmill', name: 'Yugurish', count: 4, unitPrice: 1500, color: '#1f2937', width: 1.8, depth: 0.9, height: 1.4, type: 'treadmill' },
+        { id: 'f_bench', name: 'Skameyka', count: 3, unitPrice: 350, color: '#374151', width: 1.5, depth: 0.8, height: 1.1, type: 'bench' },
+        { id: 'f_leg_press', name: 'Leg-press', count: 1, unitPrice: 1800, color: '#4b5563', width: 1.6, depth: 1.0, height: 1.4, type: 'leg_press' },
+        { id: 'f_dumbbell_rack', name: 'Gantel', count: 2, unitPrice: 800, color: '#4b5563', width: 2.0, depth: 0.6, height: 0.9, type: 'dumbbell_rack' },
+        { id: 'f_reception', name: 'Retsepsiya', count: 1, unitPrice: 600, color: '#b45309', width: 2.0, depth: 0.8, height: 1.1, type: 'counter' }
       ],
       standard: [
-        { id: 'f_treadmill', name: 'Yugurish Yo\'lakchasi (Cardio)', count: 4, unitPrice: 1800, color: '#1f2937', width: 1.9, depth: 0.9, height: 1.4, type: 'treadmill' },
-        { id: 'f_bike', name: 'Velo-trenajyor (Spin Bike)', count: 2, unitPrice: 750, color: '#4b5563', width: 1.2, depth: 0.6, height: 1.2, type: 'bike' },
-        { id: 'f_elliptical', name: 'Elliptik Cardio Trenajyor', count: 2, unitPrice: 1400, color: '#0f172a', width: 1.6, depth: 0.8, height: 1.5, type: 'elliptical' },
-        { id: 'f_bench', name: 'Jim Yotish Skameyka (Bench Press)', count: 2, unitPrice: 400, color: '#374151', width: 1.5, depth: 0.8, height: 1.1, type: 'bench' },
-        { id: 'f_leg_press', name: 'Oyoq Trenajyori (Leg Press)', count: 1, unitPrice: 2100, color: '#334155', width: 1.8, depth: 1.1, height: 1.5, type: 'leg_press' },
-        { id: 'f_lat_pulldown', name: 'Tepadan Tortish Trenajyori', count: 1, unitPrice: 1900, color: '#1e293b', width: 1.4, depth: 1.0, height: 2.2, type: 'lat_pulldown' },
-        { id: 'f_crossover', name: 'Krossover Blokli Trenajyor', count: 1, unitPrice: 2200, color: '#111827', width: 3.5, depth: 1.0, height: 2.3, type: 'crossover' },
-        { id: 'f_punching_bag', name: 'Boks Grusha Stendi', count: 1, unitPrice: 650, color: '#dc2626', width: 1.0, depth: 1.0, height: 2.4, type: 'punching_bag' },
-        { id: 'f_dumbbell_rack', name: 'Gantellar Stendi (To\'liq Set)', count: 1, unitPrice: 1000, color: '#4b5563', width: 2.4, depth: 0.7, height: 0.9, type: 'dumbbell_rack' },
-        { id: 'f_lockers', name: 'Kiyinish Shkaflari (Blok)', count: 2, unitPrice: 500, color: '#d97706', width: 1.6, depth: 0.5, height: 2.0, type: 'lockers' },
-        { id: 'f_reception', name: 'Fitnes Retsepsiya Bar', count: 1, unitPrice: 900, color: '#78350f', width: 2.4, depth: 0.9, height: 1.1, type: 'counter' },
-        { id: 'f_squat_cage', name: 'Power Rack (Squat Cage)', count: 1, unitPrice: 2200, color: '#0f172a', width: 1.6, depth: 1.4, height: 2.3, type: 'squat_cage' },
-        { id: 'f_smith_machine', name: 'Smith Machine', count: 1, unitPrice: 2800, color: '#1e293b', width: 1.8, depth: 1.2, height: 2.3, type: 'smith_machine' },
-        { id: 'f_olympic_barbell', name: 'Olimpiyaviy Shtanga Stendi', count: 1, unitPrice: 1200, color: '#334155', width: 1.8, depth: 0.8, height: 1.5, type: 'olympic_barbell' },
-        { id: 'f_weight_plates', name: 'Shtanga Disklari Stendi', count: 1, unitPrice: 800, color: '#475569', width: 0.8, depth: 0.8, height: 1.4, type: 'weight_plates' },
-        { id: 'f_chest_press', name: 'Ko\'krak Press Trenajyori', count: 1, unitPrice: 1800, color: '#0f172a', width: 1.2, depth: 1.1, height: 1.6, type: 'chest_press' },
-        { id: 'f_shoulder_press', name: 'Yelka Press Trenajyori', count: 1, unitPrice: 1700, color: '#1e293b', width: 1.2, depth: 1.1, height: 1.6, type: 'shoulder_press' },
-        { id: 'f_seated_row', name: 'O\'tirib Tortish (Seated Row)', count: 1, unitPrice: 1600, color: '#334155', width: 1.2, depth: 1.2, height: 1.6, type: 'seated_row' },
-        { id: 'f_stationary_bike', name: 'Velotrenajyor (Stationary Bike)', count: 1, unitPrice: 900, color: '#0f172a', width: 0.6, depth: 1.4, height: 1.3, type: 'stationary_bike' },
-        { id: 'f_stair_climber', name: 'Klimber (Stair Climber)', count: 1, unitPrice: 2400, color: '#1e293b', width: 0.9, depth: 1.6, height: 1.7, type: 'stair_climber' },
-        { id: 'f_kettlebell_rack', name: 'Giryalar Stendi (Kettlebells)', count: 1, unitPrice: 900, color: '#334155', width: 1.8, depth: 0.6, height: 0.9, type: 'kettlebell_rack' },
-        { id: 'f_medicine_ball_rack', name: 'Medboll Stendi (Medicine Balls)', count: 1, unitPrice: 600, color: '#475569', width: 0.6, depth: 0.6, height: 1.5, type: 'medicine_ball_rack' },
-        { id: 'f_plyo_boxes', name: 'Plio-bokslar (Plyo Boxes)', count: 1, unitPrice: 400, color: '#d97706', width: 1.2, depth: 0.6, height: 0.6, type: 'plyo_boxes' },
-        { id: 'f_trx', name: 'TRX Ilgichlari', count: 1, unitPrice: 300, color: '#fbbf24', width: 0.6, depth: 0.6, height: 2.2, type: 'trx' },
-        { id: 'f_flat_bench', name: 'Gorizontal Skameyka (Flat Bench)', count: 1, unitPrice: 350, color: '#1e293b', width: 1.4, depth: 0.5, height: 0.5, type: 'flat_bench' },
-        { id: 'f_adjustable_bench', name: 'Sozlanuvchi Skameyka (Adjustable)', count: 1, unitPrice: 450, color: '#334155', width: 1.4, depth: 0.5, height: 0.8, type: 'adjustable_bench' },
-        { id: 'f_mats_rollers', name: 'Matlar va Rolliklar', count: 1, unitPrice: 250, color: '#10b981', width: 1.0, depth: 0.6, height: 0.6, type: 'mats_rollers' }
+        { id: 'f_treadmill', name: 'Yugurish', count: 4, unitPrice: 1800, color: '#1f2937', width: 1.9, depth: 0.9, height: 1.4, type: 'treadmill' },
+        { id: 'f_bike', name: 'Velotrenajyor', count: 2, unitPrice: 750, color: '#4b5563', width: 1.2, depth: 0.6, height: 1.2, type: 'bike' },
+        { id: 'f_elliptical', name: 'Elliptik', count: 2, unitPrice: 1400, color: '#0f172a', width: 1.6, depth: 0.8, height: 1.5, type: 'elliptical' },
+        { id: 'f_bench', name: 'Skameyka', count: 2, unitPrice: 400, color: '#374151', width: 1.5, depth: 0.8, height: 1.1, type: 'bench' },
+        { id: 'f_leg_press', name: 'Leg-press', count: 1, unitPrice: 2100, color: '#334155', width: 1.8, depth: 1.1, height: 1.5, type: 'leg_press' },
+        { id: 'f_lat_pulldown', name: 'Lat-pulldown', count: 1, unitPrice: 1900, color: '#1e293b', width: 1.4, depth: 1.0, height: 2.2, type: 'lat_pulldown' },
+        { id: 'f_crossover', name: 'Krossover', count: 1, unitPrice: 2200, color: '#111827', width: 3.5, depth: 1.0, height: 2.3, type: 'crossover' },
+        { id: 'f_punching_bag', name: 'Grusha', count: 1, unitPrice: 650, color: '#dc2626', width: 1.0, depth: 1.0, height: 2.4, type: 'punching_bag' },
+        { id: 'f_dumbbell_rack', name: 'Gantel', count: 1, unitPrice: 1000, color: '#4b5563', width: 2.4, depth: 0.7, height: 0.9, type: 'dumbbell_rack' },
+        { id: 'f_lockers', name: 'Shkaf', count: 2, unitPrice: 500, color: '#d97706', width: 1.6, depth: 0.5, height: 2.0, type: 'lockers' },
+        { id: 'f_reception', name: 'Retsepsiya', count: 1, unitPrice: 900, color: '#78350f', width: 2.4, depth: 0.9, height: 1.1, type: 'counter' },
+        { id: 'f_squat_cage', name: 'Squat-qafas', count: 1, unitPrice: 2200, color: '#0f172a', width: 1.6, depth: 1.4, height: 2.3, type: 'squat_cage' },
+        { id: 'f_smith_machine', name: 'Smith-mashina', count: 1, unitPrice: 2800, color: '#1e293b', width: 1.8, depth: 1.2, height: 2.3, type: 'smith_machine' },
+        { id: 'f_olympic_barbell', name: 'Shtanga', count: 1, unitPrice: 1200, color: '#334155', width: 1.8, depth: 0.8, height: 1.5, type: 'olympic_barbell' },
+        { id: 'f_weight_plates', name: 'Disk-stend', count: 1, unitPrice: 800, color: '#475569', width: 0.8, depth: 0.8, height: 1.4, type: 'weight_plates' },
+        { id: 'f_chest_press', name: 'Chest-press', count: 1, unitPrice: 1800, color: '#0f172a', width: 1.2, depth: 1.1, height: 1.6, type: 'chest_press' },
+        { id: 'f_shoulder_press', name: 'Shoulder-press', count: 1, unitPrice: 1700, color: '#1e293b', width: 1.2, depth: 1.1, height: 1.6, type: 'shoulder_press' },
+        { id: 'f_seated_row', name: 'Seated-row', count: 1, unitPrice: 1600, color: '#334155', width: 1.2, depth: 1.2, height: 1.6, type: 'seated_row' },
+        { id: 'f_stationary_bike', name: 'Velotrenajyor', count: 1, unitPrice: 900, color: '#0f172a', width: 0.6, depth: 1.4, height: 1.3, type: 'stationary_bike' },
+        { id: 'f_stair_climber', name: 'Zinapoya', count: 1, unitPrice: 2400, color: '#1e293b', width: 0.9, depth: 1.6, height: 1.7, type: 'stair_climber' },
+        { id: 'f_kettlebell_rack', name: 'Girya', count: 1, unitPrice: 900, color: '#334155', width: 1.8, depth: 0.6, height: 0.9, type: 'kettlebell_rack' },
+        { id: 'f_medicine_ball_rack', name: 'Medboll', count: 1, unitPrice: 600, color: '#475569', width: 0.6, depth: 0.6, height: 1.5, type: 'medicine_ball_rack' },
+        { id: 'f_plyo_boxes', name: 'Plio-boks', count: 1, unitPrice: 400, color: '#d97706', width: 1.2, depth: 0.6, height: 0.6, type: 'plyo_boxes' },
+        { id: 'f_trx', name: 'TRX', count: 1, unitPrice: 300, color: '#fbbf24', width: 0.6, depth: 0.6, height: 2.2, type: 'trx' },
+        { id: 'f_flat_bench', name: 'Skameyka', count: 1, unitPrice: 350, color: '#1e293b', width: 1.4, depth: 0.5, height: 0.5, type: 'flat_bench' },
+        { id: 'f_adjustable_bench', name: 'Skameyka-pro', count: 1, unitPrice: 450, color: '#334155', width: 1.4, depth: 0.5, height: 0.8, type: 'adjustable_bench' },
+        { id: 'f_mats_rollers', name: 'Matlar', count: 1, unitPrice: 250, color: '#10b981', width: 1.0, depth: 0.6, height: 0.6, type: 'mats_rollers' }
       ],
       premium: [
-        { id: 'f_treadmill', name: 'Pro Cardio Yugurish Yo\'lakchasi', count: 8, unitPrice: 2500, color: '#0f172a', width: 2.0, depth: 0.9, height: 1.5, type: 'treadmill' },
-        { id: 'f_bike', name: 'Pro Velo-trenajyor', count: 5, unitPrice: 950, color: '#334155', width: 1.2, depth: 0.6, height: 1.2, type: 'bike' },
-        { id: 'f_elliptical', name: 'Pro Elliptik Cardio Station', count: 4, unitPrice: 1800, color: '#1e293b', width: 1.7, depth: 0.8, height: 1.6, type: 'elliptical' },
-        { id: 'f_bench', name: 'Skameyka va Prisad Raki', count: 5, unitPrice: 550, color: '#1e293b', width: 1.6, depth: 0.9, height: 1.2, type: 'bench' },
-        { id: 'f_leg_press', name: 'Heavy Duty Leg Press Machine', count: 3, unitPrice: 2800, color: '#020617', width: 2.0, depth: 1.2, height: 1.6, type: 'leg_press' },
-        { id: 'f_lat_pulldown', name: 'Dual Lat Pulldown Station', count: 3, unitPrice: 2400, color: '#0f172a', width: 1.5, depth: 1.1, height: 2.4, type: 'lat_pulldown' },
-        { id: 'f_crossover', name: 'Multi-Station Krossover Kompleks', count: 2, unitPrice: 3500, color: '#020617', width: 4.0, depth: 1.2, height: 2.4, type: 'crossover' },
-        { id: 'f_punching_bag', name: 'Heavy Boxing Bag Station', count: 3, unitPrice: 850, color: '#b91c1c', width: 1.1, depth: 1.1, height: 2.5, type: 'punching_bag' },
-        { id: 'f_dumbbell_rack', name: 'Xrom Gantel Stendlari', count: 3, unitPrice: 1400, color: '#64748b', width: 2.8, depth: 0.7, height: 0.9, type: 'dumbbell_rack' },
-        { id: 'f_lockers', name: 'Elektron Qulfli Kiyinish Shkaflari', count: 6, unitPrice: 850, color: '#b45309', width: 1.8, depth: 0.5, height: 2.1, type: 'lockers' },
-        { id: 'f_reception', name: 'Dizaynerlik Retsepsiya & Protein Bar', count: 1, unitPrice: 1800, color: '#451a03', width: 3.0, depth: 1.0, height: 1.1, type: 'counter' }
+        { id: 'f_treadmill', name: 'Yugurish', count: 8, unitPrice: 2500, color: '#0f172a', width: 2.0, depth: 0.9, height: 1.5, type: 'treadmill' },
+        { id: 'f_bike', name: 'Velotrenajyor', count: 5, unitPrice: 950, color: '#334155', width: 1.2, depth: 0.6, height: 1.2, type: 'bike' },
+        { id: 'f_elliptical', name: 'Elliptik', count: 4, unitPrice: 1800, color: '#1e293b', width: 1.7, depth: 0.8, height: 1.6, type: 'elliptical' },
+        { id: 'f_bench', name: 'Skameyka', count: 5, unitPrice: 550, color: '#1e293b', width: 1.6, depth: 0.9, height: 1.2, type: 'bench' },
+        { id: 'f_leg_press', name: 'Leg-press', count: 3, unitPrice: 2800, color: '#020617', width: 2.0, depth: 1.2, height: 1.6, type: 'leg_press' },
+        { id: 'f_lat_pulldown', name: 'Lat-pulldown', count: 3, unitPrice: 2400, color: '#0f172a', width: 1.5, depth: 1.1, height: 2.4, type: 'lat_pulldown' },
+        { id: 'f_crossover', name: 'Krossover', count: 2, unitPrice: 3500, color: '#020617', width: 4.0, depth: 1.2, height: 2.4, type: 'crossover' },
+        { id: 'f_punching_bag', name: 'Grusha', count: 3, unitPrice: 850, color: '#b91c1c', width: 1.1, depth: 1.1, height: 2.5, type: 'punching_bag' },
+        { id: 'f_dumbbell_rack', name: 'Gantel', count: 3, unitPrice: 1400, color: '#64748b', width: 2.8, depth: 0.7, height: 0.9, type: 'dumbbell_rack' },
+        { id: 'f_lockers', name: 'Shkaf', count: 6, unitPrice: 850, color: '#b45309', width: 1.8, depth: 0.5, height: 2.1, type: 'lockers' },
+        { id: 'f_reception', name: 'Retsepsiya', count: 1, unitPrice: 1800, color: '#451a03', width: 3.0, depth: 1.0, height: 1.1, type: 'counter' }
       ]
     },
     inventoryPricePerM2: 40,
@@ -148,21 +148,21 @@ export const BUSINESS_CATEGORIES = [
     gradient: 'linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%)',
     equipmentPresets: {
       economy: [
-        { id: 'cos_wall_shelf', name: 'Shisha Devoriy Stellaj', count: 5, unitPrice: 280, color: '#c084fc', width: 1.2, depth: 0.4, height: 2.2, type: 'wall_shelf' },
-        { id: 'cos_makeup_table', name: 'Makiyaj Test Stoli', count: 1, unitPrice: 400, color: '#a855f7', width: 1.4, depth: 0.6, height: 1.4, type: 'table' },
-        { id: 'cos_cash', name: 'Kosmetika Kassa Stoli', count: 1, unitPrice: 350, color: '#6b21a8', width: 1.4, depth: 0.6, height: 1.0, type: 'counter' }
+        { id: 'cos_wall_shelf', name: 'Vitrina', count: 5, unitPrice: 280, color: '#c084fc', width: 1.2, depth: 0.4, height: 2.2, type: 'wall_shelf' },
+        { id: 'cos_makeup_table', name: 'Makiyaj-stol', count: 1, unitPrice: 400, color: '#a855f7', width: 1.4, depth: 0.6, height: 1.4, type: 'table' },
+        { id: 'cos_cash', name: 'Kassa', count: 1, unitPrice: 350, color: '#6b21a8', width: 1.4, depth: 0.6, height: 1.0, type: 'counter' }
       ],
       standard: [
-        { id: 'cos_wall_shelf', name: 'Shisha LED Devoriy Vitrina', count: 8, unitPrice: 350, color: '#c084fc', width: 1.4, depth: 0.4, height: 2.2, type: 'wall_shelf' },
-        { id: 'cos_island_display', name: 'Orol Parfyum Vitrinasi', count: 2, unitPrice: 550, color: '#e879f9', width: 1.5, depth: 0.8, height: 1.1, type: 'island_shelf' },
-        { id: 'cos_makeup_table', name: 'Ko\'zguli Test Stol & Stullar', count: 2, unitPrice: 600, color: '#a855f7', width: 1.6, depth: 0.7, height: 1.5, type: 'table' },
-        { id: 'cos_cash', name: 'Butilka Kassa Stoli', count: 1, unitPrice: 550, color: '#6b21a8', width: 1.6, depth: 0.7, height: 1.0, type: 'counter' }
+        { id: 'cos_wall_shelf', name: 'Vitrina', count: 8, unitPrice: 350, color: '#c084fc', width: 1.4, depth: 0.4, height: 2.2, type: 'wall_shelf' },
+        { id: 'cos_island_display', name: 'Parfyum-orol', count: 2, unitPrice: 550, color: '#e879f9', width: 1.5, depth: 0.8, height: 1.1, type: 'island_shelf' },
+        { id: 'cos_makeup_table', name: 'Makiyaj-stol', count: 2, unitPrice: 600, color: '#a855f7', width: 1.6, depth: 0.7, height: 1.5, type: 'table' },
+        { id: 'cos_cash', name: 'Kassa', count: 1, unitPrice: 550, color: '#6b21a8', width: 1.6, depth: 0.7, height: 1.0, type: 'counter' }
       ],
       premium: [
-        { id: 'cos_wall_shelf', name: 'Premum Shisha Vitrina (RGB LED)', count: 12, unitPrice: 500, color: '#a855f7', width: 1.5, depth: 0.4, height: 2.3, type: 'wall_shelf' },
-        { id: 'cos_island_display', name: 'Marmar Orol Parfyum Bar', count: 4, unitPrice: 850, color: '#f0abfc', width: 1.8, depth: 0.9, height: 1.1, type: 'island_shelf' },
-        { id: 'cos_makeup_table', name: 'VIP Beauty-Bar Zoni', count: 3, unitPrice: 950, color: '#c084fc', width: 1.8, depth: 0.8, height: 1.6, type: 'table' },
-        { id: 'cos_cash', name: 'Lyuks Marmar Kassa Bar', count: 1, unitPrice: 1100, color: '#581c87', width: 2.0, depth: 0.8, height: 1.05, type: 'counter' }
+        { id: 'cos_wall_shelf', name: 'Vitrina', count: 12, unitPrice: 500, color: '#a855f7', width: 1.5, depth: 0.4, height: 2.3, type: 'wall_shelf' },
+        { id: 'cos_island_display', name: 'Parfyum-orol', count: 4, unitPrice: 850, color: '#f0abfc', width: 1.8, depth: 0.9, height: 1.1, type: 'island_shelf' },
+        { id: 'cos_makeup_table', name: 'Makiyaj-stol', count: 3, unitPrice: 950, color: '#c084fc', width: 1.8, depth: 0.8, height: 1.6, type: 'table' },
+        { id: 'cos_cash', name: 'Kassa', count: 1, unitPrice: 1100, color: '#581c87', width: 2.0, depth: 0.8, height: 1.05, type: 'counter' }
       ]
     },
     inventoryPricePerM2: 200,
@@ -180,23 +180,23 @@ export const BUSINESS_CATEGORIES = [
     gradient: 'linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)',
     equipmentPresets: {
       economy: [
-        { id: 'el_demo_table', name: 'Smartfon Demo Stoli', count: 3, unitPrice: 450, color: '#67e8f9', width: 2.0, depth: 0.9, height: 0.9, type: 'table' },
-        { id: 'el_accessory_wall', name: 'Aksessuar Stellaji (Pegboard)', count: 4, unitPrice: 220, color: '#334155', width: 1.4, depth: 0.4, height: 2.2, type: 'wall_shelf' },
-        { id: 'el_cash', name: 'Kassa va Konsultatsiya Stoli', count: 1, unitPrice: 500, color: '#0e7490', width: 1.8, depth: 0.8, height: 1.0, type: 'counter' }
+        { id: 'el_demo_table', name: 'Demo-stol', count: 3, unitPrice: 450, color: '#67e8f9', width: 2.0, depth: 0.9, height: 0.9, type: 'table' },
+        { id: 'el_accessory_wall', name: 'Aksessuar-stend', count: 4, unitPrice: 220, color: '#334155', width: 1.4, depth: 0.4, height: 2.2, type: 'wall_shelf' },
+        { id: 'el_cash', name: 'Kassa', count: 1, unitPrice: 500, color: '#0e7490', width: 1.8, depth: 0.8, height: 1.0, type: 'counter' }
       ],
       standard: [
-        { id: 'el_demo_table', name: 'Smartfon Demo Stoli', count: 5, unitPrice: 600, color: '#67e8f9', width: 2.2, depth: 1.0, height: 0.9, type: 'table' },
-        { id: 'el_laptop_table', name: 'Noutbuk va Planshet Stoli', count: 2, unitPrice: 700, color: '#22d3ee', width: 2.4, depth: 1.0, height: 0.9, type: 'table' },
-        { id: 'el_accessory_wall', name: 'Aksessuar LED Stellaji', count: 6, unitPrice: 320, color: '#1e293b', width: 1.5, depth: 0.4, height: 2.3, type: 'wall_shelf' },
-        { id: 'el_tv_wall', name: 'TV va Audio Ko\'rgazma Devori', count: 1, unitPrice: 1200, color: '#0f172a', width: 4.0, depth: 0.5, height: 2.5, type: 'tv_wall' },
-        { id: 'el_cash', name: 'Tech-Bar Kassa Stoli', count: 1, unitPrice: 850, color: '#164e63', width: 2.2, depth: 0.9, height: 1.0, type: 'counter' }
+        { id: 'el_demo_table', name: 'Demo-stol', count: 5, unitPrice: 600, color: '#67e8f9', width: 2.2, depth: 1.0, height: 0.9, type: 'table' },
+        { id: 'el_laptop_table', name: 'Noutbuk-stol', count: 2, unitPrice: 700, color: '#22d3ee', width: 2.4, depth: 1.0, height: 0.9, type: 'table' },
+        { id: 'el_accessory_wall', name: 'Aksessuar-stend', count: 6, unitPrice: 320, color: '#1e293b', width: 1.5, depth: 0.4, height: 2.3, type: 'wall_shelf' },
+        { id: 'el_tv_wall', name: 'TV-devor', count: 1, unitPrice: 1200, color: '#0f172a', width: 4.0, depth: 0.5, height: 2.5, type: 'tv_wall' },
+        { id: 'el_cash', name: 'Kassa', count: 1, unitPrice: 850, color: '#164e63', width: 2.2, depth: 0.9, height: 1.0, type: 'counter' }
       ],
       premium: [
-        { id: 'el_demo_table', name: 'Premium Smartfon Demo Table (Yoritilgan)', count: 8, unitPrice: 900, color: '#a5f3fc', width: 2.4, depth: 1.1, height: 0.9, type: 'table' },
-        { id: 'el_laptop_table', name: 'MacBook & Laptop Bar', count: 4, unitPrice: 1100, color: '#22d3ee', width: 2.6, depth: 1.1, height: 0.9, type: 'table' },
-        { id: 'el_accessory_wall', name: 'Yoritilgan Aksessuar Vitrinasi', count: 8, unitPrice: 480, color: '#0f172a', width: 1.6, depth: 0.4, height: 2.4, type: 'wall_shelf' },
-        { id: 'el_tv_wall', name: 'Smart TV & Home Theater Wall', count: 2, unitPrice: 2000, color: '#020617', width: 4.5, depth: 0.5, height: 2.6, type: 'tv_wall' },
-        { id: 'el_cash', name: 'Apple Style Genius Bar', count: 1, unitPrice: 1600, color: '#083344', width: 3.0, depth: 1.0, height: 1.05, type: 'counter' }
+        { id: 'el_demo_table', name: 'Demo-stol', count: 8, unitPrice: 900, color: '#a5f3fc', width: 2.4, depth: 1.1, height: 0.9, type: 'table' },
+        { id: 'el_laptop_table', name: 'Noutbuk-stol', count: 4, unitPrice: 1100, color: '#22d3ee', width: 2.6, depth: 1.1, height: 0.9, type: 'table' },
+        { id: 'el_accessory_wall', name: 'Aksessuar-stend', count: 8, unitPrice: 480, color: '#0f172a', width: 1.6, depth: 0.4, height: 2.4, type: 'wall_shelf' },
+        { id: 'el_tv_wall', name: 'TV-devor', count: 2, unitPrice: 2000, color: '#020617', width: 4.5, depth: 0.5, height: 2.6, type: 'tv_wall' },
+        { id: 'el_cash', name: 'Kassa', count: 1, unitPrice: 1600, color: '#083344', width: 3.0, depth: 1.0, height: 1.05, type: 'counter' }
       ]
     },
     inventoryPricePerM2: 250,
@@ -214,21 +214,21 @@ export const BUSINESS_CATEGORIES = [
     gradient: 'linear-gradient(135deg, #92400e 0%, #b45309 100%)',
     equipmentPresets: {
       economy: [
-        { id: 'cf_bar', name: 'Kofe Bar Stoli', count: 1, unitPrice: 800, color: '#78350f', width: 2.5, depth: 0.9, height: 1.1, type: 'counter' },
-        { id: 'cf_pastry', name: 'Shirinliklar Sovutgich Vitrinasi', count: 1, unitPrice: 900, color: '#fde68a', width: 1.2, depth: 0.8, height: 1.3, type: 'fridge' },
-        { id: 'cf_seating', name: 'Stol va 4 ta Stul Seti', count: 4, unitPrice: 250, color: '#d97706', width: 1.0, depth: 1.0, height: 0.8, type: 'seating' }
+        { id: 'cf_bar', name: 'Kofe-bar', count: 1, unitPrice: 800, color: '#78350f', width: 2.5, depth: 0.9, height: 1.1, type: 'counter' },
+        { id: 'cf_pastry', name: 'Shirinlik-vitrina', count: 1, unitPrice: 900, color: '#fde68a', width: 1.2, depth: 0.8, height: 1.3, type: 'fridge' },
+        { id: 'cf_seating', name: 'Stol-stul', count: 4, unitPrice: 250, color: '#d97706', width: 1.0, depth: 1.0, height: 0.8, type: 'seating' }
       ],
       standard: [
-        { id: 'cf_bar', name: 'Espresso & Kofe Bar Stoli', count: 1, unitPrice: 1400, color: '#78350f', width: 3.2, depth: 1.0, height: 1.1, type: 'counter' },
-        { id: 'cf_pastry', name: 'Pastry Shisha Vitrina', count: 1, unitPrice: 1200, color: '#fde68a', width: 1.5, depth: 0.8, height: 1.35, type: 'fridge' },
-        { id: 'cf_seating', name: 'Yog\'och Stol + Stullar Seti', count: 7, unitPrice: 320, color: '#b45309', width: 1.1, depth: 1.1, height: 0.8, type: 'seating' },
-        { id: 'cf_sofa', name: 'Yumshoq Divan Zoni', count: 2, unitPrice: 650, color: '#451a03', width: 1.8, depth: 0.9, height: 0.85, type: 'sofa' }
+        { id: 'cf_bar', name: 'Kofe-bar', count: 1, unitPrice: 1400, color: '#78350f', width: 3.2, depth: 1.0, height: 1.1, type: 'counter' },
+        { id: 'cf_pastry', name: 'Shirinlik-vitrina', count: 1, unitPrice: 1200, color: '#fde68a', width: 1.5, depth: 0.8, height: 1.35, type: 'fridge' },
+        { id: 'cf_seating', name: 'Stol-stul', count: 7, unitPrice: 320, color: '#b45309', width: 1.1, depth: 1.1, height: 0.8, type: 'seating' },
+        { id: 'cf_sofa', name: 'Divan', count: 2, unitPrice: 650, color: '#451a03', width: 1.8, depth: 0.9, height: 0.85, type: 'sofa' }
       ],
       premium: [
-        { id: 'cf_bar', name: 'Lyuks Yog\'och & Marmar Kofe Bar', count: 1, unitPrice: 2400, color: '#451a03', width: 4.0, depth: 1.1, height: 1.15, type: 'counter' },
-        { id: 'cf_pastry', name: 'Panoramik Shirinliklar Vitrinasi', count: 2, unitPrice: 1600, color: '#fef08a', width: 1.6, depth: 0.9, height: 1.4, type: 'fridge' },
-        { id: 'cf_seating', name: 'Dizaynerlik Stol + Stullar Seti', count: 10, unitPrice: 450, color: '#92400e', width: 1.2, depth: 1.2, height: 0.8, type: 'seating' },
-        { id: 'cf_sofa', name: 'Premium Teri Divanlar Lounge Zoni', count: 4, unitPrice: 950, color: '#27272a', width: 2.0, depth: 0.95, height: 0.9, type: 'sofa' }
+        { id: 'cf_bar', name: 'Kofe-bar', count: 1, unitPrice: 2400, color: '#451a03', width: 4.0, depth: 1.1, height: 1.15, type: 'counter' },
+        { id: 'cf_pastry', name: 'Shirinlik-vitrina', count: 2, unitPrice: 1600, color: '#fef08a', width: 1.6, depth: 0.9, height: 1.4, type: 'fridge' },
+        { id: 'cf_seating', name: 'Stol-stul', count: 10, unitPrice: 450, color: '#92400e', width: 1.2, depth: 1.2, height: 0.8, type: 'seating' },
+        { id: 'cf_sofa', name: 'Divan', count: 4, unitPrice: 950, color: '#27272a', width: 2.0, depth: 0.95, height: 0.9, type: 'sofa' }
       ]
     },
     inventoryPricePerM2: 70,
@@ -246,18 +246,18 @@ export const BUSINESS_CATEGORIES = [
     gradient: 'linear-gradient(135deg, #0369a1 0%, #0284c7 100%)',
     equipmentPresets: {
       economy: [
-        { id: 'ph_wall', name: 'Dori Javoni (Shishali)', count: 6, unitPrice: 220, color: '#38bdf8', width: 1.2, depth: 0.4, height: 2.2, type: 'wall_shelf' },
-        { id: 'ph_counter', name: 'Farmatsevt Kassa Stoli', count: 1, unitPrice: 450, color: '#0284c7', width: 1.8, depth: 0.7, height: 1.0, type: 'counter' }
+        { id: 'ph_wall', name: 'Dori-javon', count: 6, unitPrice: 220, color: '#38bdf8', width: 1.2, depth: 0.4, height: 2.2, type: 'wall_shelf' },
+        { id: 'ph_counter', name: 'Kassa', count: 1, unitPrice: 450, color: '#0284c7', width: 1.8, depth: 0.7, height: 1.0, type: 'counter' }
       ],
       standard: [
-        { id: 'ph_wall', name: 'Dori Javoni (Shishali)', count: 9, unitPrice: 260, color: '#38bdf8', width: 1.3, depth: 0.4, height: 2.3, type: 'wall_shelf' },
-        { id: 'ph_drawer', name: 'Farmatsevtik Tortmalar Raki', count: 2, unitPrice: 650, color: '#0c4a6e', width: 1.5, depth: 0.6, height: 1.8, type: 'drawer' },
-        { id: 'ph_counter', name: 'Shisha Retseptiv Kassa Stoli', count: 2, unitPrice: 600, color: '#0284c7', width: 2.0, depth: 0.7, height: 1.05, type: 'counter' }
+        { id: 'ph_wall', name: 'Dori-javon', count: 9, unitPrice: 260, color: '#38bdf8', width: 1.3, depth: 0.4, height: 2.3, type: 'wall_shelf' },
+        { id: 'ph_drawer', name: 'Tortma-javon', count: 2, unitPrice: 650, color: '#0c4a6e', width: 1.5, depth: 0.6, height: 1.8, type: 'drawer' },
+        { id: 'ph_counter', name: 'Kassa', count: 2, unitPrice: 600, color: '#0284c7', width: 2.0, depth: 0.7, height: 1.05, type: 'counter' }
       ],
       premium: [
-        { id: 'ph_wall', name: 'Dori LED Vitrinasi', count: 12, unitPrice: 350, color: '#7dd3fc', width: 1.4, depth: 0.4, height: 2.4, type: 'wall_shelf' },
-        { id: 'ph_drawer', name: 'Avtomatlashtirilgan Tortmalar Raki', count: 4, unitPrice: 950, color: '#0369a1', width: 1.6, depth: 0.6, height: 2.0, type: 'drawer' },
-        { id: 'ph_counter', name: 'Express Kassa va Maslahat Bar', count: 2, unitPrice: 850, color: '#0c4a6e', width: 2.2, depth: 0.8, height: 1.1, type: 'counter' }
+        { id: 'ph_wall', name: 'Dori-javon', count: 12, unitPrice: 350, color: '#7dd3fc', width: 1.4, depth: 0.4, height: 2.4, type: 'wall_shelf' },
+        { id: 'ph_drawer', name: 'Tortma-javon', count: 4, unitPrice: 950, color: '#0369a1', width: 1.6, depth: 0.6, height: 2.0, type: 'drawer' },
+        { id: 'ph_counter', name: 'Kassa', count: 2, unitPrice: 850, color: '#0c4a6e', width: 2.2, depth: 0.8, height: 1.1, type: 'counter' }
       ]
     },
     inventoryPricePerM2: 180,
@@ -275,21 +275,21 @@ export const BUSINESS_CATEGORIES = [
     gradient: 'linear-gradient(135deg, #c2410c 0%, #ea580c 100%)',
     equipmentPresets: {
       economy: [
-        { id: 'ap_rack', name: 'Metall Og\'ir Stellaj', count: 6, unitPrice: 300, color: '#374151', width: 1.8, depth: 0.6, height: 2.4, type: 'wall_shelf' },
-        { id: 'ap_tire_stand', name: 'Shinalar Stendi', count: 2, unitPrice: 250, color: '#1f2937', width: 1.5, depth: 0.7, height: 2.0, type: 'tire_stand' },
-        { id: 'ap_counter', name: 'Avto Kassa Stoli', count: 1, unitPrice: 400, color: '#9a3412', width: 1.8, depth: 0.8, height: 1.0, type: 'counter' }
+        { id: 'ap_rack', name: 'Stellaj', count: 6, unitPrice: 300, color: '#374151', width: 1.8, depth: 0.6, height: 2.4, type: 'wall_shelf' },
+        { id: 'ap_tire_stand', name: 'Shina-stend', count: 2, unitPrice: 250, color: '#1f2937', width: 1.5, depth: 0.7, height: 2.0, type: 'tire_stand' },
+        { id: 'ap_counter', name: 'Kassa', count: 1, unitPrice: 400, color: '#9a3412', width: 1.8, depth: 0.8, height: 1.0, type: 'counter' }
       ],
       standard: [
-        { id: 'ap_rack', name: 'Metall Og\'ir Stellaj', count: 10, unitPrice: 350, color: '#374151', width: 2.0, depth: 0.6, height: 2.5, type: 'wall_shelf' },
-        { id: 'ap_tire_stand', name: 'Shinalar Stendi (Vertikal)', count: 4, unitPrice: 320, color: '#1f2937', width: 1.8, depth: 0.7, height: 2.2, type: 'tire_stand' },
-        { id: 'ap_oil_display', name: 'Moylar va Suyuqliklar Vitrinasi', count: 3, unitPrice: 280, color: '#f97316', width: 1.5, depth: 0.5, height: 2.0, type: 'oil_display' },
-        { id: 'ap_counter', name: 'Zapchast Kassa Bar', count: 1, unitPrice: 600, color: '#7c2d12', width: 2.2, depth: 0.9, height: 1.0, type: 'counter' }
+        { id: 'ap_rack', name: 'Stellaj', count: 10, unitPrice: 350, color: '#374151', width: 2.0, depth: 0.6, height: 2.5, type: 'wall_shelf' },
+        { id: 'ap_tire_stand', name: 'Shina-stend', count: 4, unitPrice: 320, color: '#1f2937', width: 1.8, depth: 0.7, height: 2.2, type: 'tire_stand' },
+        { id: 'ap_oil_display', name: 'Moy-vitrina', count: 3, unitPrice: 280, color: '#f97316', width: 1.5, depth: 0.5, height: 2.0, type: 'oil_display' },
+        { id: 'ap_counter', name: 'Kassa', count: 1, unitPrice: 600, color: '#7c2d12', width: 2.2, depth: 0.9, height: 1.0, type: 'counter' }
       ],
       premium: [
-        { id: 'ap_rack', name: 'Industrial Og\'ir Metall Raking', count: 14, unitPrice: 450, color: '#111827', width: 2.4, depth: 0.7, height: 2.8, type: 'wall_shelf' },
-        { id: 'ap_tire_stand', name: 'Disk va Shinalar Stendi', count: 6, unitPrice: 420, color: '#0f172a', width: 2.0, depth: 0.8, height: 2.4, type: 'tire_stand' },
-        { id: 'ap_oil_display', name: 'LED Moylar Vitrinasi', count: 5, unitPrice: 380, color: '#fb923c', width: 1.8, depth: 0.5, height: 2.2, type: 'oil_display' },
-        { id: 'ap_counter', name: 'Professional Service Desk', count: 2, unitPrice: 900, color: '#431407', width: 2.5, depth: 1.0, height: 1.05, type: 'counter' }
+        { id: 'ap_rack', name: 'Stellaj', count: 14, unitPrice: 450, color: '#111827', width: 2.4, depth: 0.7, height: 2.8, type: 'wall_shelf' },
+        { id: 'ap_tire_stand', name: 'Shina-stend', count: 6, unitPrice: 420, color: '#0f172a', width: 2.0, depth: 0.8, height: 2.4, type: 'tire_stand' },
+        { id: 'ap_oil_display', name: 'Moy-vitrina', count: 5, unitPrice: 380, color: '#fb923c', width: 1.8, depth: 0.5, height: 2.2, type: 'oil_display' },
+        { id: 'ap_counter', name: 'Kassa', count: 2, unitPrice: 900, color: '#431407', width: 2.5, depth: 1.0, height: 1.05, type: 'counter' }
       ]
     },
     inventoryPricePerM2: 220,
@@ -307,21 +307,21 @@ export const BUSINESS_CATEGORIES = [
     gradient: 'linear-gradient(135deg, #0d9488 0%, #14b8a6 100%)',
     equipmentPresets: {
       economy: [
-        { id: 'fl_stand', name: 'Gullar Pog\'onali Stendi', count: 4, unitPrice: 180, color: '#2dd4bf', width: 1.2, depth: 0.6, height: 1.2, type: 'flower_stand' },
-        { id: 'fl_wrap_table', name: 'Gullarni O\'rash Stoli', count: 1, unitPrice: 300, color: '#0f766e', width: 1.5, depth: 0.8, height: 0.9, type: 'table' },
-        { id: 'fl_cash', name: 'Florist Kassa Stoli', count: 1, unitPrice: 350, color: '#134e4a', width: 1.4, depth: 0.6, height: 1.0, type: 'counter' }
+        { id: 'fl_stand', name: 'Gul-stend', count: 4, unitPrice: 180, color: '#2dd4bf', width: 1.2, depth: 0.6, height: 1.2, type: 'flower_stand' },
+        { id: 'fl_wrap_table', name: 'O\'rash-stoli', count: 1, unitPrice: 300, color: '#0f766e', width: 1.5, depth: 0.8, height: 0.9, type: 'table' },
+        { id: 'fl_cash', name: 'Kassa', count: 1, unitPrice: 350, color: '#134e4a', width: 1.4, depth: 0.6, height: 1.0, type: 'counter' }
       ],
       standard: [
-        { id: 'fl_cold_room', name: 'Sovutgichli Shisha Gul Xonasi', count: 1, unitPrice: 2800, color: '#99f6e4', width: 2.5, depth: 2.0, height: 2.4, type: 'cold_room' },
-        { id: 'fl_stand', name: 'Yog\'och Gul Stendlari', count: 5, unitPrice: 240, color: '#2dd4bf', width: 1.4, depth: 0.7, height: 1.3, type: 'flower_stand' },
-        { id: 'fl_gift_shelf', name: 'Sovg\'alar Vitrinasi', count: 3, unitPrice: 250, color: '#5eead4', width: 1.2, depth: 0.4, height: 2.0, type: 'wall_shelf' },
-        { id: 'fl_wrap_table', name: 'Florist O\'rash Bar', count: 1, unitPrice: 450, color: '#0f766e', width: 1.8, depth: 0.9, height: 0.95, type: 'table' }
+        { id: 'fl_cold_room', name: 'Gul-xonasi', count: 1, unitPrice: 2800, color: '#99f6e4', width: 2.5, depth: 2.0, height: 2.4, type: 'cold_room' },
+        { id: 'fl_stand', name: 'Gul-stend', count: 5, unitPrice: 240, color: '#2dd4bf', width: 1.4, depth: 0.7, height: 1.3, type: 'flower_stand' },
+        { id: 'fl_gift_shelf', name: 'Sovg\'a-vitrina', count: 3, unitPrice: 250, color: '#5eead4', width: 1.2, depth: 0.4, height: 2.0, type: 'wall_shelf' },
+        { id: 'fl_wrap_table', name: 'O\'rash-stoli', count: 1, unitPrice: 450, color: '#0f766e', width: 1.8, depth: 0.9, height: 0.95, type: 'table' }
       ],
       premium: [
-        { id: 'fl_cold_room', name: 'Panoramik LED Shisha Gul Xonasi', count: 1, unitPrice: 4200, color: '#ccfbf1', width: 3.0, depth: 2.5, height: 2.5, type: 'cold_room' },
-        { id: 'fl_stand', name: 'Dizaynerlik Gul Podstavkalari', count: 8, unitPrice: 320, color: '#2dd4bf', width: 1.5, depth: 0.7, height: 1.4, type: 'flower_stand' },
-        { id: 'fl_gift_shelf', name: 'Sovg\'alar va Dekor Vitrinasi', count: 5, unitPrice: 350, color: '#5eead4', width: 1.5, depth: 0.4, height: 2.2, type: 'wall_shelf' },
-        { id: 'fl_wrap_table', name: 'Marmar Florist Workstation', count: 1, unitPrice: 750, color: '#134e4a', width: 2.2, depth: 1.0, height: 0.95, type: 'table' }
+        { id: 'fl_cold_room', name: 'Gul-xonasi', count: 1, unitPrice: 4200, color: '#ccfbf1', width: 3.0, depth: 2.5, height: 2.5, type: 'cold_room' },
+        { id: 'fl_stand', name: 'Gul-stend', count: 8, unitPrice: 320, color: '#2dd4bf', width: 1.5, depth: 0.7, height: 1.4, type: 'flower_stand' },
+        { id: 'fl_gift_shelf', name: 'Sovg\'a-vitrina', count: 5, unitPrice: 350, color: '#5eead4', width: 1.5, depth: 0.4, height: 2.2, type: 'wall_shelf' },
+        { id: 'fl_wrap_table', name: 'O\'rash-stoli', count: 1, unitPrice: 750, color: '#134e4a', width: 2.2, depth: 1.0, height: 0.95, type: 'table' }
       ]
     },
     inventoryPricePerM2: 90,
@@ -339,23 +339,23 @@ export const BUSINESS_CATEGORIES = [
     gradient: 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)',
     equipmentPresets: {
       economy: [
-        { id: 'bk_shelf', name: 'Kitob Stellaji', count: 8, unitPrice: 200, color: '#818cf8', width: 1.2, depth: 0.4, height: 2.2, type: 'wall_shelf' },
-        { id: 'bk_stationery', name: 'Kantselyariya Stendi', count: 2, unitPrice: 180, color: '#a5b4fc', width: 1.0, depth: 0.5, height: 1.8, type: 'island_shelf' },
-        { id: 'bk_cash', name: 'Kassa Stoli', count: 1, unitPrice: 350, color: '#3730a3', width: 1.5, depth: 0.7, height: 1.0, type: 'counter' }
+        { id: 'bk_shelf', name: 'Kitob-javon', count: 8, unitPrice: 200, color: '#818cf8', width: 1.2, depth: 0.4, height: 2.2, type: 'wall_shelf' },
+        { id: 'bk_stationery', name: 'Kantselyariya', count: 2, unitPrice: 180, color: '#a5b4fc', width: 1.0, depth: 0.5, height: 1.8, type: 'island_shelf' },
+        { id: 'bk_cash', name: 'Kassa', count: 1, unitPrice: 350, color: '#3730a3', width: 1.5, depth: 0.7, height: 1.0, type: 'counter' }
       ],
       standard: [
-        { id: 'bk_shelf', name: 'Yog\'och Kitob Stellaji', count: 12, unitPrice: 260, color: '#818cf8', width: 1.3, depth: 0.4, height: 2.3, type: 'wall_shelf' },
-        { id: 'bk_island', name: 'Top-Seller Kitoblar Oroli', count: 3, unitPrice: 320, color: '#c7d2fe', width: 1.6, depth: 0.8, height: 1.2, type: 'island_shelf' },
-        { id: 'bk_stationery', name: 'Kantselyariya Spinner Stendi', count: 4, unitPrice: 240, color: '#a5b4fc', width: 1.0, depth: 0.6, height: 1.8, type: 'island_shelf' },
-        { id: 'bk_read_table', name: 'Mutolaa Stoli va Stullar', count: 2, unitPrice: 380, color: '#4338ca', width: 1.8, depth: 0.9, height: 0.8, type: 'table' },
-        { id: 'bk_cash', name: 'Butilka Kassa Stoli', count: 1, unitPrice: 500, color: '#312e81', width: 1.8, depth: 0.8, height: 1.0, type: 'counter' }
+        { id: 'bk_shelf', name: 'Kitob-javon', count: 12, unitPrice: 260, color: '#818cf8', width: 1.3, depth: 0.4, height: 2.3, type: 'wall_shelf' },
+        { id: 'bk_island', name: 'Kitob-oroli', count: 3, unitPrice: 320, color: '#c7d2fe', width: 1.6, depth: 0.8, height: 1.2, type: 'island_shelf' },
+        { id: 'bk_stationery', name: 'Kantselyariya', count: 4, unitPrice: 240, color: '#a5b4fc', width: 1.0, depth: 0.6, height: 1.8, type: 'island_shelf' },
+        { id: 'bk_read_table', name: 'Mutolaa-stoli', count: 2, unitPrice: 380, color: '#4338ca', width: 1.8, depth: 0.9, height: 0.8, type: 'table' },
+        { id: 'bk_cash', name: 'Kassa', count: 1, unitPrice: 500, color: '#312e81', width: 1.8, depth: 0.8, height: 1.0, type: 'counter' }
       ],
       premium: [
-        { id: 'bk_shelf', name: 'Premium Yog\'och Kitob Stellajlari', count: 16, unitPrice: 350, color: '#6366f1', width: 1.5, depth: 0.4, height: 2.5, type: 'wall_shelf' },
-        { id: 'bk_island', name: 'Top-Seller LED Kitoblar Oroli', count: 5, unitPrice: 450, color: '#e0e7ff', width: 1.8, depth: 0.9, height: 1.3, type: 'island_shelf' },
-        { id: 'bk_stationery', name: 'Kantselyariya Vitrina Moduli', count: 6, unitPrice: 320, color: '#a5b4fc', width: 1.2, depth: 0.6, height: 1.9, type: 'island_shelf' },
-        { id: 'bk_read_table', name: 'Book-Cafe Mutolaa Zoni (Stol+Sofa)', count: 3, unitPrice: 650, color: '#4338ca', width: 2.0, depth: 1.0, height: 0.85, type: 'table' },
-        { id: 'bk_cash', name: 'Bookstore Reception Desk', count: 1, unitPrice: 850, color: '#1e1b4b', width: 2.2, depth: 0.9, height: 1.05, type: 'counter' }
+        { id: 'bk_shelf', name: 'Kitob-javon', count: 16, unitPrice: 350, color: '#6366f1', width: 1.5, depth: 0.4, height: 2.5, type: 'wall_shelf' },
+        { id: 'bk_island', name: 'Kitob-oroli', count: 5, unitPrice: 450, color: '#e0e7ff', width: 1.8, depth: 0.9, height: 1.3, type: 'island_shelf' },
+        { id: 'bk_stationery', name: 'Kantselyariya', count: 6, unitPrice: 320, color: '#a5b4fc', width: 1.2, depth: 0.6, height: 1.9, type: 'island_shelf' },
+        { id: 'bk_read_table', name: 'Mutolaa-stoli', count: 3, unitPrice: 650, color: '#4338ca', width: 2.0, depth: 1.0, height: 0.85, type: 'table' },
+        { id: 'bk_cash', name: 'Kassa', count: 1, unitPrice: 850, color: '#1e1b4b', width: 2.2, depth: 0.9, height: 1.05, type: 'counter' }
       ]
     },
     inventoryPricePerM2: 110,

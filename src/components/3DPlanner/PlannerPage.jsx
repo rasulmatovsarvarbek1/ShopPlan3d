@@ -5,10 +5,10 @@ import { RoomCanvas } from './RoomCanvas';
 import { LiveSmetaPanel } from './LiveSmetaPanel';
 import { AutoSaveIndicator, AutoSaveCloudIcon } from './AutoSaveIndicator';
 import { usePlannerAutosave } from '../../hooks/usePlannerAutosave';
-import { Eye, Box, ArrowLeft } from 'lucide-react';
+import { Eye, Box, ArrowLeft, Lock, Unlock } from 'lucide-react';
 
 export const PlannerPage = () => {
-  const { viewMode, setViewMode, setActivePage } = useAppStore();
+  const { viewMode, setViewMode, setActivePage, roomLocked, toggleRoomLocked } = useAppStore();
 
   usePlannerAutosave();
 
@@ -44,6 +44,18 @@ export const PlannerPage = () => {
             >
               <Eye size={15} />
               2D Tepadan Ko'rinish
+            </button>
+
+            <div style={{ width: '1px', height: '16px', background: 'var(--border-color)' }}></div>
+
+            {/* Xonani qulflash/ochish tugmasi */}
+            <button
+              className={`toolbar-btn ${roomLocked ? 'active' : ''}`}
+              onClick={toggleRoomLocked}
+              title={roomLocked ? "Xona qulflangan (ochish uchun bosing)" : "Xonani qulflash"}
+              style={{ padding: '7px 9px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            >
+              {roomLocked ? <Lock size={16} /> : <Unlock size={16} />}
             </button>
           </div>
 

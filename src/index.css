@@ -691,6 +691,18 @@ body {
 
 .count-btn:hover { background: var(--accent-blue); color: #fff; border-color: var(--accent-blue); }
 
+.item-counter input[type="number"]::-webkit-outer-spin-button,
+.item-counter input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.item-counter input[type="number"]:focus {
+  background: #ffffff !important;
+  border-color: var(--accent-blue) !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
 /* ===== USER PROFILE PAGE ===== */
 .user-profile-container {
   max-width: 1000px;
@@ -777,6 +789,17 @@ body {
   border-radius: var(--radius-full);
   font-size: 0.76rem;
   font-weight: 700;
+}
+
+@keyframes slideUpToast {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 20px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
 }
 
 .badge-blue { background: var(--accent-blue-light); color: var(--accent-blue); }

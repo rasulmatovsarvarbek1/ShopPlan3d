@@ -1010,14 +1010,14 @@ const SmithMachineShape = ({ color }) => (
     ))}
     {/* Guided Barbell */}
     <group position={[0, 1.2, 0]}>
-      <mesh rotation={[0, Math.PI / 2, 0]}>
-        <cylinderGeometry args={[0.028, 0.028, 1.8, 8]} />
+      <mesh rotation={[0, 0, Math.PI / 2]}>
+        <cylinderGeometry args={[0.028, 0.028, 1.5, 8]} />
         <meshStandardMaterial color="#94a3b8" metalness={0.9} />
       </mesh>
       {/* Red weights on ends */}
-      {[-0.75, 0.75].map((x, i) => (
-        <mesh key={i} position={[x, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
-          <cylinderGeometry args={[0.22, 0.22, 0.08, 16]} />
+      {[-0.65, 0.65].map((x, i) => (
+        <mesh key={i} position={[x, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+          <cylinderGeometry args={[0.2, 0.2, 0.08, 16]} />
           <meshStandardMaterial color="#dc2626" metalness={0.5} />
         </mesh>
       ))}
@@ -1029,40 +1029,40 @@ const SmithMachineShape = ({ color }) => (
 const SquatCageShape = ({ color }) => (
   <group>
     {/* 4 Vertical Pillars */}
-    {[[-0.7, -0.6], [0.7, -0.6], [-0.7, 0.6], [0.7, 0.6]].map(([x, z], i) => (
+    {[[-0.65, -0.55], [0.65, -0.55], [-0.65, 0.55], [0.65, 0.55]].map(([x, z], i) => (
       <mesh key={i} position={[x, 1.15, z]} castShadow>
         <boxGeometry args={[0.08, 2.3, 0.08]} />
         <meshStandardMaterial color={color} metalness={0.7} />
       </mesh>
     ))}
     {/* Top Connectors */}
-    {[-0.6, 0.6].map((z, i) => (
+    {[-0.55, 0.55].map((z, i) => (
       <mesh key={i} position={[0, 2.3, z]}>
-        <boxGeometry args={[1.48, 0.08, 0.08]} />
+        <boxGeometry args={[1.38, 0.08, 0.08]} />
         <meshStandardMaterial color={color} metalness={0.7} />
       </mesh>
     ))}
-    {[-0.7, 0.7].map((x, i) => (
+    {[-0.65, 0.65].map((x, i) => (
       <mesh key={i} position={[x, 2.3, 0]}>
-        <boxGeometry args={[0.08, 0.08, 1.28]} />
+        <boxGeometry args={[0.08, 0.08, 1.18]} />
         <meshStandardMaterial color={color} metalness={0.7} />
       </mesh>
     ))}
     {/* Chin up bar */}
     <mesh position={[0, 2.25, 0.55]} rotation={[0, 0, Math.PI / 2]}>
-      <cylinderGeometry args={[0.02, 0.02, 1.4, 8]} />
+      <cylinderGeometry args={[0.02, 0.02, 1.3, 8]} />
       <meshStandardMaterial color="#94a3b8" metalness={0.9} />
     </mesh>
     {/* Barbell resting at chest height */}
     <group position={[0, 1.3, 0]}>
-      <mesh rotation={[0, Math.PI / 2, 0]}>
-        <cylinderGeometry args={[0.025, 0.025, 2.0, 8]} />
+      <mesh rotation={[0, 0, Math.PI / 2]}>
+        <cylinderGeometry args={[0.025, 0.025, 1.5, 8]} />
         <meshStandardMaterial color="#94a3b8" metalness={0.9} />
       </mesh>
       {/* Weight plates */}
-      {[-0.88, 0.88].map((x, i) => (
-        <mesh key={i} position={[x, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
-          <cylinderGeometry args={[0.22, 0.22, 0.08, 16]} />
+      {[-0.7, 0.7].map((x, i) => (
+        <mesh key={i} position={[x, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+          <cylinderGeometry args={[0.2, 0.2, 0.08, 16]} />
           <meshStandardMaterial color="#1e293b" metalness={0.5} />
         </mesh>
       ))}
@@ -1075,11 +1075,11 @@ const OlympicBarbellShape = ({ color }) => (
   <group>
     {/* Frame Base */}
     <mesh position={[0, 0.05, 0]} castShadow>
-      <boxGeometry args={[1.5, 0.1, 0.6]} />
+      <boxGeometry args={[1.4, 0.1, 0.55]} />
       <meshStandardMaterial color={color} metalness={0.6} />
     </mesh>
     {/* Vertical Pillars */}
-    {[-0.6, 0.6].map((x, i) => (
+    {[-0.55, 0.55].map((x, i) => (
       <mesh key={i} position={[x, 0.8, 0]} castShadow>
         <boxGeometry args={[0.08, 1.5, 0.08]} />
         <meshStandardMaterial color={color} metalness={0.6} />
@@ -1089,13 +1089,13 @@ const OlympicBarbellShape = ({ color }) => (
     {[0.5, 0.9, 1.3].map((y, i) => (
       <group key={i} position={[0, y, 0]}>
         {/* Bar */}
-        <mesh rotation={[0, Math.PI / 2, 0]}>
-          <cylinderGeometry args={[0.02, 0.02, 1.8, 8]} />
+        <mesh rotation={[0, 0, Math.PI / 2]}>
+          <cylinderGeometry args={[0.02, 0.02, 1.45, 8]} />
           <meshStandardMaterial color="#94a3b8" metalness={0.9} />
         </mesh>
         {/* Weights on ends */}
-        {[-0.8, 0.8].map((x, j) => (
-          <mesh key={j} position={[x, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
+        {[-0.65, 0.65].map((x, j) => (
+          <mesh key={j} position={[x, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
             <cylinderGeometry args={[0.18, 0.18, 0.05, 12]} />
             <meshStandardMaterial color="#1e293b" metalness={0.5} />
           </mesh>
@@ -1568,12 +1568,12 @@ const ShapeFor = ({ type, color, height }) => {
 
 // ─── AABB Collision Helper ─────────────────────────────────────────────────
 const getEffectiveDims = (w, d, rotAngle) => {
-  const rotStep = Math.round(rotAngle / (Math.PI / 2)) % 4;
+  const rotStep = ((Math.round(rotAngle / (Math.PI / 2)) % 4) + 4) % 4;
   const swapped = rotStep === 1 || rotStep === 3;
   return { ew: swapped ? d : w, ed: swapped ? w : d };
 };
 
-const checkCollision = (ax, az, aw, ad, bx, bz, bw, bd, gap = 0.05) => {
+const checkCollision = (ax, az, aw, ad, bx, bz, bw, bd, gap = 0.08) => {
   return (
     Math.abs(ax - bx) < (aw + bw) / 2 + gap &&
     Math.abs(az - bz) < (ad + bd) / 2 + gap
@@ -1581,14 +1581,15 @@ const checkCollision = (ax, az, aw, ad, bx, bz, bw, bd, gap = 0.05) => {
 };
 
 const resolveCollision = (newPos, selfW, selfD, others) => {
-  const MAX_ITERS = 6;
+  const MAX_ITERS = 10;
   let x = newPos.x;
   let z = newPos.z;
+  const gap = 0.08;
   for (let iter = 0; iter < MAX_ITERS; iter++) {
     let moved = false;
     for (const other of others) {
-      const overlapX = (selfW + other.ew) / 2 + 0.05 - Math.abs(x - other.x);
-      const overlapZ = (selfD + other.ed) / 2 + 0.05 - Math.abs(z - other.z);
+      const overlapX = (selfW + other.ew) / 2 + gap - Math.abs(x - other.x);
+      const overlapZ = (selfD + other.ed) / 2 + gap - Math.abs(z - other.z);
       if (overlapX > 0 && overlapZ > 0) {
         // Push out along the smaller overlap axis
         if (overlapX < overlapZ) {
@@ -1638,6 +1639,10 @@ const DraggableEquipment = ({
 
     const intersection = new THREE.Vector3();
     raycaster.ray.intersectPlane(dragPlane, intersection);
+    const storeState = useAppStore.getState();
+    if (storeState.roomRotationAngle) {
+      intersection.applyAxisAngle(new THREE.Vector3(0, 1, 0), -storeState.roomRotationAngle);
+    }
     dragOffset.current.copy(intersection).sub(posRef.current);
   }, [id, onDragStart, onSelect, gl, raycaster, dragPlane]);
 
@@ -1646,16 +1651,19 @@ const DraggableEquipment = ({
     e.stopPropagation();
     const intersection = new THREE.Vector3();
     raycaster.ray.intersectPlane(dragPlane, intersection);
+    const storeState = useAppStore.getState();
+    if (storeState.roomRotationAngle) {
+      intersection.applyAxisAngle(new THREE.Vector3(0, 1, 0), -storeState.roomRotationAngle);
+    }
     const newPos = intersection.clone().sub(dragOffset.current);
     newPos.y = 0;
 
-    // ── Rotation hisobga olingan o'lchamlar ──
     const { ew: effectiveW, ed: effectiveD } = getEffectiveDims(
       item.width || 1.0, item.depth || 1.0, rotation
     );
     const hw = effectiveW / 2;
     const hd = effectiveD / 2;
-    const margin = 0.05;
+    const margin = 0.12;
 
     // ── Xona chegarasida ushlab turish ──
     newPos.x = Math.max(-roomW / 2 + hw + margin, Math.min(roomW / 2 - hw - margin, newPos.x));
@@ -1799,11 +1807,14 @@ const RoomScene = ({ isDragging, setIsDragging }) => {
     roomDimensions,
     equipmentList,
     viewMode,
+    roomLocked,
+    roomRotationAngle,
     updateEquipmentCount,
     positions,
     setPositions,
     rotations,
     setRotations,
+    setLastInteractedUid,
     lightingActive,
     setCameraApi
   } = useAppStore();
@@ -1860,17 +1871,81 @@ const RoomScene = ({ isDragging, setIsDragging }) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [equipmentList, W, L, positions]);
 
-  const getPos = (uid) => positions[uid] || initialPositions[uid] || [0, 0, 0];
+  const placedItems = useMemo(() => {
+    const result = [];
+    equipmentList.forEach((item) => {
+      for (let i = 0; i < item.count; i++) {
+        result.push({ uid: `${item.id}_${i}`, item });
+      }
+    });
+    return result;
+  }, [equipmentList]);
+
+  // Har qanday holatda ham devordan 1 mm ham tashqariga chiqmaslikni qat'iy kafolatlovchi getPos
+  const getPos = useCallback((uid) => {
+    const rawPos = positions[uid] || initialPositions[uid] || [0, 0, 0];
+    const itemId = uid.substring(0, uid.lastIndexOf('_'));
+    const item = equipmentList.find(e => e.id === itemId);
+    if (!item) return rawPos;
+
+    const rotStep = ((rotations[uid] || 0) % 4 + 4) % 4;
+    const isSwapped = rotStep === 1 || rotStep === 3;
+    const effW = isSwapped ? (item.depth || 1.0) : (item.width || 1.0);
+    const effD = isSwapped ? (item.width || 1.0) : (item.depth || 1.0);
+    const margin = 0.12;
+
+    const minX = -W / 2 + effW / 2 + margin;
+    const maxX = W / 2 - effW / 2 - margin;
+    const minZ = -L / 2 + effD / 2 + margin;
+    const maxZ = L / 2 - effD / 2 - margin;
+
+    const clampedX = Math.max(minX, Math.min(maxX, rawPos[0]));
+    const clampedZ = Math.max(minZ, Math.min(maxZ, rawPos[2]));
+    return [clampedX, rawPos[1] || 0, clampedZ];
+  }, [positions, initialPositions, equipmentList, rotations, W, L]);
 
   const handlePositionChange = useCallback((uid, newPos) => {
     setPositions({ ...positions, [uid]: newPos });
-  }, [positions, setPositions]);
+    setLastInteractedUid(uid);
+  }, [positions, setPositions, setLastInteractedUid]);
 
-  // 90° qadam bilan aylantirish
+  // 90° qadam bilan aylantirish va devordan chiqib ketmaslik / to'qnashmaslikni ta'minlash
   const handleRotate = useCallback((uid) => {
     const current = rotations[uid] || 0;
-    setRotations({ ...rotations, [uid]: (current + 1) % 4 });
-  }, [rotations, setRotations]);
+    const nextRot = (current + 1) % 4;
+
+    const itemId = uid.substring(0, uid.lastIndexOf('_'));
+    const item = equipmentList.find(e => e.id === itemId);
+    const w = item?.width || 1.0;
+    const d = item?.depth || 1.0;
+    const { ew: effectiveW, ed: effectiveD } = getEffectiveDims(w, d, nextRot * (Math.PI / 2));
+
+    const hw = effectiveW / 2;
+    const hd = effectiveD / 2;
+    const margin = 0.12;
+
+    let curPos = positions[uid] || initialPositions[uid] || [0, 0, 0];
+    let newX = Math.max(-W / 2 + hw + margin, Math.min(W / 2 - hw - margin, curPos[0]));
+    let newZ = Math.max(-L / 2 + hd + margin, Math.min(L / 2 - hd - margin, curPos[2]));
+
+    // Boshqa elementlar bilan to'qnashuvni hal qilish
+    const others = placedItems
+      .filter(({ uid: u }) => u !== uid)
+      .map(({ uid: u, item: otherItem }) => {
+        const p = positions[u] || initialPositions[u] || [0, 0, 0];
+        const rotAngle = (rotations[u] || 0) * (Math.PI / 2);
+        const { ew, ed } = getEffectiveDims(otherItem.width || 1.0, otherItem.depth || 1.0, rotAngle);
+        return { x: p[0], z: p[2], ew, ed };
+      });
+
+    const resolved = resolveCollision({ x: newX, z: newZ }, effectiveW, effectiveD, others);
+    newX = Math.max(-W / 2 + hw + margin, Math.min(W / 2 - hw - margin, resolved.x));
+    newZ = Math.max(-L / 2 + hd + margin, Math.min(L / 2 - hd - margin, resolved.z));
+
+    setRotations({ ...rotations, [uid]: nextRot });
+    setPositions({ ...positions, [uid]: [newX, 0, newZ] });
+    setLastInteractedUid(uid);
+  }, [rotations, positions, initialPositions, equipmentList, placedItems, W, L, setRotations, setPositions, setLastInteractedUid]);
 
   // Elementni olib tashlash va uning pozitsiyalarini tartiblash
   const handleDelete = useCallback((uid) => {
@@ -1909,22 +1984,13 @@ const RoomScene = ({ isDragging, setIsDragging }) => {
     // Store dagi sonini kamaytirish
     updateEquipmentCount(itemId, -1);
     setSelectedId(null);
-  }, [equipmentList, initialPositions, updateEquipmentCount, positions, rotations, setPositions, setRotations]);
+    setLastInteractedUid(null);
+  }, [equipmentList, initialPositions, updateEquipmentCount, positions, rotations, setPositions, setRotations, setLastInteractedUid]);
 
   // Fon bosilganda selection tushsin
   const handleMissed = useCallback(() => {
     setSelectedId(null);
   }, []);
-
-  const placedItems = useMemo(() => {
-    const result = [];
-    equipmentList.forEach((item) => {
-      for (let i = 0; i < item.count; i++) {
-        result.push({ uid: `${item.id}_${i}`, item });
-      }
-    });
-    return result;
-  }, [equipmentList]);
 
   return (
     <>
@@ -1937,114 +2003,122 @@ const RoomScene = ({ isDragging, setIsDragging }) => {
         </>
       )}
 
-      {/* Lighting & Time Simulation Component */}
-      <LightingSimulator
-        selectedId={selectedId}
-        onSelect={setSelectedId}
-        onDragStart={() => setIsDragging(true)}
-        onDragEnd={() => setIsDragging(false)}
-      />
+      {/* ── Xona guruhi: default da xona aylanadi (turntable), qulflanganda qotib turadi ── */}
+      <group rotation={[0, roomRotationAngle, 0]}>
+        {/* Lighting & Time Simulation Component */}
+        <LightingSimulator
+          selectedId={selectedId}
+          onSelect={setSelectedId}
+          onDragStart={() => setIsDragging(true)}
+          onDragEnd={() => setIsDragging(false)}
+        />
 
-      {/* Foot Traffic Pathfinding & Customer Animation Component */}
-      <FootTrafficSimulator />
+        {/* Foot Traffic Pathfinding & Customer Animation Component */}
+        <FootTrafficSimulator />
 
-      {/* Floor — klik bo'sh joyga tushganda selection olib tashlanadi */}
-      <mesh
-        rotation={[-Math.PI / 2, 0, 0]}
-        position={[0, 0, 0]}
-        receiveShadow
-        onPointerDown={handleMissed}
-      >
-        <planeGeometry args={[W, L]} />
-        <meshStandardMaterial color="#f8fafc" roughness={0.4} />
-      </mesh>
 
-      {/* Floor Grid */}
-      <Grid
-        position={[0, 0.01, 0]}
-        args={[W, L]}
-        cellSize={1}
-        cellThickness={0.8}
-        cellColor="#e2e8f0"
-        sectionSize={5}
-        sectionThickness={1.2}
-        sectionColor="#c7d2fe"
-        fadeDistance={60}
-      />
+        {/* Floor — klik bo'sh joyga tushganda selection olib tashlanadi */}
+        <mesh
+          rotation={[-Math.PI / 2, 0, 0]}
+          position={[0, 0, 0]}
+          receiveShadow
+          onPointerDown={handleMissed}
+        >
+          <planeGeometry args={[W, L]} />
+          <meshStandardMaterial color="#f8fafc" roughness={0.4} />
+        </mesh>
 
-      {/* Room Walls */}
-      <mesh position={[0, H / 2, -L / 2]}>
-        <planeGeometry args={[W, H]} />
-        <meshStandardMaterial color="#f1f5f9" side={THREE.DoubleSide} />
-      </mesh>
-      <mesh position={[-W / 2, H / 2, 0]} rotation={[0, Math.PI / 2, 0]}>
-        <planeGeometry args={[L, H]} />
-        <meshStandardMaterial color="#f1f5f9" side={THREE.DoubleSide} transparent opacity={0.7} />
-      </mesh>
-      <mesh position={[W / 2, H / 2, 0]} rotation={[0, -Math.PI / 2, 0]}>
-        <planeGeometry args={[L, H]} />
-        <meshStandardMaterial color="#f1f5f9" side={THREE.DoubleSide} transparent opacity={0.7} />
-      </mesh>
+        {/* Floor Grid */}
+        <Grid
+          position={[0, 0.01, 0]}
+          args={[Math.max(W + 20, 60), Math.max(L + 20, 60)]}
+          cellSize={1}
+          cellThickness={0.8}
+          cellColor="#e2e8f0"
+          sectionSize={5}
+          sectionThickness={1.2}
+          sectionColor="#c7d2fe"
+          fadeDistance={Math.max(W, L, 60) * 2.5}
+        />
 
-      {/* Room Edge Lines (baseboard) */}
-      {[[-W / 2, 0, 0], [W / 2, 0, 0], [0, 0, -L / 2], [0, 0, L / 2]].map(([x, y, z], i) => {
-        const isX = i < 2;
-        return (
-          <mesh key={i} position={[x, 0.05, z]}>
-            <boxGeometry args={isX ? [0.05, 0.1, L] : [W, 0.1, 0.05]} />
-            <meshStandardMaterial color="#2563eb" transparent opacity={0.5} />
-          </mesh>
-        );
-      })}
+        {/* Room Walls */}
+        <mesh position={[0, H / 2, -L / 2]}>
+          <planeGeometry args={[W, H]} />
+          <meshStandardMaterial color="#f1f5f9" side={THREE.DoubleSide} />
+        </mesh>
+        <mesh position={[-W / 2, H / 2, 0]} rotation={[0, Math.PI / 2, 0]}>
+          <planeGeometry args={[L, H]} />
+          <meshStandardMaterial color="#f1f5f9" side={THREE.DoubleSide} transparent opacity={0.7} />
+        </mesh>
+        <mesh position={[W / 2, H / 2, 0]} rotation={[0, -Math.PI / 2, 0]}>
+          <planeGeometry args={[L, H]} />
+          <meshStandardMaterial color="#f1f5f9" side={THREE.DoubleSide} transparent opacity={0.7} />
+        </mesh>
 
-      {/* Equipment Items (Draggable) */}
-      {placedItems.map(({ uid, item }) => {
-        const pos = getPos(uid);
-        if (!pos || pos.length < 3) return null;
-        const rotStep = rotations[uid] || 0;
-        const rotAngle = rotStep * (Math.PI / 2);
+        {/* Room Edge Lines (baseboard) */}
+        {[[-W / 2, 0, 0], [W / 2, 0, 0], [0, 0, -L / 2], [0, 0, L / 2]].map(([x, y, z], i) => {
+          const isX = i < 2;
+          return (
+            <mesh key={i} position={[x, 0.05, z]}>
+              <boxGeometry args={isX ? [0.05, 0.1, L] : [W, 0.1, 0.05]} />
+              <meshStandardMaterial color="#2563eb" transparent opacity={0.5} />
+            </mesh>
+          );
+        })}
 
-        // allItems: collision uchun barcha boshqa elementlarning pozitsiyalari va o'lchamlari
-        const allItemsForCollision = placedItems.map(({ uid: u, item: it }) => ({
-          uid: u,
-          item: it,
-          rotAngle: (rotations[u] || 0) * (Math.PI / 2)
-        }));
+        {/* Equipment Items (Draggable) */}
+        {placedItems.map(({ uid, item }) => {
+          const pos = getPos(uid);
+          if (!pos || pos.length < 3) return null;
+          const rotStep = rotations[uid] || 0;
+          const rotAngle = rotStep * (Math.PI / 2);
 
-        // allPositions: har bir uid uchun joriy pozitsiya
-        const allPositionsForCollision = {};
-        placedItems.forEach(({ uid: u }) => {
-          allPositionsForCollision[u] = getPos(u);
-        });
+          const allItemsForCollision = placedItems.map(({ uid: u, item: it }) => ({
+            uid: u,
+            item: it,
+            rotAngle: (rotations[u] || 0) * (Math.PI / 2)
+          }));
 
-        return (
-          <DraggableEquipment
-            key={uid}
-            id={uid}
-            item={item}
-            position={pos}
-            rotation={rotAngle}
-            isSelected={selectedId === uid}
-            onSelect={setSelectedId}
-            onDragStart={() => setIsDragging(true)}
-            onDragEnd={() => setIsDragging(false)}
-            onPositionChange={handlePositionChange}
-            onRotate={handleRotate}
-            onDelete={handleDelete}
-            roomW={W}
-            roomL={L}
-            allPositions={allPositionsForCollision}
-            allItems={allItemsForCollision}
-          />
-        );
-      })}
+          const allPositionsForCollision = {};
+          placedItems.forEach(({ uid: u }) => {
+            allPositionsForCollision[u] = getPos(u);
+          });
 
-      {/* Orbit Controls — disabled while dragging */}
+          return (
+            <DraggableEquipment
+              key={uid}
+              id={uid}
+              item={item}
+              position={pos}
+              rotation={rotAngle}
+              isSelected={selectedId === uid}
+              onSelect={(id) => {
+                setSelectedId(id);
+                setLastInteractedUid(id);
+              }}
+              onDragStart={() => setIsDragging(true)}
+              onDragEnd={() => setIsDragging(false)}
+              onPositionChange={handlePositionChange}
+              onRotate={handleRotate}
+              onDelete={handleDelete}
+              roomW={W}
+              roomL={L}
+              allPositions={allPositionsForCollision}
+              allItems={allItemsForCollision}
+            />
+          );
+        })}
+      </group>
+
+      {/* OrbitControls — roomLocked=true: kamera erkin aylanadi; roomLocked=false: faqat pan/zoom */}
       <OrbitControls
         ref={handleControlsRef}
         enabled={!isDragging}
+        enableRotate={roomLocked && !isDragging}
         enableDamping
         dampingFactor={0.05}
+        maxDistance={5000}
+        minDistance={1}
         maxPolarAngle={viewMode === 'top2d' ? 0.01 : Math.PI / 2 - 0.04}
         minPolarAngle={viewMode === 'top2d' ? 0.01 : 0.1}
         target={[0, 1, 0]}
@@ -2058,41 +2132,54 @@ const RoomScene = ({ isDragging, setIsDragging }) => {
 // ─────────────────────────────────────────────
 
 export const RoomCanvas = () => {
-  const { viewMode } = useAppStore();
+  const { viewMode, roomLocked, rotateRoomAngle } = useAppStore();
   const [isDragging, setIsDragging] = useState(false);
+  const isRoomDraggingRef = useRef(false);
+  const lastXRef = useRef(0);
+
+  // Default (roomLocked=false): sichqoncha bilan xonani aylantirish (turntable)
+  const handlePointerDown = (e) => {
+    if (!roomLocked && !isDragging) {
+      isRoomDraggingRef.current = true;
+      lastXRef.current = e.clientX;
+    }
+  };
+
+  const handlePointerMove = (e) => {
+    if (isRoomDraggingRef.current && !roomLocked) {
+      const deltaX = e.clientX - lastXRef.current;
+      lastXRef.current = e.clientX;
+      rotateRoomAngle(deltaX * 0.008);
+    }
+  };
+
+  const handlePointerEnd = () => {
+    isRoomDraggingRef.current = false;
+  };
 
   return (
-    <div className="viewport-container" id="room-canvas-viewport">
+    <div
+      className="viewport-container"
+      id="room-canvas-viewport"
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerEnd}
+      onPointerCancel={handlePointerEnd}
+      style={{ cursor: !roomLocked ? 'grab' : 'default' }}
+    >
       <Canvas
         shadows
         gl={{ preserveDrawingBuffer: true }}
         camera={{
           position: viewMode === 'top2d' ? [0, 25, 0.01] : [14, 12, 18],
-          fov: 42
+          fov: 42,
+          near: 0.1,
+          far: 8000
         }}
         onPointerMissed={() => {}}
       >
         <RoomScene isDragging={isDragging} setIsDragging={setIsDragging} />
       </Canvas>
-      {/* Drag hint */}
-      <div style={{
-        position: 'absolute',
-        bottom: '1.25rem',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        background: 'rgba(255,255,255,0.92)',
-        backdropFilter: 'blur(12px)',
-        padding: '6px 16px',
-        borderRadius: '99px',
-        fontSize: '0.78rem',
-        fontWeight: 600,
-        color: '#475569',
-        border: '1px solid #e2e8f0',
-        pointerEvents: 'none',
-        whiteSpace: 'nowrap'
-      }}>
-        Jihozni bosib ushlab suring — o'rnini o'zgartiring
-      </div>
     </div>
   );
 };
