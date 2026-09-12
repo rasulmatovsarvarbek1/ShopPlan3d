@@ -1937,7 +1937,7 @@ const RoomScene = ({ isDragging, setIsDragging }) => {
     let newX = Math.max(-W / 2 + hw + margin, Math.min(W / 2 - hw - margin, curPos[0]));
     let newZ = Math.max(-L / 2 + hd + margin, Math.min(L / 2 - hd - margin, curPos[2]));
 
-    // Boshqa elementlar bilan to'qnashuvni hal qilish
+    // Boshqa elementlar bilan to'qnashuvni tekshirish (boshqa elementlar mutlaqo joyidan qo'zg'almaydi!)
     const others = placedItems
       .filter(({ uid: u }) => u !== uid)
       .map(({ uid: u, item: otherItem }) => {
@@ -1947,13 +1947,35 @@ const RoomScene = ({ isDragging, setIsDragging }) => {
         return { x: p[0], z: p[2], ew, ed };
       });
 
-    const resolved = resolveCollision({ x: newX, z: newZ }, effectiveW, effectiveD, others);
-    newX = Math.max(-W / 2 + hw + margin, Math.min(W / 2 - hw - margin, resolved.x));
-    newZ = Math.max(-L / 2 + hd + margin, Math.min(L / 2 - hd - margin, resolved.z));
+    let finalX = newX;
+    let finalZ = newZ;
 
-    // Rotation va pozitsiyani undo history bilan saqlash
+    if (hasCollision(finalX, finalZ, effectiveW, effectiveD, others)) {
+      const candidates = [
+        [0.2, 0], [-0.2, 0], [0, 0.2], [0, -0.2],
+        [0.35, 0], [-0.35, 0], [0, 0.35], [0, -0.35],
+        [0.2, 0.2], [-0.2, -0.2]
+      ];
+      let resolved = false;
+      for (const [ox, oz] of candidates) {
+        const testX = Math.max(-W / 2 + hw + margin, Math.min(W / 2 - hw - margin, curPos[0] + ox));
+        const testZ = Math.max(-L / 2 + hd + margin, Math.min(L / 2 - hd - margin, curPos[2] + oz));
+        if (!hasCollision(testX, testZ, effectiveW, effectiveD, others)) {
+          finalX = testX;
+          finalZ = testZ;
+          resolved = true;
+          break;
+        }
+      }
+      if (!resolved) {
+        // Agar to'qnashuvdan qutulib bo'lmasa, boshqa elementlarga ziyon yetkazmaslik uchun aylantirmaymiz
+        return;
+      }
+    }
+
+    // FAQAT shu bitta element yangilanadi, boshqa elementlarga zarracha ta'sir qilmaydi
     updateRotation(uid, nextRot);
-    updatePosition(uid, [newX, 0, newZ]);
+    updatePosition(uid, [finalX, 0, finalZ]);
     setLastInteractedUid(uid);
   }, [rotations, positions, initialPositions, equipmentList, placedItems, W, L, updateRotation, updatePosition, setLastInteractedUid]);
 

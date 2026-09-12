@@ -1334,6 +1334,72 @@ export const SidebarControls = () => {
     setShowAddItemForm(false);
   };
 
+  // ── LED Chiroq qo'shish cooldown & loading doira holati ──
+  const [isAddingLight, setIsAddingLight] = useState(false);
+  const [lightProgress, setLightProgress] = useState(0);
+  const lightAnimRef = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      if (lightAnimRef.current) {
+        cancelAnimationFrame(lightAnimRef.current);
+      }
+    };
+  }, []);
+
+  const handleAddLight = () => {
+    if (isAddingLight) return;
+
+    const createLight = () => ({
+      id: 'light_' + Date.now(),
+      x: (Math.random() - 0.5) * (roomDimensions.width * 0.5),
+      z: (Math.random() - 0.5) * (roomDimensions.length * 0.5),
+      color: '#fef08a',
+      intensity: 1.2,
+      unitPrice: 120
+    });
+
+    // 1-chiroq darhol qo'yilib 1.5s cooldown doirasi to'ladi (qotib qolmasligi uchun).
+    // 2-chi va keyingilari bosilganda esa 1.5s doira to'lib keyin qo'yiladi.
+    const isFirstLight = customLights.length === 0;
+
+    if (isFirstLight) {
+      addCustomLight(createLight());
+    }
+
+    setIsAddingLight(true);
+    setLightProgress(0);
+    const startTime = performance.now();
+    const duration = 1500; // 1.5 sekund
+
+    const step = (now) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(100, (elapsed / duration) * 100);
+      setLightProgress(progress);
+
+      if (elapsed < duration) {
+        lightAnimRef.current = requestAnimationFrame(step);
+      } else {
+        if (!isFirstLight) {
+          addCustomLight(createLight());
+        }
+        setIsAddingLight(false);
+        setLightProgress(0);
+      }
+    };
+
+    lightAnimRef.current = requestAnimationFrame(step);
+  };
+
+  const handleClearLights = () => {
+    if (lightAnimRef.current) {
+      cancelAnimationFrame(lightAnimRef.current);
+    }
+    setIsAddingLight(false);
+    setLightProgress(0);
+    clearCustomLights();
+  };
+
   const area = roomDimensions.width * roomDimensions.length;
 
   const formatPrice = (usd) => {
@@ -1640,35 +1706,64 @@ export const SidebarControls = () => {
               </div>
               <div style={{ display: 'flex', gap: '6px' }}>
                 <button
-                  onClick={() => {
-                    const newLight = {
-                      id: 'light_' + Date.now(),
-                      x: (Math.random() - 0.5) * (roomDimensions.width * 0.5),
-                      z: (Math.random() - 0.5) * (roomDimensions.length * 0.5),
-                      color: '#fef08a',
-                      intensity: 1.2,
-                      unitPrice: 120
-                    };
-                    addCustomLight(newLight);
-                  }}
+                  onClick={handleAddLight}
+                  disabled={isAddingLight}
                   style={{
                     flex: 1,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px',
-                    padding: '6px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '6px',
+                    padding: '6px 8px',
                     borderRadius: '6px',
-                    border: '1px solid #ca8a04',
-                    background: '#fef9c3',
+                    border: isAddingLight ? '1px solid #facc15' : '1px solid #ca8a04',
+                    background: isAddingLight ? '#fefce8' : '#fef9c3',
                     color: '#854d0e',
                     fontWeight: 700,
                     fontSize: '0.75rem',
-                    cursor: 'pointer'
+                    cursor: isAddingLight ? 'not-allowed' : 'pointer',
+                    opacity: isAddingLight ? 0.9 : 1,
+                    transition: 'background 0.2s, border-color 0.2s',
+                    userSelect: 'none'
                   }}
+                  title={isAddingLight ? "Doira to'lishini kuting..." : "Yangi chiroq qo'shish"}
                 >
-                  <Plus size={14} /> Chiroq qo'shish
+                  {isAddingLight ? (
+                    <>
+                      <div style={{ position: 'relative', width: '16px', height: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <svg width="16" height="16" viewBox="0 0 24 24" style={{ transform: 'rotate(-90deg)' }}>
+                          <circle
+                            cx="12"
+                            cy="12"
+                            r="9"
+                            fill="none"
+                            stroke="#fef08a"
+                            strokeWidth="3"
+                          />
+                          <circle
+                            cx="12"
+                            cy="12"
+                            r="9"
+                            fill="none"
+                            stroke="#ca8a04"
+                            strokeWidth="3"
+                            strokeDasharray={56.54}
+                            strokeDashoffset={56.54 - (56.54 * lightProgress) / 100}
+                            strokeLinecap="round"
+                          />
+                        </svg>
+                      </div>
+                      <span>O'rnatilmoqda... {Math.round(lightProgress)}%</span>
+                    </>
+                  ) : (
+                    <>
+                      <Plus size={14} /> Chiroq qo'shish
+                    </>
+                  )}
                 </button>
                 {customLights.length > 0 && (
                   <button
-                    onClick={clearCustomLights}
+                    onClick={handleClearLights}
                     style={{
                       padding: '6px 10px',
                       borderRadius: '6px',

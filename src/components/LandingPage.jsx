@@ -7,7 +7,7 @@ import {
 
 
 export const LandingPage = () => {
-  const { setActivePage } = useAppStore();
+  const { setActivePage, hasSelectedCategory } = useAppStore();
 
   return (
     <div className="animate-fade-in">
@@ -40,7 +40,13 @@ export const LandingPage = () => {
           <button
             className="btn-secondary"
             style={{ padding: '14px 26px', fontSize: '0.98rem' }}
-            onClick={() => setActivePage('planner')}
+            onClick={() => {
+              if (!hasSelectedCategory) {
+                setActivePage('selector');
+              } else {
+                setActivePage('planner');
+              }
+            }}
           >
             <Box size={18} />
             3D Demo Ko'rish

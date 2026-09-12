@@ -3,7 +3,13 @@ import { useAppStore } from '../store/useAppStore';
 import { Store, LayoutGrid, Box, UserCircle, Sparkles } from 'lucide-react';
 
 export const Navbar = () => {
-  const { activePage, setActivePage, currency, setCurrency } = useAppStore();
+  const { activePage, setActivePage, currency, setCurrency, hasSelectedCategory } = useAppStore();
+
+  const handlePlannerClick = () => {
+    if (activePage !== 'planner') {
+      setActivePage('selector');
+    }
+  };
 
   return (
     <nav className="navbar">
@@ -34,8 +40,8 @@ export const Navbar = () => {
         </button>
 
         <button
-          className={`nav-btn ${activePage === 'planner' || activePage === 'selector' ? 'active' : ''}`}
-          onClick={() => setActivePage('selector')}
+          className={`nav-btn ${activePage === 'planner' ? 'active' : ''}`}
+          onClick={handlePlannerClick}
         >
           <Box size={15} />
           3D Rejalashtiruvchi
