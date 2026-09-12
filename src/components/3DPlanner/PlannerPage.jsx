@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAppStore } from '../../store/useAppStore';
 import { SidebarControls } from './SidebarControls';
 import { RoomCanvas } from './RoomCanvas';
 import { LiveSmetaPanel } from './LiveSmetaPanel';
 import { AutoSaveIndicator, AutoSaveCloudIcon } from './AutoSaveIndicator';
 import { usePlannerAutosave } from '../../hooks/usePlannerAutosave';
-import { Eye, Box, ArrowLeft, Lock, Unlock, Undo2, Redo2 } from 'lucide-react';
+import { Eye, Box, ArrowLeft, Lock, Unlock, Undo2, Redo2, Menu, Calculator, SlidersHorizontal } from 'lucide-react';
 
 export const PlannerPage = () => {
   const {
@@ -20,12 +20,55 @@ export const PlannerPage = () => {
     positionFuture
   } = useAppStore();
 
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [isMobileSmetaOpen, setIsMobileSmetaOpen] = useState(false);
+
   usePlannerAutosave();
 
   return (
-    <div className="animate-fade-in">
+    <div className="animate-fade-in planner-root-container">
+      {/* ── Mobil Backdrop Overlay (Ixtiyoriy panel ochiq bo'lganda) ── */}
+      {(isMobileSidebarOpen || isMobileSmetaOpen) && (
+        <div
+          className="mobile-drawer-overlay"
+          onClick={() => {
+            setIsMobileSidebarOpen(false);
+            setIsMobileSmetaOpen(false);
+          }}
+        />
+      )}
+
+      {/* ── 768px dan kichiklarda Chap tarafda Burger Icon Tugmasi ── */}
+      <button
+        className="mobile-sidebar-toggle-btn"
+        onClick={() => {
+          setIsMobileSidebarOpen(v => !v);
+          setIsMobileSmetaOpen(false);
+        }}
+        title="Jihozlar va Shablonlar menyusi"
+      >
+        <Menu size={18} />
+        <span>Jihozlar</span>
+      </button>
+
+      {/* ── 768px dan kichiklarda O'ng tarafda Smeta Tugmasi ── */}
+      <button
+        className="mobile-smeta-toggle-btn"
+        onClick={() => {
+          setIsMobileSmetaOpen(v => !v);
+          setIsMobileSidebarOpen(false);
+        }}
+        title="Jonli Smeta va Hisob-kitob"
+      >
+        <Calculator size={17} />
+        <span>Smeta</span>
+      </button>
+
       <div className="planner-wrapper">
-        <SidebarControls />
+        <SidebarControls
+          isMobileOpen={isMobileSidebarOpen}
+          onClose={() => setIsMobileSidebarOpen(false)}
+        />
 
         <div style={{ position: 'relative', width: '100%', height: '100%' }}>
           <div className="viewport-toolbar">
@@ -98,7 +141,10 @@ export const PlannerPage = () => {
           <RoomCanvas />
         </div>
 
-        <LiveSmetaPanel />
+        <LiveSmetaPanel
+          isMobileOpen={isMobileSmetaOpen}
+          onClose={() => setIsMobileSmetaOpen(false)}
+        />
       </div>
 
       <AutoSaveIndicator />

@@ -1268,7 +1268,7 @@ const ShapePreviewSVG = ({ type, color, size = 38 }) => {
   }
 };
 
-export const SidebarControls = () => {
+export const SidebarControls = ({ isMobileOpen, onClose }) => {
   const {
     roomDimensions,
     setRoomDimensions,
@@ -1410,7 +1410,21 @@ export const SidebarControls = () => {
   };
 
   return (
-    <div className="sidebar-panel">
+    <div className={`sidebar-panel ${isMobileOpen ? 'mobile-open' : ''}`}>
+      {/* Mobile Drawer Header with Close Button */}
+      <div className="mobile-drawer-header">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 800, color: 'var(--text-primary)', fontSize: '0.98rem' }}>
+          <Package size={18} color="var(--accent-blue)" />
+          <span>Jihozlar & Shablonlar</span>
+        </div>
+        <button
+          className="mobile-drawer-close-btn"
+          onClick={onClose}
+          title="Yopish"
+        >
+          <X size={20} />
+        </button>
+      </div>
       {/* Category Header */}
       <div style={{
         background: selectedCategory.gradient,

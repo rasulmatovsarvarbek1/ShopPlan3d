@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useAppStore, UZS_RATE } from '../../store/useAppStore';
 import confetti from 'canvas-confetti';
-import { Calculator, Save, CheckCircle, AlertTriangle } from 'lucide-react';
+import { Calculator, Save, CheckCircle, AlertTriangle, X } from 'lucide-react';
 import { MonthlyRoiPanel } from './MonthlyRoiPanel';
 import { PdfExportButton } from './PdfExportButton';
 
-export const LiveSmetaPanel = () => {
+export const LiveSmetaPanel = ({ isMobileOpen, onClose }) => {
   const {
     roomDimensions,
     equipmentList,
@@ -51,7 +51,22 @@ export const LiveSmetaPanel = () => {
   };
 
   return (
-    <div className="right-panel">
+    <div className={`right-panel ${isMobileOpen ? 'mobile-open' : ''}`}>
+      {/* Mobile Drawer Header with Close Button */}
+      <div className="mobile-drawer-header">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 800, color: 'var(--text-primary)', fontSize: '0.98rem' }}>
+          <Calculator size={18} color="var(--accent-emerald)" />
+          <span>Smeta & Hisob-kitob</span>
+        </div>
+        <button
+          className="mobile-drawer-close-btn"
+          onClick={onClose}
+          title="Yopish"
+        >
+          <X size={20} />
+        </button>
+      </div>
+
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', fontSize: '1.1rem', fontWeight: 800 }}>
         <Calculator color="var(--accent-emerald)" size={22} />
         Real-Vaqt Smeta Kalkulyatori
