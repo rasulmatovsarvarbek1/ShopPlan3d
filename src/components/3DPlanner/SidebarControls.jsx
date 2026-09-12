@@ -461,6 +461,7 @@ const ShapePreviewSVG = ({ type, color, size = 38 }) => {
     // ── Muzlatgich ─────────────────────────────
     case 'fridge':
     case 'chest_freezer':
+    case 'pastry':
       return (
         <svg {...svgProps}>
           <rect x={9} y={4} width={20} height={28} rx={3} fill={c} opacity={0.85}/>
@@ -475,23 +476,25 @@ const ShapePreviewSVG = ({ type, color, size = 38 }) => {
     case 'wall_shelf':
     case 'island_shelf':
     case 'shoe_shelf':
-    case 'oil_display':
     case 'book_shelf':
+    case 'gift_shelf':
       return (
         <svg {...svgProps}>
           <rect x={7} y={4} width={24} height={30} rx={2} fill={c} opacity={0.8}/>
-          {[8,14,20,26].map((y,i) => (
+          {[8, 14, 20, 26].map((y, i) => (
             <rect key={i} x={9} y={y} width={20} height={2} rx={1} fill="#f1f5f9" opacity={0.9}/>
           ))}
-          {[10,16,22].map((y,i) => (
-            <rect key={i} x={11} y={y} width={6} height={4} rx={1} fill={['#f43f5e','#3b82f6','#10b981'][i]} opacity={0.9}/>
+          {[10, 16, 22].map((y, i) => (
+            <rect key={i} x={11} y={y} width={6} height={4} rx={1} fill={['#f43f5e', '#3b82f6', '#10b981'][i]} opacity={0.9}/>
           ))}
         </svg>
       );
 
-    // ── Kassa stoli / Counter ──────────────────
+    // ── Kassa stoli / Counter / Retsepsiya ─────
     case 'counter':
     case 'demo_table':
+    case 'reception':
+    case 'cash_counter':
       return (
         <svg {...svgProps}>
           <rect x={5} y={14} width={28} height={14} rx={3} fill={c} opacity={0.85}/>
@@ -514,7 +517,7 @@ const ShapePreviewSVG = ({ type, color, size = 38 }) => {
         </svg>
       );
 
-    // ── Kiyim stakani ──────────────────────────
+    // ── Kiyim stakani / Aylana stend ───────────
     case 'clothing_rack':
     case 'center_rack':
       return (
@@ -522,10 +525,10 @@ const ShapePreviewSVG = ({ type, color, size = 38 }) => {
           <line x1={5} y1={12} x2={33} y2={12} stroke={c} strokeWidth={2.5} strokeLinecap="round"/>
           <line x1={7}  y1={12} x2={7}  y2={34} stroke={c} strokeWidth={2} strokeLinecap="round"/>
           <line x1={31} y1={12} x2={31} y2={34} stroke={c} strokeWidth={2} strokeLinecap="round"/>
-          {[12, 19, 26].map((x,i) => (
+          {[12, 19, 26].map((x, i) => (
             <g key={i}>
               <path d={`M${x},12 Q${x},9 ${x+3},9 Q${x+6},9 ${x+6},12`} fill="none" stroke="#94a3b8" strokeWidth={1.2}/>
-              <rect x={x} y={12} width={7} height={9} rx={1} fill={['#f43f5e','#3b82f6','#10b981'][i]} opacity={0.85}/>
+              <rect x={x} y={12} width={7} height={9} rx={1} fill={['#f43f5e', '#3b82f6', '#10b981'][i]} opacity={0.85}/>
             </g>
           ))}
         </svg>
@@ -542,7 +545,7 @@ const ShapePreviewSVG = ({ type, color, size = 38 }) => {
         </svg>
       );
 
-    // ── Treadmill ──────────────────────────────
+    // ── Treadmill (Yugurish yo'lagi) ───────────
     case 'treadmill':
       return (
         <svg {...svgProps}>
@@ -565,6 +568,345 @@ const ShapePreviewSVG = ({ type, color, size = 38 }) => {
           <line x1={19} y1={26} x2={14} y2={14} stroke={c} strokeWidth={2}/>
           <line x1={19} y1={26} x2={11} y2={26} stroke={c} strokeWidth={2}/>
           <rect x={11} y={10} width={10} height={3} rx={1} fill={c} opacity={0.8}/>
+        </svg>
+      );
+
+    // ── Skameyka / Bench Press ─────────────────
+    case 'bench':
+      return (
+        <svg {...svgProps}>
+          {/* Bench pad */}
+          <rect x={4} y={19} width={30} height={5} rx={2} fill="#111827"/>
+          <rect x={5} y={20} width={28} height={2} rx={1} fill="#374151"/>
+          {/* Upright posts */}
+          <rect x={8} y={8} width={3} height={22} rx={1} fill={c}/>
+          <rect x={27} y={8} width={3} height={22} rx={1} fill={c}/>
+          {/* Barbell on rack */}
+          <line x1={3} y1={10} x2={35} y2={10} stroke="#cbd5e1" strokeWidth={2.5}/>
+          <rect x={4} y={6} width={2.5} height={8} rx={1} fill="#dc2626"/>
+          <rect x={31.5} y={6} width={2.5} height={8} rx={1} fill="#dc2626"/>
+          {/* Base legs */}
+          <line x1={5} y1={30} x2={14} y2={30} stroke={c} strokeWidth={2} strokeLinecap="round"/>
+          <line x1={24} y1={30} x2={33} y2={30} stroke={c} strokeWidth={2} strokeLinecap="round"/>
+        </svg>
+      );
+
+    // ── Flat Bench ─────────────────────────────
+    case 'flat_bench':
+      return (
+        <svg {...svgProps}>
+          {/* Leather Pad */}
+          <rect x={4} y={16} width={30} height={5} rx={2} fill="#111827"/>
+          <rect x={5} y={17} width={28} height={2} rx={1} fill="#374151"/>
+          {/* Steel T-legs */}
+          <rect x={8} y={21} width={3} height={9} rx={1} fill={c}/>
+          <rect x={27} y={21} width={3} height={9} rx={1} fill={c}/>
+          <line x1={5} y1={30} x2={14} y2={30} stroke={c} strokeWidth={2} strokeLinecap="round"/>
+          <line x1={24} y1={30} x2={33} y2={30} stroke={c} strokeWidth={2} strokeLinecap="round"/>
+        </svg>
+      );
+
+    // ── Adjustable / Incline Bench ─────────────
+    case 'adjustable_bench':
+      return (
+        <svg {...svgProps}>
+          {/* Flat seat */}
+          <rect x={6} y={22} width={10} height={4} rx={1} fill="#111827"/>
+          {/* Incline backrest */}
+          <rect x={14} y={9} width={17} height={4} rx={1} transform="rotate(-35 14 11)" fill="#111827"/>
+          {/* Frame & adjustment pin */}
+          <path d="M8,26 L30,26 M14,26 L22,14" stroke={c} strokeWidth={2.5} strokeLinecap="round"/>
+          <circle cx={22} cy={14} r={2} fill="#f59e0b"/>
+        </svg>
+      );
+
+    // ── Krossover (Cable Crossover) ────────────
+    case 'crossover':
+      return (
+        <svg {...svgProps}>
+          {/* Left & Right Weight Towers */}
+          <rect x={4} y={5} width={7} height={27} rx={2} fill="#1f2937"/>
+          <rect x={27} y={5} width={7} height={27} rx={2} fill="#1f2937"/>
+          {/* Weight plates stack */}
+          <rect x={5.5} y={10} width={4} height={18} rx={1} fill="#3b82f6" opacity={0.7}/>
+          <rect x={28.5} y={10} width={4} height={18} rx={1} fill="#3b82f6" opacity={0.7}/>
+          {/* Overhead Crossbar arch & chin-up */}
+          <path d="M7,5 L19,3 L31,5" fill="none" stroke={c} strokeWidth={2.5}/>
+          {/* Cable pulleys & D-handles */}
+          <circle cx={13} cy={12} r={1.5} fill="#f59e0b"/>
+          <circle cx={25} cy={12} r={1.5} fill="#f59e0b"/>
+          <line x1={8} y1={8} x2={13} y2={12} stroke="#94a3b8" strokeWidth={1}/>
+          <line x1={30} y1={8} x2={25} y2={12} stroke="#94a3b8" strokeWidth={1}/>
+          <path d="M12,12 Q14,14 12,16" fill="none" stroke="#f59e0b" strokeWidth={1.5}/>
+          <path d="M26,12 Q24,14 26,16" fill="none" stroke="#f59e0b" strokeWidth={1.5}/>
+        </svg>
+      );
+
+    // ── Gantel Stendi (Dumbbell Rack) ──────────
+    case 'dumbbell_rack':
+    case 'dumbbell':
+    case 'dumbbells':
+      return (
+        <svg {...svgProps}>
+          {/* 2-tier angled rack frame */}
+          <rect x={4} y={14} width={30} height={3} rx={1} fill="#475569"/>
+          <rect x={4} y={24} width={30} height={3} rx={1} fill="#475569"/>
+          <line x1={7} y1={14} x2={5} y2={31} stroke={c} strokeWidth={2.5} strokeLinecap="round"/>
+          <line x1={31} y1={14} x2={33} y2={31} stroke={c} strokeWidth={2.5} strokeLinecap="round"/>
+          {/* Tier 1 dumbbells */}
+          {[8, 19, 30].map((x, i) => (
+            <g key={'t1_' + i}>
+              <line x1={x - 3} y1={11} x2={x + 3} y2={11} stroke="#cbd5e1" strokeWidth={1.5}/>
+              <rect x={x - 4} y={8} width={2} height={6} rx={0.8} fill="#1e293b"/>
+              <rect x={x + 2} y={8} width={2} height={6} rx={0.8} fill="#1e293b"/>
+            </g>
+          ))}
+          {/* Tier 2 heavier dumbbells */}
+          {[11, 24].map((x, i) => (
+            <g key={'t2_' + i}>
+              <line x1={x - 4} y1={21} x2={x + 4} y2={21} stroke="#cbd5e1" strokeWidth={2}/>
+              <rect x={x - 5} y={17} width={2.5} height={8} rx={1} fill="#0f172a"/>
+              <rect x={x + 2.5} y={17} width={2.5} height={8} rx={1} fill="#0f172a"/>
+            </g>
+          ))}
+        </svg>
+      );
+
+    // ── Shkaflar (Lockers / Wardrobe) ──────────
+    case 'lockers':
+    case 'locker':
+    case 'wardrobe':
+      return (
+        <svg {...svgProps}>
+          {/* Outer cabinet */}
+          <rect x={6} y={4} width={26} height={29} rx={2} fill={c} opacity={0.9}/>
+          {/* Vertical divider */}
+          <line x1={19} y1={4} x2={19} y2={33} stroke="#1e293b" strokeWidth={1.5}/>
+          {/* Horizontal divider */}
+          <line x1={6} y1={18} x2={32} y2={18} stroke="#1e293b" strokeWidth={1.5}/>
+          {/* 4 Locker Doors with air vents & handles */}
+          {[[12, 11], [25, 11], [12, 25], [25, 25]].map(([x, y], i) => (
+            <g key={i}>
+              <line x1={x - 3} y1={y - 3} x2={x + 3} y2={y - 3} stroke="#fff" strokeWidth={1} opacity={0.6}/>
+              <line x1={x - 3} y1={y - 1} x2={x + 3} y2={y - 1} stroke="#fff" strokeWidth={1} opacity={0.6}/>
+              <circle cx={x + (i % 2 === 0 ? 4 : -4)} cy={y + 2} r={1.2} fill="#f59e0b"/>
+            </g>
+          ))}
+          {/* Base legs */}
+          <rect x={8} y={33} width={3} height={3} fill="#1e293b"/>
+          <rect x={27} y={33} width={3} height={3} fill="#1e293b"/>
+        </svg>
+      );
+
+    // ── Meva-sabzavot Stendi (Produce) ─────────
+    case 'produce':
+      return (
+        <svg {...svgProps}>
+          {/* Angled wooden tiered stand */}
+          <rect x={5} y={16} width={28} height={14} rx={2} fill={c} opacity={0.85}/>
+          <rect x={4} y={12} width={30} height={5} rx={1.5} fill="#d97706"/>
+          <rect x={6} y={6} width={26} height={5} rx={1.5} fill="#b45309"/>
+          {/* Fresh colorful fruits / vegetables */}
+          {[9, 14, 19, 24, 29].map((x, i) => (
+            <circle key={'f1_' + i} cx={x} cy={6} r={2.2} fill={i % 2 === 0 ? '#84cc16' : '#eab308'}/>
+          ))}
+          {[7, 12, 17, 22, 27, 31].map((x, i) => (
+            <circle key={'f2_' + i} cx={x} cy={12} r={2.4} fill={i % 2 === 0 ? '#ef4444' : '#f97316'}/>
+          ))}
+        </svg>
+      );
+
+    // ── Gul Stendi (Flower Stand) ──────────────
+    case 'flower_stand':
+      return (
+        <svg {...svgProps}>
+          {/* Multi-tiered flower rack */}
+          <rect x={5} y={26} width={28} height={3} rx={1} fill={c}/>
+          <rect x={8} y={18} width={22} height={3} rx={1} fill={c}/>
+          <rect x={11} y={10} width={16} height={3} rx={1} fill={c}/>
+          {/* Flowers in pots */}
+          {[14, 24].map((x, i) => (
+            <g key={'top_' + i}>
+              <rect x={x - 2} y={7} width={4} height={3} rx={0.5} fill="#d97706"/>
+              <circle cx={x} cy={4} r={2.5} fill={['#f43f5e', '#a855f7'][i]}/>
+            </g>
+          ))}
+          {[11, 19, 27].map((x, i) => (
+            <g key={'mid_' + i}>
+              <rect x={x - 2} y={15} width={4} height={3} rx={0.5} fill="#b45309"/>
+              <circle cx={x} cy={12} r={2.2} fill={['#ec4899', '#06b6d4', '#eab308'][i]}/>
+            </g>
+          ))}
+          {[8, 15, 23, 30].map((x, i) => (
+            <g key={'bot_' + i}>
+              <circle cx={x} cy={23} r={2.4} fill={['#10b981', '#f97316', '#ec4899', '#3b82f6'][i]}/>
+            </g>
+          ))}
+        </svg>
+      );
+
+    // ── Sovutish / Gul Xonasi (Cold Room) ──────
+    case 'cold_room':
+      return (
+        <svg {...svgProps}>
+          {/* Insulated glass enclosure */}
+          <rect x={5} y={4} width={28} height={29} rx={3} fill="#e0f2fe" opacity={0.6}/>
+          <rect x={5} y={4} width={28} height={29} rx={3} fill="none" stroke={c} strokeWidth={2}/>
+          {/* Glass divider / double doors */}
+          <line x1={19} y1={4} x2={19} y2={33} stroke={c} strokeWidth={1.5}/>
+          {/* Door handles */}
+          <line x1={17} y1={16} x2={17} y2={22} stroke="#0284c7" strokeWidth={2} strokeLinecap="round"/>
+          <line x1={21} y1={16} x2={21} y2={22} stroke="#0284c7" strokeWidth={2} strokeLinecap="round"/>
+          {/* Top AC cooling unit */}
+          <rect x={8} y={6} width={22} height={4} rx={1} fill="#0284c7" opacity={0.8}/>
+          <line x1={10} y1={8} x2={28} y2={8} stroke="#fff" strokeWidth={1}/>
+        </svg>
+      );
+
+    // ── Shina Stendi (Tire Stand) ──────────────
+    case 'tire_stand':
+      return (
+        <svg {...svgProps}>
+          {/* Steel frame */}
+          <rect x={5} y={6} width={28} height={26} rx={2} fill="none" stroke={c} strokeWidth={2}/>
+          <line x1={5} y1={18} x2={33} y2={18} stroke={c} strokeWidth={1.5}/>
+          {/* Top tier tires */}
+          {[11, 19, 27].map((x, i) => (
+            <ellipse key={'t_' + i} cx={x} cy={12} rx={3.5} ry={5} fill="#1e293b"/>
+          ))}
+          {/* Bottom tier tires */}
+          {[11, 19, 27].map((x, i) => (
+            <ellipse key={'b_' + i} cx={x} cy={24} rx={3.5} ry={5} fill="#0f172a"/>
+          ))}
+        </svg>
+      );
+
+    // ── Moy Vitrinasi (Oil Display) ────────────
+    case 'oil_display':
+      return (
+        <svg {...svgProps}>
+          {/* Shelved rack */}
+          <rect x={6} y={5} width={26} height={28} rx={2} fill={c} opacity={0.8}/>
+          {[6, 15, 24, 32].map((y, i) => (
+            <line key={i} x1={6} y1={y} x2={32} y2={y} stroke="#f1f5f9" strokeWidth={1.5}/>
+          ))}
+          {/* Oil canister bottles */}
+          {[10, 18, 26].map((x, i) => (
+            <g key={'o1_' + i}>
+              <rect x={x - 2.5} y={8} width={5} height={6} rx={1} fill={['#f97316', '#eab308', '#dc2626'][i]}/>
+              <rect x={x - 1} y={6.5} width={2} height={1.5} fill="#1e293b"/>
+            </g>
+          ))}
+          {[10, 18, 26].map((x, i) => (
+            <g key={'o2_' + i}>
+              <rect x={x - 2.5} y={17} width={5} height={6} rx={1} fill={['#3b82f6', '#10b981', '#f59e0b'][i]}/>
+              <rect x={x - 1} y={15.5} width={2} height={1.5} fill="#1e293b"/>
+            </g>
+          ))}
+        </svg>
+      );
+
+    // ── Tortmali Javon (Drawer) ────────────────
+    case 'drawer':
+      return (
+        <svg {...svgProps}>
+          {/* Cabinet body */}
+          <rect x={6} y={5} width={26} height={27} rx={2} fill={c} opacity={0.9}/>
+          {/* Drawers */}
+          {[8, 15, 22].map((y, i) => (
+            <g key={i}>
+              <rect x={8} y={y} width={22} height={5.5} rx={1} fill="#f8fafc" opacity={0.95}/>
+              <rect x={16} y={y + 1.8} width={6} height={1.8} rx={0.6} fill="#0284c7"/>
+            </g>
+          ))}
+          <rect x={8} y={32} width={3} height={3} fill="#0f172a"/>
+          <rect x={27} y={32} width={3} height={3} fill="#0f172a"/>
+        </svg>
+      );
+
+    // ── Stol va O'tirish Joyi (Seating) ────────
+    case 'seating':
+      return (
+        <svg {...svgProps}>
+          {/* Center Table */}
+          <rect x={13} y={15} width={12} height={3} rx={1} fill={c}/>
+          <line x1={19} y1={18} x2={19} y2={28} stroke="#475569" strokeWidth={2}/>
+          <line x1={15} y1={28} x2={23} y2={28} stroke="#475569" strokeWidth={2}/>
+          {/* Left Chair */}
+          <rect x={6} y={20} width={6} height={2} rx={0.5} fill="#d97706"/>
+          <line x1={6} y1={12} x2={6} y2={26} stroke="#b45309" strokeWidth={1.8}/>
+          <line x1={11} y1={22} x2={11} y2={26} stroke="#b45309" strokeWidth={1.8}/>
+          {/* Right Chair */}
+          <rect x={26} y={20} width={6} height={2} rx={0.5} fill="#d97706"/>
+          <line x1={31} y1={12} x2={31} y2={26} stroke="#b45309" strokeWidth={1.8}/>
+          <line x1={26} y1={22} x2={26} y2={26} stroke="#b45309" strokeWidth={1.8}/>
+        </svg>
+      );
+
+    // ── Divan (Sofa) ───────────────────────────
+    case 'sofa':
+      return (
+        <svg {...svgProps}>
+          {/* Backrest */}
+          <rect x={4} y={10} width={30} height={12} rx={3} fill={c} opacity={0.9}/>
+          {/* Seat cushions */}
+          <rect x={7} y={18} width={11.5} height={7} rx={2} fill="#f59e0b" opacity={0.85}/>
+          <rect x={19.5} y={18} width={11.5} height={7} rx={2} fill="#f59e0b" opacity={0.85}/>
+          {/* Armrests */}
+          <rect x={4} y={15} width={4} height={10} rx={2} fill="#78350f"/>
+          <rect x={30} y={15} width={4} height={10} rx={2} fill="#78350f"/>
+          {/* Wooden legs */}
+          <line x1={7} y1={25} x2={5} y2={30} stroke="#451a03" strokeWidth={2}/>
+          <line x1={31} y1={25} x2={33} y2={30} stroke="#451a03" strokeWidth={2}/>
+        </svg>
+      );
+
+    // ── Demo / Makiyaj / O'rash Stoli (Table) ──
+    case 'table':
+      return (
+        <svg {...svgProps}>
+          {/* Table top */}
+          <rect x={4} y={14} width={30} height={4} rx={1.5} fill={c}/>
+          {/* Four legs */}
+          <line x1={7} y1={18} x2={7} y2={32} stroke="#334155" strokeWidth={2.5}/>
+          <line x1={31} y1={18} x2={31} y2={32} stroke="#334155" strokeWidth={2.5}/>
+          {/* Laptop / gadget on table */}
+          <polygon points="13,14 25,14 27,10 15,10" fill="#0284c7" opacity={0.7}/>
+          <rect x={16} y={6} width={9} height={6} rx={1} fill="#1e293b"/>
+        </svg>
+      );
+
+    // ── TV Devor (TV Wall) ─────────────────────
+    case 'tv_wall':
+      return (
+        <svg {...svgProps}>
+          {/* Accent wall backdrop */}
+          <rect x={4} y={4} width={30} height={30} rx={2} fill={c} opacity={0.7}/>
+          {[4, 10, 16, 22, 28].map((y, i) => (
+            <line key={i} x1={4} y1={y} x2={34} y2={y} stroke="#334155" strokeWidth={0.8} opacity={0.5}/>
+          ))}
+          {/* Big TV screen */}
+          <rect x={7} y={8} width={24} height={15} rx={1.5} fill="#020617"/>
+          <rect x={8} y={9} width={22} height={13} rx={1} fill="#0284c7" opacity={0.8}/>
+          {/* Soundbar underneath */}
+          <rect x={11} y={25} width={16} height={2.5} rx={1} fill="#0f172a"/>
+        </svg>
+      );
+
+    // ── Kofe-Bar (Coffee Bar) ──────────────────
+    case 'coffee_bar':
+      return (
+        <svg {...svgProps}>
+          {/* Bar counter */}
+          <rect x={4} y={16} width={30} height={14} rx={2} fill={c} opacity={0.9}/>
+          <rect x={3} y={13} width={32} height={4} rx={1.5} fill="#fde68a"/>
+          {/* Espresso Machine on counter */}
+          <rect x={8} y={6} width={12} height={8} rx={1.5} fill="#334155"/>
+          <rect x={10} y={7} width={8} height={4} rx={0.5} fill="#0284c7" opacity={0.8}/>
+          <line x1={14} y1={11} x2={14} y2={13} stroke="#f59e0b" strokeWidth={1.5}/>
+          {/* Coffee cup */}
+          <ellipse cx={26} cy={12} rx={2.5} ry={1.5} fill="#fff"/>
+          <rect x={24} y={10} width={4} height={3} rx={1} fill="#fff"/>
         </svg>
       );
 
@@ -850,35 +1192,6 @@ const ShapePreviewSVG = ({ type, color, size = 38 }) => {
         </svg>
       );
 
-    // ── Flat Bench ─────────────────────────────
-    case 'flat_bench':
-      return (
-        <svg {...svgProps}>
-          {/* Leather Pad */}
-          <rect x={4} y={16} width={30} height={5} rx={2} fill="#111827"/>
-          <rect x={5} y={17} width={28} height={2} rx={1} fill="#374151"/>
-          {/* Steel T-legs */}
-          <rect x={8} y={21} width={3} height={9} rx={1} fill={c}/>
-          <rect x={27} y={21} width={3} height={9} rx={1} fill={c}/>
-          <line x1={5} y1={30} x2={14} y2={30} stroke={c} strokeWidth={2} strokeLinecap="round"/>
-          <line x1={24} y1={30} x2={33} y2={30} stroke={c} strokeWidth={2} strokeLinecap="round"/>
-        </svg>
-      );
-
-    // ── Adjustable / Incline Bench ─────────────
-    case 'adjustable_bench':
-      return (
-        <svg {...svgProps}>
-          {/* Flat seat */}
-          <rect x={6} y={22} width={10} height={4} rx={1} fill="#111827"/>
-          {/* Incline backrest */}
-          <rect x={14} y={9} width={17} height={4} rx={1} transform="rotate(-35 14 11)" fill="#111827"/>
-          {/* Frame & adjustment pin */}
-          <path d="M8,26 L30,26 M14,26 L22,14" stroke={c} strokeWidth={2.5} strokeLinecap="round"/>
-          <circle cx={22} cy={14} r={2} fill="#f59e0b"/>
-        </svg>
-      );
-
     // ── Mats & Foam Rollers ────────────────────
     case 'mats_rollers':
       return (
@@ -937,6 +1250,19 @@ const ShapePreviewSVG = ({ type, color, size = 38 }) => {
           {/* Lamp */}
           <path d="M28,17 L28,11 L25,11" fill="none" stroke="#f59e0b" strokeWidth={1.5}/>
           <polygon points="23,10 27,10 28,13 22,13" fill="#f59e0b"/>
+        </svg>
+      );
+
+    // ── Standart / Barcha yangi va nomalum jihozlar uchun ──
+    case 'custom':
+    default:
+      return (
+        <svg {...svgProps}>
+          {/* 3D Isometric display cube */}
+          <polygon points="19,5 32,12 19,19 6,12" fill={c} opacity={0.9}/>
+          <polygon points="6,12 19,19 19,32 6,25" fill="#334155" opacity={0.85}/>
+          <polygon points="19,19 32,12 32,25 19,32" fill="#1e293b" opacity={0.95}/>
+          <circle cx={19} cy={12} r={3} fill="#38bdf8" opacity={0.8}/>
         </svg>
       );
   }
@@ -1249,35 +1575,6 @@ export const SidebarControls = () => {
             {footTrafficActive ? 'O\'chirish' : 'Yoqish'}
           </button>
         </div>
-
-        {footTrafficActive && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.82rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', background: '#fff', padding: '6px 10px', borderRadius: '6px', border: '1px solid #a7f3d0' }}>
-              <span>Kassaga o'rtacha yurish:</span>
-              <strong style={{ color: '#047857' }}>{footTrafficAnalytics.avgWalkTimeSec} soniya</strong>
-            </div>
-
-            <div style={{ display: 'flex', justifyContent: 'space-between', background: '#fff', padding: '6px 10px', borderRadius: '6px', border: '1px solid #a7f3d0' }}>
-              <span>Oqim masofasi:</span>
-              <strong style={{ color: '#047857' }}>{footTrafficAnalytics.pathLengthMeters} metr</strong>
-            </div>
-
-            {footTrafficAnalytics.warningMessage && (
-              <div style={{
-                background: footTrafficAnalytics.isWarning ? '#fff1f2' : '#ecfdf5',
-                color: footTrafficAnalytics.isWarning ? '#be123c' : '#047857',
-                border: `1px solid ${footTrafficAnalytics.isWarning ? '#fda4af' : '#6ee7b7'}`,
-                padding: '8px 10px',
-                borderRadius: '6px',
-                fontSize: '0.78rem',
-                fontWeight: 600,
-                lineHeight: 1.35
-              }}>
-                {footTrafficAnalytics.warningMessage}
-              </div>
-            )}
-          </div>
-        )}
       </div>
 
       {/* ── 2-FUNKSIYA: KUN/TUN YORUG'LIK SIMULYATSIYASI ── */}
@@ -1388,22 +1685,6 @@ export const SidebarControls = () => {
                 )}
               </div>
             </div>
-
-            {/* Night Lighting Warning */}
-            {timeOfDay >= 19 && customLights.length < Math.ceil((roomDimensions.width * roomDimensions.length) / 30) && (
-              <div style={{
-                background: '#fff1f2',
-                color: '#991b1b',
-                border: '1px solid #fca5a5',
-                padding: '8px 10px',
-                borderRadius: '6px',
-                fontSize: '0.78rem',
-                fontWeight: 600,
-                lineHeight: 1.35
-              }}>
-                <strong>Tungi rejim:</strong> Xonada sun'iy yoritish yetarlicha emas! Qo'shimcha LED chiroqlar o'rnatish tavsiya etiladi.
-              </div>
-            )}
           </div>
         )}
       </div>

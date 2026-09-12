@@ -34,8 +34,8 @@ export const Navbar = () => {
         </button>
 
         <button
-          className={`nav-btn ${activePage === 'planner' ? 'active' : ''}`}
-          onClick={() => setActivePage('planner')}
+          className={`nav-btn ${activePage === 'planner' || activePage === 'selector' ? 'active' : ''}`}
+          onClick={() => setActivePage('selector')}
         >
           <Box size={15} />
           3D Rejalashtiruvchi

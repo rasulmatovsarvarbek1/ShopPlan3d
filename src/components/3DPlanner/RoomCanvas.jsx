@@ -1580,29 +1580,14 @@ const checkCollision = (ax, az, aw, ad, bx, bz, bw, bd, gap = 0.08) => {
   );
 };
 
-const resolveCollision = (newPos, selfW, selfD, others) => {
-  const MAX_ITERS = 10;
-  let x = newPos.x;
-  let z = newPos.z;
-  const gap = 0.08;
-  for (let iter = 0; iter < MAX_ITERS; iter++) {
-    let moved = false;
-    for (const other of others) {
-      const overlapX = (selfW + other.ew) / 2 + gap - Math.abs(x - other.x);
-      const overlapZ = (selfD + other.ed) / 2 + gap - Math.abs(z - other.z);
-      if (overlapX > 0 && overlapZ > 0) {
-        // Push out along the smaller overlap axis
-        if (overlapX < overlapZ) {
-          x += x >= other.x ? overlapX : -overlapX;
-        } else {
-          z += z >= other.z ? overlapZ : -overlapZ;
-        }
-        moved = true;
-      }
-    }
-    if (!moved) break;
+// To'qnashuv bormi yoki yo'qmi tekshiradi (boshqa elementlarni itarmaydi)
+const hasCollision = (x, z, selfW, selfD, others, gap = 0.08) => {
+  for (const other of others) {
+    const overlapX = (selfW + other.ew) / 2 + gap - Math.abs(x - other.x);
+    const overlapZ = (selfD + other.ed) / 2 + gap - Math.abs(z - other.z);
+    if (overlapX > 0 && overlapZ > 0) return true;
   }
-  return { x, z };
+  return false;
 };
 
 const DraggableEquipment = ({
@@ -1618,11 +1603,14 @@ const DraggableEquipment = ({
   const dragPlane = useMemo(() => new THREE.Plane(new THREE.Vector3(0, 1, 0), 0), []);
   const dragOffset = useRef(new THREE.Vector3());
   const posRef = useRef(new THREE.Vector3(...position));
+  // Oxirgi to'qnashuvssiz xavfsiz pozitsiya
+  const lastSafePosRef = useRef(new THREE.Vector3(...position));
 
   // posRef ni prop o'zgarganda yangilab turish (shablon qo'llanilganda)
   React.useEffect(() => {
     if (!isDragging.current) {
       posRef.current.set(...position);
+      lastSafePosRef.current.set(...position);
       if (meshRef.current) {
         meshRef.current.position.set(...position);
       }
@@ -1669,7 +1657,7 @@ const DraggableEquipment = ({
     newPos.x = Math.max(-roomW / 2 + hw + margin, Math.min(roomW / 2 - hw - margin, newPos.x));
     newPos.z = Math.max(-roomL / 2 + hd + margin, Math.min(roomL / 2 - hd - margin, newPos.z));
 
-    // ── Collision detection: boshqa elementlar bilan to'qnashmasligi ──
+    // ── Collision detection: to'qnashsa — oldingi xavfsiz joyda qol, boshqalar harakatlanmaydi ──
     const others = allItems
       .filter(({ uid }) => uid !== id)
       .map(({ uid, item: otherItem, rotAngle }) => {
@@ -1678,19 +1666,21 @@ const DraggableEquipment = ({
         return { x: pos[0], z: pos[2], ew, ed };
       });
 
-    const resolved = resolveCollision(
-      { x: newPos.x, z: newPos.z },
-      effectiveW, effectiveD,
-      others
-    );
+    const collides = hasCollision(newPos.x, newPos.z, effectiveW, effectiveD, others);
 
-    // Chegaradan chiqib ketmaslik (collision resolve dan keyin)
-    newPos.x = Math.max(-roomW / 2 + hw + margin, Math.min(roomW / 2 - hw - margin, resolved.x));
-    newPos.z = Math.max(-roomL / 2 + hd + margin, Math.min(roomL / 2 - hd - margin, resolved.z));
-
-    posRef.current.copy(newPos);
-    if (meshRef.current) {
-      meshRef.current.position.copy(newPos);
+    if (!collides) {
+      // Xavfsiz joy — pozitsiyani yangilaymiz
+      lastSafePosRef.current.copy(newPos);
+      posRef.current.copy(newPos);
+      if (meshRef.current) {
+        meshRef.current.position.copy(newPos);
+      }
+    } else {
+      // To'qnashuv bor — element oxirgi xavfsiz joyda qoladi
+      posRef.current.copy(lastSafePosRef.current);
+      if (meshRef.current) {
+        meshRef.current.position.copy(lastSafePosRef.current);
+      }
     }
   }, [raycaster, dragPlane, item, roomW, roomL, rotation, allPositions, allItems, id]);
 
@@ -1701,7 +1691,8 @@ const DraggableEquipment = ({
     isDragging.current = false;
     onDragEnd();
     gl.domElement.style.cursor = 'auto';
-    onPositionChange(id, [posRef.current.x, 0, posRef.current.z]);
+    // lastSafePosRef — oxirgi to'qnashuvssiz joy
+    onPositionChange(id, [lastSafePosRef.current.x, 0, lastSafePosRef.current.z]);
   }, [id, onDragEnd, onPositionChange, gl]);
 
   const floatY = (item.height || 2.0) + 0.6;
@@ -1812,8 +1803,12 @@ const RoomScene = ({ isDragging, setIsDragging }) => {
     updateEquipmentCount,
     positions,
     setPositions,
+    updatePosition,
     rotations,
     setRotations,
+    updateRotation,
+    undoPosition,
+    redoPosition,
     setLastInteractedUid,
     lightingActive,
     setCameraApi
@@ -1845,6 +1840,21 @@ const RoomScene = ({ isDragging, setIsDragging }) => {
     }
   }, [viewMode, camera]);
 
+  // ── Ctrl+Z / Ctrl+Y keyboard shortcut ──
+  React.useEffect(() => {
+    const handleKey = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+        e.preventDefault();
+        undoPosition();
+      }
+      if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) {
+        e.preventDefault();
+        redoPosition();
+      }
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [undoPosition, redoPosition]);
 
   const initialPositions = useMemo(() => {
     const map = {};
@@ -1855,21 +1865,20 @@ const RoomScene = ({ isDragging, setIsDragging }) => {
     equipmentList.forEach((item) => {
       for (let i = 0; i < item.count; i++) {
         const uid = `${item.id}_${i}`;
-        if (!(uid in positions)) {
-          if (curX + item.width / 2 > W / 2 - 0.8) {
-            curX = -W / 2 + 1.2;
-            curZ += (item.depth || 1.0) + 1.2;
-          }
-          if (curZ + (item.depth || 1.0) / 2 <= L / 2 - 0.8) {
-            map[uid] = [curX + item.width / 2, 0, curZ + (item.depth || 1.0) / 2];
-            curX += item.width + padding;
-          }
+        if (curX + item.width / 2 > W / 2 - 0.8) {
+          curX = -W / 2 + 1.2;
+          curZ += (item.depth || 1.0) + 1.2;
         }
+        if (curZ + (item.depth || 1.0) / 2 <= L / 2 - 0.8) {
+          map[uid] = [curX + item.width / 2, 0, curZ + (item.depth || 1.0) / 2];
+        } else {
+          map[uid] = [0, 0, 0];
+        }
+        curX += item.width + padding;
       }
     });
     return map;
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [equipmentList, W, L, positions]);
+  }, [equipmentList, W, L]);
 
   const placedItems = useMemo(() => {
     const result = [];
@@ -1905,9 +1914,9 @@ const RoomScene = ({ isDragging, setIsDragging }) => {
   }, [positions, initialPositions, equipmentList, rotations, W, L]);
 
   const handlePositionChange = useCallback((uid, newPos) => {
-    setPositions({ ...positions, [uid]: newPos });
+    updatePosition(uid, newPos);
     setLastInteractedUid(uid);
-  }, [positions, setPositions, setLastInteractedUid]);
+  }, [updatePosition, setLastInteractedUid]);
 
   // 90° qadam bilan aylantirish va devordan chiqib ketmaslik / to'qnashmaslikni ta'minlash
   const handleRotate = useCallback((uid) => {
@@ -1942,10 +1951,11 @@ const RoomScene = ({ isDragging, setIsDragging }) => {
     newX = Math.max(-W / 2 + hw + margin, Math.min(W / 2 - hw - margin, resolved.x));
     newZ = Math.max(-L / 2 + hd + margin, Math.min(L / 2 - hd - margin, resolved.z));
 
-    setRotations({ ...rotations, [uid]: nextRot });
-    setPositions({ ...positions, [uid]: [newX, 0, newZ] });
+    // Rotation va pozitsiyani undo history bilan saqlash
+    updateRotation(uid, nextRot);
+    updatePosition(uid, [newX, 0, newZ]);
     setLastInteractedUid(uid);
-  }, [rotations, positions, initialPositions, equipmentList, placedItems, W, L, setRotations, setPositions, setLastInteractedUid]);
+  }, [rotations, positions, initialPositions, equipmentList, placedItems, W, L, updateRotation, updatePosition, setLastInteractedUid]);
 
   // Elementni olib tashlash va uning pozitsiyalarini tartiblash
   const handleDelete = useCallback((uid) => {
@@ -1997,9 +2007,9 @@ const RoomScene = ({ isDragging, setIsDragging }) => {
       {/* Default Lights (Active only when Lighting Simulator is OFF) */}
       {!lightingActive && (
         <>
-          <ambientLight intensity={1.2} />
-          <directionalLight position={[12, 18, 14]} intensity={1.0} castShadow shadow-mapSize={[2048, 2048]} />
-          <pointLight position={[0, H - 0.5, 0]} intensity={0.6} color="#dbeafe" />
+          <ambientLight intensity={1.4} />
+          <directionalLight position={[12, 22, 14]} intensity={1.3} castShadow shadow-mapSize={[2048, 2048]} />
+          <pointLight position={[0, H - 0.3, 0]} intensity={1.0} color="#f8fafc" />
         </>
       )}
 
@@ -2110,11 +2120,13 @@ const RoomScene = ({ isDragging, setIsDragging }) => {
         })}
       </group>
 
-      {/* OrbitControls — roomLocked=true: kamera erkin aylanadi; roomLocked=false: faqat pan/zoom */}
+      {/* OrbitControls — roomLocked=false: erkin aylantirish; roomLocked=true: kamera qotib turadi */}
       <OrbitControls
         ref={handleControlsRef}
-        enabled={!isDragging}
-        enableRotate={roomLocked && !isDragging}
+        enabled={!roomLocked && !isDragging}
+        enableRotate={!roomLocked && !isDragging}
+        enablePan={!roomLocked}
+        enableZoom={!roomLocked}
         enableDamping
         dampingFactor={0.05}
         maxDistance={5000}
@@ -2137,20 +2149,13 @@ export const RoomCanvas = () => {
   const isRoomDraggingRef = useRef(false);
   const lastXRef = useRef(0);
 
-  // Default (roomLocked=false): sichqoncha bilan xonani aylantirish (turntable)
+  // roomLocked=true bo'lganda turntable ham ishlamaydi — kamera qotib turadi
   const handlePointerDown = (e) => {
-    if (!roomLocked && !isDragging) {
-      isRoomDraggingRef.current = true;
-      lastXRef.current = e.clientX;
-    }
+    // Turntable logikasi olib tashlandi: OrbitControls o'zi boshqaradi
   };
 
   const handlePointerMove = (e) => {
-    if (isRoomDraggingRef.current && !roomLocked) {
-      const deltaX = e.clientX - lastXRef.current;
-      lastXRef.current = e.clientX;
-      rotateRoomAngle(deltaX * 0.008);
-    }
+    // Turntable logikasi olib tashlandi: OrbitControls o'zi boshqaradi
   };
 
   const handlePointerEnd = () => {
@@ -2161,11 +2166,7 @@ export const RoomCanvas = () => {
     <div
       className="viewport-container"
       id="room-canvas-viewport"
-      onPointerDown={handlePointerDown}
-      onPointerMove={handlePointerMove}
-      onPointerUp={handlePointerEnd}
-      onPointerCancel={handlePointerEnd}
-      style={{ cursor: !roomLocked ? 'grab' : 'default' }}
+      style={{ cursor: roomLocked ? 'default' : 'grab' }}
     >
       <Canvas
         shadows

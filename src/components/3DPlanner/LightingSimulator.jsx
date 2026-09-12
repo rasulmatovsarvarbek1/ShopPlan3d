@@ -13,37 +13,37 @@ function getTimeBasedLightConfig(time) {
     const factor = (t - 6) / 3;
     return {
       sunColor: new THREE.Color().lerpColors(new THREE.Color('#fdba74'), new THREE.Color('#fef08a'), factor),
-      sunIntensity: 0.7 + factor * 0.5,
+      sunIntensity: 1.2 + factor * 0.8,
       ambientColor: new THREE.Color('#ffedd5'),
-      ambientIntensity: 0.35 + factor * 0.25,
-      sunPos: [-15 + factor * 10, 8 + factor * 8, -12]
+      ambientIntensity: 0.65 + factor * 0.3,
+      sunPos: [-15 + factor * 10, 10 + factor * 8, -12]
     };
   } else if (t < 16) {
     const factor = (t - 9) / 7;
     return {
       sunColor: new THREE.Color('#ffffff'),
-      sunIntensity: 1.4,
-      ambientColor: new THREE.Color('#f1f5f9'),
-      ambientIntensity: 0.65,
-      sunPos: [-5 + factor * 10, 18, -10]
+      sunIntensity: 2.2,
+      ambientColor: new THREE.Color('#f8fafc'),
+      ambientIntensity: 0.95,
+      sunPos: [-5 + factor * 10, 20, -10]
     };
   } else if (t < 19) {
     const factor = (t - 16) / 3;
     return {
-      sunColor: new THREE.Color().lerpColors(new THREE.Color('#f97316'), new THREE.Color('#ea580c'), factor),
-      sunIntensity: 1.2 - factor * 0.7,
+      sunColor: new THREE.Color().lerpColors(new THREE.Color('#fb923c'), new THREE.Color('#ea580c'), factor),
+      sunIntensity: 1.8 - factor * 0.8,
       ambientColor: new THREE.Color('#fed7aa'),
-      ambientIntensity: 0.45 - factor * 0.2,
-      sunPos: [5 + factor * 10, 14 - factor * 8, -12]
+      ambientIntensity: 0.75 - factor * 0.3,
+      sunPos: [5 + factor * 10, 16 - factor * 8, -12]
     };
   } else {
     const factor = (t - 19) / 3;
     return {
-      sunColor: new THREE.Color('#1e1b4b'),
-      sunIntensity: 0.05,
-      ambientColor: new THREE.Color('#0f172a'),
-      ambientIntensity: 0.15,
-      sunPos: [15, 4, -15]
+      sunColor: new THREE.Color('#38bdf8'),
+      sunIntensity: 0.25,
+      ambientColor: new THREE.Color('#1e293b'),
+      ambientIntensity: 0.35,
+      sunPos: [15, 6, -15]
     };
   }
 }
@@ -80,6 +80,10 @@ const CustomLightFixture = ({ light, isSelected, onSelect, onDelete, onDragStart
 
     const intersection = new THREE.Vector3();
     raycaster.ray.intersectPlane(dragPlane, intersection);
+    const storeState = useAppStore.getState();
+    if (storeState.roomRotationAngle) {
+      intersection.applyAxisAngle(new THREE.Vector3(0, 1, 0), -storeState.roomRotationAngle);
+    }
     dragOffset.current.copy(intersection).sub(posRef.current);
   }, [id, onSelect, onDragStart, gl, raycaster, dragPlane]);
 
@@ -88,6 +92,10 @@ const CustomLightFixture = ({ light, isSelected, onSelect, onDelete, onDragStart
     e.stopPropagation();
     const intersection = new THREE.Vector3();
     raycaster.ray.intersectPlane(dragPlane, intersection);
+    const storeState = useAppStore.getState();
+    if (storeState.roomRotationAngle) {
+      intersection.applyAxisAngle(new THREE.Vector3(0, 1, 0), -storeState.roomRotationAngle);
+    }
     const newPos = intersection.clone().sub(dragOffset.current);
     newPos.y = H - 0.15;
 
@@ -105,7 +113,9 @@ const CustomLightFixture = ({ light, isSelected, onSelect, onDelete, onDragStart
   const handlePointerUp = useCallback((e) => {
     if (!isDragging.current) return;
     e.stopPropagation();
-    e.target.releasePointerCapture(e.pointerId);
+    try {
+      e.target.releasePointerCapture(e.pointerId);
+    } catch {}
     isDragging.current = false;
     if (onDragEnd) onDragEnd();
     gl.domElement.style.cursor = 'auto';
@@ -113,52 +123,80 @@ const CustomLightFixture = ({ light, isSelected, onSelect, onDelete, onDragStart
   }, [id, updateCustomLightPos, onDragEnd, gl]);
 
   return (
-    <group
-      ref={meshRef}
-      position={[x, H - 0.15, z]}
-      onPointerDown={handlePointerDown}
-      onPointerMove={handlePointerMove}
-      onPointerUp={handlePointerUp}
-    >
-      {/* Aluminum Ceiling Mounting Base */}
-      <mesh position={[0, 0.08, 0]} castShadow>
-        <cylinderGeometry args={[0.35, 0.4, 0.1, 16]} />
-        <meshStandardMaterial color={isSelected ? '#3b82f6' : '#64748b'} metalness={0.8} roughness={0.2} />
-      </mesh>
-
-      {/* Glowing Glass Lamp Cover */}
-      <mesh position={[0, 0, 0]}>
-        <cylinderGeometry args={[0.3, 0.3, 0.06, 16]} />
-        <meshStandardMaterial
-          color={color}
-          emissive={color}
-          emissiveIntensity={intensity > 0.5 ? 1.2 : 0.2}
-        />
-      </mesh>
-
-      {/* Selection Ring (Glowing Blue Indicator) */}
-      {isSelected && (
-        <mesh position={[0, 0.12, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-          <ringGeometry args={[0.45, 0.55, 24]} />
-          <meshBasicMaterial color="#3b82f6" side={THREE.DoubleSide} transparent opacity={0.85} />
+    <group ref={meshRef} position={[x, H - 0.15, z]}>
+      {/* Physical Lamp Fixture (Clickable & Draggable ONLY here) */}
+      <group
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerOver={(e) => {
+          e.stopPropagation();
+          gl.domElement.style.cursor = 'pointer';
+        }}
+        onPointerOut={() => {
+          if (!isDragging.current) {
+            gl.domElement.style.cursor = 'auto';
+          }
+        }}
+      >
+        {/* Aluminum Ceiling Mounting Base */}
+        <mesh position={[0, 0.08, 0]} castShadow>
+          <cylinderGeometry args={[0.35, 0.4, 0.1, 18]} />
+          <meshStandardMaterial
+            color={isSelected ? '#3b82f6' : '#64748b'}
+            metalness={0.85}
+            roughness={0.15}
+          />
         </mesh>
-      )}
 
-      {/* Actual PointLight (Light illumination without expensive cube shadow maps for instant performance) */}
+        {/* Glowing Glass Lamp Cover */}
+        <mesh position={[0, 0, 0]}>
+          <cylinderGeometry args={[0.3, 0.3, 0.06, 18]} />
+          <meshStandardMaterial
+            color={color}
+            emissive={color}
+            emissiveIntensity={intensity > 0.5 ? 2.8 : 0.4}
+            roughness={0.1}
+          />
+        </mesh>
+
+        {/* Selection Ring (Glowing Indicator) */}
+        {isSelected && (
+          <mesh position={[0, 0.12, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+            <ringGeometry args={[0.45, 0.58, 28]} />
+            <meshBasicMaterial color="#38bdf8" side={THREE.DoubleSide} transparent opacity={0.9} />
+          </mesh>
+        )}
+      </group>
+
+      {/* Actual PointLight (Bright, crisp, and vivid illumination) */}
       <pointLight
         position={[0, -0.2, 0]}
-        intensity={intensity * 12}
-        distance={9}
+        intensity={intensity * 28}
+        distance={14}
+        decay={1.6}
         color={color}
       />
 
-      {/* Light Ray Cone Visual */}
-      <mesh position={[0, -1.8, 0]}>
-        <coneGeometry args={[1.5, 3.5, 16, 1, true]} />
+      {/* Non-interactive Light Ray Cone (raycast={() => null} prevents click interception) */}
+      <mesh position={[0, -1.8, 0]} raycast={() => null}>
+        <coneGeometry args={[1.5, 3.5, 18, 1, true]} />
         <meshBasicMaterial
           color={color}
           transparent
-          opacity={0.08}
+          opacity={0.10}
+          side={THREE.DoubleSide}
+          depthWrite={false}
+        />
+      </mesh>
+
+      {/* Floor Glow Circle (raycast={() => null} so clicking floor passes through) */}
+      <mesh position={[0, -(H - 0.17), 0]} rotation={[-Math.PI / 2, 0, 0]} raycast={() => null}>
+        <circleGeometry args={[1.4, 24]} />
+        <meshBasicMaterial
+          color={color}
+          transparent
+          opacity={0.12}
           side={THREE.DoubleSide}
           depthWrite={false}
         />

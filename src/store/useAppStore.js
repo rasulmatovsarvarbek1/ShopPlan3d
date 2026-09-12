@@ -114,15 +114,20 @@ export const calculateNewItemPlacement = (state, targetItemId) => {
   const newW = targetItem?.width || 1.0;
   const newD = targetItem?.depth || 1.0;
 
-  const margin = 0.15;
-  const minX = -W / 2 + newW / 2 + margin;
-  const maxX = W / 2 - newW / 2 - margin;
-  const minZ = -L / 2 + newD / 2 + margin;
-  const maxZ = L / 2 - newD / 2 - margin;
+  const margin = 0.2;
 
-  const isInsideRoom = (cx, cz) => cx >= minX && cx <= maxX && cz >= minZ && cz <= maxZ;
+  const isInsideRoom = (cx, cz, rot = 0) => {
+    const isSwapped = (rot % 2 !== 0);
+    const effW = isSwapped ? newD : newW;
+    const effD = isSwapped ? newW : newD;
+    const minX = -W / 2 + effW / 2 + margin;
+    const maxX = W / 2 - effW / 2 - margin;
+    const minZ = -L / 2 + effD / 2 + margin;
+    const maxZ = L / 2 - effD / 2 - margin;
+    return cx >= minX && cx <= maxX && cz >= minZ && cz <= maxZ;
+  };
 
-  const isColliding = (cx, cz, rot) => {
+  const isColliding = (cx, cz, rot = 0) => {
     const isSwapped = (rot % 2 !== 0);
     const nEW = isSwapped ? newD : newW;
     const nED = isSwapped ? newW : newD;
@@ -138,9 +143,10 @@ export const calculateNewItemPlacement = (state, targetItemId) => {
       const oEW = oSwapped ? otherD : otherW;
       const oED = oSwapped ? otherW : otherD;
 
+      // 0.15m xavfsiz oraliq — elementlar bir-biriga teginmasligi uchun
       if (
-        Math.abs(cx - otherPos[0]) < (nEW + oEW) / 2 + 0.05 &&
-        Math.abs(cz - otherPos[2]) < (nED + oED) / 2 + 0.05
+        Math.abs(cx - otherPos[0]) < (nEW + oEW) / 2 + 0.15 &&
+        Math.abs(cz - otherPos[2]) < (nED + oED) / 2 + 0.15
       ) {
         return true;
       }
@@ -148,7 +154,7 @@ export const calculateNewItemPlacement = (state, targetItemId) => {
     return false;
   };
 
-  // 1. Foydalanuvchi oxirgi siljitgan / o'zgartirgan / qo'shgan elementni qidiramiz
+  // 1. Oxirgi o'zgartirilgan element atrofidagi nomzodlarni tekshiramiz
   let refPos = null;
   let refRot = 0;
   let refItem = null;
@@ -158,77 +164,92 @@ export const calculateNewItemPlacement = (state, targetItemId) => {
     refRot = rotations[lastInteractedUid] || 0;
     const refItemId = lastInteractedUid.substring(0, lastInteractedUid.lastIndexOf('_'));
     refItem = equipmentList.find(e => e.id === refItemId);
-  } else {
-    // Agar lastInteractedUid belgilanmagan bo'lsa, xonadagi oxirgi mavjud elementni olamiz
-    const placedUids = Object.keys(positions);
-    if (placedUids.length > 0) {
-      const lastUid = placedUids[placedUids.length - 1];
-      refPos = positions[lastUid];
-      refRot = rotations[lastUid] || 0;
-      const refItemId = lastUid.substring(0, lastUid.lastIndexOf('_'));
-      refItem = equipmentList.find(e => e.id === refItemId);
-    }
   }
 
-  // Agar oldingi o'zgartirilgan element mavjud bo'lsa:
   if (refPos && Array.isArray(refPos) && refPos.length >= 3) {
     const refW = refItem?.width || 1.0;
     const refD = refItem?.depth || 1.0;
     const refAngle = (refRot % 4) * (Math.PI / 2);
 
-    // Oldinga yo'nalish vektori (facing front)
     const forwardX = Math.sin(refAngle);
     const forwardZ = Math.cos(refAngle);
-    // Yon taraf vektori (right side)
     const rightX = Math.cos(refAngle);
     const rightZ = -Math.sin(refAngle);
 
-    const distFront = (refD / 2) + (newD / 2) + 0.35; // Oldida 0.35m bo'shliq
-    const sideDist = (refW / 2) + (newW / 2) + 0.2;  // Yonida 0.2m bo'shliq
+    const distFront = (refD / 2) + (newD / 2) + 0.4;
+    const sideDist = (refW / 2) + (newW / 2) + 0.3;
 
-    // Nomzod pozitsiyalar (Aynan OLDIDAN boshlab tekshiriladi)
     const candidates = [
-      // 1. To'g'ridan-to'g'ri oldida
       [refPos[0] + forwardX * distFront, 0, refPos[2] + forwardZ * distFront],
-      // 2. Oldi o'ng tarafida
-      [refPos[0] + forwardX * distFront + rightX * (newW * 0.6), 0, refPos[2] + forwardZ * distFront + rightZ * (newW * 0.6)],
-      // 3. Oldi chap tarafida
-      [refPos[0] + forwardX * distFront - rightX * (newW * 0.6), 0, refPos[2] + forwardZ * distFront - rightZ * (newW * 0.6)],
-      // 4. O'ng yonida
       [refPos[0] + rightX * sideDist, 0, refPos[2] + rightZ * sideDist],
-      // 5. Chap yonida
       [refPos[0] - rightX * sideDist, 0, refPos[2] - rightZ * sideDist],
-      // 6. Bir qadam oldinroqda
-      [refPos[0] + forwardX * (distFront + newD + 0.3), 0, refPos[2] + forwardZ * (distFront + newD + 0.3)],
-      // 7. Orqasida
+      [refPos[0] + forwardX * distFront + rightX * (newW * 0.6), 0, refPos[2] + forwardZ * distFront + rightZ * (newW * 0.6)],
+      [refPos[0] + forwardX * distFront - rightX * (newW * 0.6), 0, refPos[2] + forwardZ * distFront - rightZ * (newW * 0.6)],
       [refPos[0] - forwardX * distFront, 0, refPos[2] - forwardZ * distFront],
     ];
 
     for (const cand of candidates) {
       const cx = cand[0];
       const cz = cand[2];
-      if (isInsideRoom(cx, cz) && !isColliding(cx, cz, refRot)) {
+      if (isInsideRoom(cx, cz, refRot) && !isColliding(cx, cz, refRot)) {
         return {
           position: [Number(cx.toFixed(3)), 0, Number(cz.toFixed(3))],
           rotation: refRot
         };
       }
     }
-
-    // Agar hamma nomzodlar devorga yetsa, eng ma'qulini xona chegarasida qaytarish
-    const fallbackX = Math.max(minX, Math.min(maxX, candidates[0][0]));
-    const fallbackZ = Math.max(minZ, Math.min(maxZ, candidates[0][2]));
-    return {
-      position: [Number(fallbackX.toFixed(3)), 0, Number(fallbackZ.toFixed(3))],
-      rotation: refRot
-    };
   }
 
-  // Agar xonada hali hech qanday element bo'lmasa, markazga yaqin joylashtiramiz
-  const defaultX = 0;
-  const defaultZ = Number((L / 4).toFixed(3));
+  // 2. Agar refPos atrofida xavfsiz bo'sh joy bo'lmasa,
+  // butun xona bo'yicha to'qnashuvsiz, boshqa elementlarga halaqit bermaydigan haqiqiy BO'SH JOY qidiramiz
+  let bestSpot = null;
+  let maxClearance = -1;
+  const step = 0.4;
+
+  for (let rot of [0, 1]) {
+    const isSwapped = (rot % 2 !== 0);
+    const effW = isSwapped ? newD : newW;
+    const effD = isSwapped ? newW : newD;
+    const minX = -W / 2 + effW / 2 + margin;
+    const maxX = W / 2 - effW / 2 - margin;
+    const minZ = -L / 2 + effD / 2 + margin;
+    const maxZ = L / 2 - effD / 2 - margin;
+
+    for (let x = minX; x <= maxX; x += step) {
+      for (let z = minZ; z <= maxZ; z += step) {
+        if (!isColliding(x, z, rot)) {
+          // Barcha mavjud elementlardan eng uzoq (eng keng va bo'sh) joyni tanlash
+          let minDist = Infinity;
+          const placedPositions = Object.values(positions);
+          if (placedPositions.length === 0) {
+            minDist = 10;
+          } else {
+            for (const otherPos of placedPositions) {
+              if (!otherPos || otherPos.length < 3) continue;
+              const d = Math.hypot(x - otherPos[0], z - otherPos[2]);
+              if (d < minDist) minDist = d;
+            }
+          }
+
+          if (minDist > maxClearance) {
+            maxClearance = minDist;
+            bestSpot = {
+              position: [Number(x.toFixed(3)), 0, Number(z.toFixed(3))],
+              rotation: rot
+            };
+          }
+        }
+      }
+    }
+  }
+
+  if (bestSpot) {
+    return bestSpot;
+  }
+
+  // 3. Agar mutlaqo bo'sh joy topilmasa
   return {
-    position: [defaultX, 0, defaultZ],
+    position: [0, 0, 0],
     rotation: 0
   };
 };
@@ -282,16 +303,11 @@ export const useAppStore = create((set, get) => ({
   pendingAutosaveDraft: null, // { savedAt, state } — restore prompt uchun
 
   // Saved Projects
-  savedProjects: [
-    {
-      id: 'demo_proj_1',
-      title: 'Toshkent Oziq-ovqat Do\'koni',
-      categoryName: 'Oziq-ovqat va Supermarket',
-      dimensions: { width: 10, length: 12, height: 3.2 },
-      totalCost: 24850,
-      createdAt: '2026-08-18'
-    }
-  ],
+  savedProjects: [],
+
+  // ── Undo / Redo tarixi (positions + rotations) ──
+  positionHistory: [],   // [{positions, rotations}, ...]
+  positionFuture: [],    // redo uchun
 
   // Actions
   setActivePage: (page) => set({ activePage: page }),
@@ -299,14 +315,52 @@ export const useAppStore = create((set, get) => ({
   setPositions: (positions) => set({ positions }),
   setRotations: (rotations) => set({ rotations }),
   setLastInteractedUid: (uid) => set({ lastInteractedUid: uid }),
-  updatePosition: (uid, pos) => set(state => ({
-    positions: { ...state.positions, [uid]: pos },
-    lastInteractedUid: uid
-  })),
-  updateRotation: (uid, rot) => set(state => ({
-    rotations: { ...state.rotations, [uid]: rot },
-    lastInteractedUid: uid
-  })),
+
+  // Bitta elementni yangilash — undo history saqlab
+  updatePosition: (uid, pos) => set(state => {
+    const snapshot = { positions: state.positions, rotations: state.rotations };
+    return {
+      positionHistory: [...state.positionHistory.slice(-49), snapshot],
+      positionFuture: [],
+      positions: { ...state.positions, [uid]: pos },
+      lastInteractedUid: uid
+    };
+  }),
+  updateRotation: (uid, rot) => set(state => {
+    const snapshot = { positions: state.positions, rotations: state.rotations };
+    return {
+      positionHistory: [...state.positionHistory.slice(-49), snapshot],
+      positionFuture: [],
+      rotations: { ...state.rotations, [uid]: rot },
+      lastInteractedUid: uid
+    };
+  }),
+
+  // Undo: oxirgi o'zgarishni bekor qilish
+  undoPosition: () => set(state => {
+    if (state.positionHistory.length === 0) return {};
+    const prev = state.positionHistory[state.positionHistory.length - 1];
+    const current = { positions: state.positions, rotations: state.rotations };
+    return {
+      positionHistory: state.positionHistory.slice(0, -1),
+      positionFuture: [current, ...state.positionFuture.slice(0, 49)],
+      positions: prev.positions,
+      rotations: prev.rotations,
+    };
+  }),
+
+  // Redo: bekor qilingan o'zgarishni qaytarish
+  redoPosition: () => set(state => {
+    if (state.positionFuture.length === 0) return {};
+    const next = state.positionFuture[0];
+    const current = { positions: state.positions, rotations: state.rotations };
+    return {
+      positionHistory: [...state.positionHistory.slice(-49), current],
+      positionFuture: state.positionFuture.slice(1),
+      positions: next.positions,
+      rotations: next.rotations,
+    };
+  }),
 
   // Simulation Toggles & Handlers
   toggleFootTraffic: () => set(state => ({ footTrafficActive: !state.footTrafficActive })),
@@ -371,6 +425,7 @@ export const useAppStore = create((set, get) => ({
     let nextPositions = { ...state.positions };
     let nextRotations = { ...state.rotations };
     let lastUid = state.lastInteractedUid;
+    const snapshot = { positions: state.positions, rotations: state.rotations };
 
     const nextEquipmentList = state.equipmentList.map(item => {
       if (item.id === id) {
@@ -378,7 +433,7 @@ export const useAppStore = create((set, get) => ({
         const newCount = Math.max(0, oldCount + change);
 
         if (newCount > oldCount) {
-          // Yangi qo'shilayotgan elementlarni foydalanuvchi oxirgi o'zgartirgan/siljitgan elementining OLDIDAN joylashtiramiz
+          // Yangi elementlarni mavjud elementlarga teginmasdan, bo'sh joyga joylashtirish
           for (let i = oldCount; i < newCount; i++) {
             const newUid = `${id}_${i}`;
             const placement = calculateNewItemPlacement(
@@ -410,6 +465,8 @@ export const useAppStore = create((set, get) => ({
     });
 
     return {
+      positionHistory: [...state.positionHistory.slice(-49), snapshot],
+      positionFuture: [],
       equipmentList: nextEquipmentList,
       positions: nextPositions,
       rotations: nextRotations,
@@ -424,6 +481,7 @@ export const useAppStore = create((set, get) => ({
     let nextPositions = { ...state.positions };
     let nextRotations = { ...state.rotations };
     let lastUid = state.lastInteractedUid;
+    const snapshot = { positions: state.positions, rotations: state.rotations };
 
     const nextEquipmentList = state.equipmentList.map(item => {
       if (item.id === id) {
@@ -460,6 +518,8 @@ export const useAppStore = create((set, get) => ({
     });
 
     return {
+      positionHistory: [...state.positionHistory.slice(-49), snapshot],
+      positionFuture: [],
       equipmentList: nextEquipmentList,
       positions: nextPositions,
       rotations: nextRotations,
@@ -485,14 +545,21 @@ export const useAppStore = create((set, get) => ({
   })),
 
   applyLayoutTemplate: (layoutType) => {
-    const { roomDimensions, equipmentList, selectedCategory } = get();
+    const state = get();
+    const { roomDimensions, equipmentList, selectedCategory } = state;
     const { width: W, length: L } = roomDimensions;
 
     let activeEquipment = equipmentList.map(item => ({ ...item }));
     const totalCount = activeEquipment.reduce((sum, item) => sum + item.count, 0);
     if (totalCount === 0) {
-      const preset = selectedCategory.equipmentPresets.standard;
-      activeEquipment = preset.map(item => ({ ...item, count: 1 }));
+      const presetMap = new Map((selectedCategory?.equipmentPresets?.standard || []).map(p => [p.id, p.count || 1]));
+      activeEquipment = equipmentList.map(item => ({
+        ...item,
+        count: presetMap.get(item.id) || (presetMap.size === 0 ? 1 : 0)
+      }));
+      if (activeEquipment.reduce((s, it) => s + it.count, 0) === 0) {
+        activeEquipment = equipmentList.map((item, idx) => ({ ...item, count: idx < 6 ? 1 : 0 }));
+      }
     }
 
     const flatItems = [];
@@ -516,17 +583,17 @@ export const useAppStore = create((set, get) => ({
     const seatings = flatItems.filter(item => item.type === 'seating' || item.type === 'sofa');
     const wallsAndIslands = flatItems.filter(item => item.type !== 'counter' && item.type !== 'seating' && item.type !== 'sofa');
 
-    const wallOffset = 0.15; // Devor ichki chegarasi
-    const itemGap = 0.35;   // Jihozlar oralig'i
+    const wallOffset = 0.15;
+    const itemGap = 0.35;
 
     if (layoutType === 'linear') {
-      // 1. LINEAR: Devorlar va tartibli markaziy qatorlar
+      // 1. LINEAR: Devor bo'ylab va tartibli markaziy qatorlar
       counters.forEach((c, idx) => {
         const cWidth = c.width || 1.8;
         const totalCountersW = counters.length * (cWidth + 0.5);
         const startX = -totalCountersW / 2 + cWidth / 2;
         newPositions[c.uid] = [startX + idx * (cWidth + 0.5), 0, L / 2 - (c.depth || 0.85) / 2 - 0.8];
-        newRotations[c.uid] = 2; // Janub/kirishga qaragan
+        newRotations[c.uid] = 2;
       });
 
       seatings.forEach((s, idx) => {
@@ -535,7 +602,7 @@ export const useAppStore = create((set, get) => ({
         newRotations[s.uid] = 1;
       });
 
-      let curSide = 0; // 0: orqa devor, 1: chap devor, 2: o'ng devor, 3: markaz
+      let curSide = 0;
       let curBackX = -W / 2 + 1.2;
       let curLeftZ = -L / 2 + 1.2;
       let curRightZ = -L / 2 + 1.2;
@@ -633,18 +700,20 @@ export const useAppStore = create((set, get) => ({
         newPositions[s.uid] = [-W / 3 + (idx * (sWidth + 0.6)), 0, L / 2 - 1.8];
         newRotations[s.uid] = 0;
       });
-    } else if (layoutType === 'perimeter') {
-      // 3. PERIMETER: Devorlar bo'ylab aylana tartib
+    } else if (layoutType === 'ushape' || layoutType === 'perimeter') {
+      // 3. U-SIMON: 3 ta devor bo'ylab (chap, orqa, o'ng) tartib, markaz ochiq yo'lak
       counters.forEach((c, idx) => {
         const cWidth = c.width || 1.8;
-        newPositions[c.uid] = [0 + idx * (cWidth + 0.6), 0, L / 2 - (c.depth || 0.85) / 2 - 0.8];
+        const startX = -((counters.length - 1) * (cWidth + 0.4)) / 2;
+        newPositions[c.uid] = [startX + idx * (cWidth + 0.4), 0, L / 2 - (c.depth || 0.85) / 2 - 0.8];
         newRotations[c.uid] = 2;
       });
 
+      let wallStep = 0;
       let curLeftZ = -L / 2 + 1.2;
       let curBackX = -W / 2 + 1.2;
       let curRightZ = -L / 2 + 1.2;
-      let wallStep = 0;
+      let centerCount = 0;
 
       wallsAndIslands.forEach((item) => {
         const w = item.width || 1.2;
@@ -674,9 +743,13 @@ export const useAppStore = create((set, get) => ({
             newRotations[item.uid] = 3;
             curRightZ += w + itemGap;
           } else {
-            newPositions[item.uid] = [0, 0, -L / 4];
-            newRotations[item.uid] = 0;
+            wallStep = 3;
           }
+        }
+        if (wallStep === 3) {
+          newPositions[item.uid] = [0, 0, -L / 4 + centerCount * (d + 1.4)];
+          newRotations[item.uid] = 0;
+          centerCount++;
         }
       });
 
@@ -685,17 +758,66 @@ export const useAppStore = create((set, get) => ({
         newPositions[s.uid] = [W / 2 - (s.depth || 0.8) / 2 - wallOffset, 0, L / 2 - 2.2 - (idx * (sWidth + 0.6))];
         newRotations[s.uid] = 3;
       });
+    } else if (layoutType === 'corner') {
+      // 4. BURCHAKLI (L-SIMON): Orqa va chap devor bo'ylab, o'ng va markaz erkin ochiq
+      counters.forEach((c, idx) => {
+        const cWidth = c.width || 1.8;
+        newPositions[c.uid] = [W / 4 + idx * (cWidth + 0.4), 0, L / 2 - (c.depth || 0.85) / 2 - 0.8];
+        newRotations[c.uid] = 2;
+      });
+
+      let wallStep = 0;
+      let curBackX = -W / 2 + 1.2;
+      let curLeftZ = -L / 2 + 1.2;
+      let openIdx = 0;
+
+      wallsAndIslands.forEach((item) => {
+        const w = item.width || 1.2;
+        const d = item.depth || 0.6;
+
+        if (wallStep === 0) {
+          if (curBackX + w / 2 <= W / 2 - 1.2) {
+            newPositions[item.uid] = [curBackX + w / 2, 0, -L / 2 + d / 2 + wallOffset];
+            newRotations[item.uid] = 0;
+            curBackX += w + itemGap;
+          } else {
+            wallStep = 1;
+          }
+        }
+        if (wallStep === 1) {
+          if (curLeftZ + w / 2 <= L / 2 - 2.8) {
+            newPositions[item.uid] = [-W / 2 + d / 2 + wallOffset, 0, curLeftZ + w / 2];
+            newRotations[item.uid] = 1;
+            curLeftZ += w + itemGap;
+          } else {
+            wallStep = 2;
+          }
+        }
+        if (wallStep === 2) {
+          newPositions[item.uid] = [0.5, 0, -L / 4 + openIdx * (d + 1.4)];
+          newRotations[item.uid] = 0;
+          openIdx++;
+        }
+      });
+
+      seatings.forEach((s, idx) => {
+        const sWidth = s.width || 1.8;
+        newPositions[s.uid] = [-W / 2 + (s.depth || 0.8) / 2 + wallOffset, 0, L / 2 - 2.0 - (idx * (sWidth + 0.5))];
+        newRotations[s.uid] = 1;
+      });
     }
 
     // ── Qat'iy to'qnashuvlarni bartaraf etish va devorlar ichiga sig'dirish ──
     separateAndClampAllItems(flatItems, newPositions, newRotations, W, L);
 
-    set({
+    set((s) => ({
+      positionHistory: [...s.positionHistory.slice(-49), { positions: s.positions, rotations: s.rotations }],
+      positionFuture: [],
       equipmentList: activeEquipment,
       positions: newPositions,
       rotations: newRotations,
       lastInteractedUid: flatItems.length > 0 ? flatItems[0].uid : null
-    });
+    }));
   },
 
   saveCurrentProject: (title) => {

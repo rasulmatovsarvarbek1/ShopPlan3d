@@ -1,9 +1,10 @@
 import React from 'react';
 import { useAppStore } from '../store/useAppStore';
 import {
-  ArrowRight, LayoutGrid, Box, Cpu, DollarSign,
+  ArrowRight, LayoutGrid, Box, DollarSign,
   Sparkles, CheckCircle2, Star, Zap, TrendingUp
 } from 'lucide-react';
+
 
 export const LandingPage = () => {
   const { setActivePage } = useAppStore();
@@ -75,7 +76,7 @@ export const LandingPage = () => {
       </section>
 
       {/* ── HOW IT WORKS BANNER ── */}
-      <div style={{ maxWidth: '1100px', margin: '0 auto 4rem', padding: '0 2rem' }}>
+      <div style={{ maxWidth: '1100px', margin: '0 auto 4rem', padding: '0 3rem' }}>
         <div style={{
           background: '#fff',
           border: '1.5px solid var(--border-color)',
@@ -185,13 +186,7 @@ export const LandingPage = () => {
             title: 'Drag & Drop 3D',
             desc: 'Har bir jihozni sichqoncha bilan ushlab, 3D maydonda xohlagan joyga suring — qulay va intuitiv.'
           },
-          {
-            icon: <Cpu size={24} />,
-            bg: 'var(--accent-emerald-light)',
-            color: 'var(--accent-emerald)',
-            title: 'Auto Tovar To\'ldirish',
-            desc: 'Jihozlar ustiga tovarlarni avtomatik to\'ldirish va har bir mahsulot uchun narx hisoblash.'
-          },
+
           {
             icon: <DollarSign size={24} />,
             bg: 'var(--accent-amber-light)',
@@ -215,7 +210,7 @@ export const LandingPage = () => {
       </div>
 
       {/* ── CTA BANNER ── */}
-      <div style={{ maxWidth: '860px', margin: '2rem auto 5rem', padding: '0 2rem' }}>
+      <div style={{ maxWidth: '1100px', margin: '2rem auto 5rem', padding: '0 3rem' }}>
         <div style={{
           background: 'linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-indigo) 100%)',
           borderRadius: 'var(--radius-xl)',

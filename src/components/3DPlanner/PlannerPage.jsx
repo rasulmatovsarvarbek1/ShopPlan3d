@@ -5,10 +5,20 @@ import { RoomCanvas } from './RoomCanvas';
 import { LiveSmetaPanel } from './LiveSmetaPanel';
 import { AutoSaveIndicator, AutoSaveCloudIcon } from './AutoSaveIndicator';
 import { usePlannerAutosave } from '../../hooks/usePlannerAutosave';
-import { Eye, Box, ArrowLeft, Lock, Unlock } from 'lucide-react';
+import { Eye, Box, ArrowLeft, Lock, Unlock, Undo2, Redo2 } from 'lucide-react';
 
 export const PlannerPage = () => {
-  const { viewMode, setViewMode, setActivePage, roomLocked, toggleRoomLocked } = useAppStore();
+  const {
+    viewMode,
+    setViewMode,
+    setActivePage,
+    roomLocked,
+    toggleRoomLocked,
+    undoPosition,
+    redoPosition,
+    positionHistory,
+    positionFuture
+  } = useAppStore();
 
   usePlannerAutosave();
 
@@ -52,10 +62,35 @@ export const PlannerPage = () => {
             <button
               className={`toolbar-btn ${roomLocked ? 'active' : ''}`}
               onClick={toggleRoomLocked}
-              title={roomLocked ? "Xona qulflangan (ochish uchun bosing)" : "Xonani qulflash"}
+              title={roomLocked ? "Kamera qulflangan — bosing ochish uchun" : "Kamerani qulflash (aylanishni to'xtatish)"}
               style={{ padding: '7px 9px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
             >
               {roomLocked ? <Lock size={16} /> : <Unlock size={16} />}
+            </button>
+
+            <div style={{ width: '1px', height: '16px', background: 'var(--border-color)' }}></div>
+
+            {/* Undo / Redo tugmalari */}
+            <button
+              className="toolbar-btn"
+              onClick={undoPosition}
+              disabled={positionHistory.length === 0}
+              title="Orqaga qaytarish (Ctrl + Z)"
+              style={{ opacity: positionHistory.length === 0 ? 0.4 : 1, cursor: positionHistory.length === 0 ? 'not-allowed' : 'pointer' }}
+            >
+              <Undo2 size={15} />
+              Undo
+            </button>
+
+            <button
+              className="toolbar-btn"
+              onClick={redoPosition}
+              disabled={positionFuture.length === 0}
+              title="Qaytarish (Ctrl + Y)"
+              style={{ opacity: positionFuture.length === 0 ? 0.4 : 1, cursor: positionFuture.length === 0 ? 'not-allowed' : 'pointer' }}
+            >
+              <Redo2 size={15} />
+              Redo
             </button>
           </div>
 
